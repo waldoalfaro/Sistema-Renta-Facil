@@ -32,7 +32,7 @@
       <div class="mt-4 flex flex-col lg:flex-row items-center justify-between">
         
       </div>
-      <form action="#" method="POST" class="space-y-4">
+      <form action="verificar.php" method="POST" class="space-y-4">
         <!-- Your form elements go here -->
         <div>
           <label for="username" class="block text-sm font-medium text-gray-700">Usuario</label>
