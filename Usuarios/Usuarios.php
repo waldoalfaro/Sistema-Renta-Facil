@@ -1,5 +1,22 @@
 <?php
+session_start();
+
 include "../menu.php";
+require "../conexion.php";
+
+
+
+$sql = " SELECT u.id_usuario, u.nombre, u.usuario, u.correo, t.nombre_tipo AS tipo_usuario
+         From usuarios u
+         JOIN tipos_usuario t ON u.id_tipo = t.id_tipo";
+
+$resultado = $conn->query($sql);
+
+
+
+
+$sqlTipos = "SELECT * FROM tipos_usuario";
+$resultadoTipos = $conn->query($sqlTipos);
 ?>
 
 <!DOCTYPE html>
@@ -33,11 +50,18 @@ include "../menu.php";
         </tr>
     </thead>
     <tbody>
-        <?php  ?>
+        
+        <?php 
+        $contador = 1;
+        while ($row = $resultado->fetch_assoc()):  ?>
             <tr>
-               
+                <td><?= $contador++ ?></td>
+               <td><?= $row['nombre']  ?></td>
+               <td><?= $row['usuario']  ?></td>
+               <td><?= $row['correo']  ?></td>
+               <td></td>
             </tr>
-        <?php  ?>
+        <?php endwhile; ?>
     </tbody>
 </table>
 
@@ -50,7 +74,7 @@ include "../menu.php";
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="agregar.php" method="POST">
+                <form action="validar.php" method="POST">
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -61,17 +85,19 @@ include "../menu.php";
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="email" name="correo" required>
+                        <input type="email" class="form-control" id="correo" name="correo" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="clave" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="clave" name="clave" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Tipo Usuario</label>
-                        <select class="form-control" name="tipo_usuario" id="tipo_usuario" required>
+                        <select class="form-control" name="id_tipo" id="nombre_tipo" required>
                             <option value="">Seleccione un tipo</option>
-                            
+                                <?php while ($row = $resultadoTipos->fetch_assoc()): ?>
+                                    <option value="<?= $row['id_tipo'] ?>"><?= $row['nombre_tipo'] ?></option>
+                                <?php endwhile; ?>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar</button>
