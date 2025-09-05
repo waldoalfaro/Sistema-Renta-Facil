@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $correo = $_POST['correo'];
     $tipo_id = $_POST['id_tipo'];
 
-    // Insertar nuevo usuario
+   
     $sql_insert = "INSERT INTO usuarios (nombre, usuario, clave, correo, id_tipo) VALUES ('$nombre', '$usuario', '$clave', '$correo', $tipo_id)";
     
     if ($conn->query($sql_insert) === TRUE) {
