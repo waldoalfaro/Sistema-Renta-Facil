@@ -2,11 +2,6 @@
 
 include '../conexion.php';
 
-
-
-
-
-
     $marca = $_POST['marca'];
     $modelo = $_POST['modelo'];
     $color = $_POST['color'];
@@ -19,7 +14,7 @@ include '../conexion.php';
 $fotoNombre = null;
 
 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
-    $fotoNombre = uniqid() . "_" . $_FILES['foto']['name']; // nombre único
+    $fotoNombre = uniqid() . "_" . $_FILES['foto']['name'];
     $rutaTemp   = $_FILES['foto']['tmp_name'];
     $destino    = "../FotosSubidas/" . $fotoNombre;
 
@@ -31,7 +26,11 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
     move_uploaded_file($rutaTemp, $destino);
 }
 
-    
+    $revisar = $conn->query("SELECT id_vehiculo FROM vehiculos WHERE placa = '$placa'");
+    if ($revisar->num_rows > 0) {
+        echo "⚠️ Error: ya existe un vehículo con la placa $placa";
+        exit;
+    }
    
     $sql_insert = "INSERT INTO vehiculos (marca, modelo, color, placa, anio, asientos, aire_acondicionado, foto, estado) VALUES ('$marca', '$modelo', '$color', '$placa', '$año', '$asientos', '$aire', '$fotoNombre', '$estado')";
     

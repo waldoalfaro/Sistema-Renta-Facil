@@ -61,4 +61,4 @@
    </div>
 </aside>
 
-<script src="scrip.js"></script>
+<script src="/Sistema-Renta-Facil/scrip.js"></script>
