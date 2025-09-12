@@ -1,5 +1,13 @@
 <?php
-include "menu.php";
+
+
+
+include 'seguridad.php';
+include 'menu.php';
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,10 +25,11 @@ include "menu.php";
 <div class="p-4 sm:ml-64">
     <div class="container">
         <h1>Sonsonate Renta Fácil</h1>
+        <h1>Bienvenido <?= $_SESSION['usuario'] ?></h1>
         <p class="subtitle">Sistema de Gestión de Renta de Vehículos</p>
         
         <div class="dashboard-grid">
-            <div class="dashboard-card" onclick="window.location.href='lista_carros.php'">
+            <div class="dashboard-card" onclick="window.location.href='Vehiculos/vehiculos.php'">
                 <div>
                     <img src="Logo.png" alt="">
                 </div>
