@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+include "../seguridad.php";
 include "../menu.php";
 require "../conexion.php";
 
@@ -34,11 +35,11 @@ $resultadoTipos = $conn->query($sqlTipos);
 
 
 <div class="p-4 sm:ml-64">
+    
 <div class="container mt-5">
     <a href="#" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#ModalRegUsuario">
         <i class="fa-solid fa-user-plus"></i> Agregar Usuario
     </a>
-
 </div>
 
 <table class="table table-hover table-bordered text-center" style="margin-top: 20px;">
