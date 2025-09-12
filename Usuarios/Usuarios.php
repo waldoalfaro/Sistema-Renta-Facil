@@ -2,7 +2,6 @@
 session_start();
 
 include "../seguridad.php";
-include "../menu.php";
 require "../conexion.php";
 
 $sql = "SELECT * FROM usuarios";
@@ -33,15 +32,16 @@ $resultadoTipos = $conn->query($sqlTipos);
 </head>
 <body>
 
+ <?php include '../menu.php'; ?>
 
 <div class="p-4 sm:ml-64">
     
-<div class="container mt-5">
+
     <a href="#" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#ModalRegUsuario">
         <i class="fa-solid fa-user-plus"></i> Agregar Usuario
     </a>
-</div>
 
+<div class="table-responsive">
 <table class="table table-hover table-bordered text-center" style="margin-top: 20px;">
     <thead class="bg-info text-white">
         <tr>
@@ -75,6 +75,8 @@ $resultadoTipos = $conn->query($sqlTipos);
         <?php endwhile; ?>
     </tbody>
 </table>
+</div>
+</div>
 
 
 <div class="modal fade" id="ModalRegUsuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

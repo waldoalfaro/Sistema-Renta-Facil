@@ -24,16 +24,16 @@ $resultado = $conn->query($sql);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="p-4 sm:ml-64">
+<div class="p-4 sm:ml-64">
         
-    <div class="container mt-5">
+    
         <a href="#" class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#ModalRegVehiculo">
             <i class="fa-solid fa-plus"></i> Agregar vehiculo  
         </a>
-    </div>
+    
 
-
-    <table class="table table-hover table-bordered text-center" style="margin-top: 20px;">
+<div class="table-responsive">
+<table class="table table-hover table-bordered text-center" style="margin-top: 20px;">
     <thead class="bg-info text-white">
         <tr>
             <th>N</th>
@@ -71,13 +71,22 @@ $resultado = $conn->query($sql);
                     <span>Sin foto</span>
                 <?php endif; ?>
             </td>
-            <td><?= $row['estado'] ?></td>
+            <td>
+              <select onchange="cambiarEstado(<?= $row['id_vehiculo'] ?>, this.value)">
+                <option value="Disponible" <?= $row['estado'] == 'Disponible' ? 'selected' : '' ?>>Disponible</option>
+                <option value="No disponible" <?= $row['estado'] == 'No disponible' ? 'selected' : '' ?>>No disponible</option>
+                <option value="Mantenimiento" <?= $row['estado'] == 'Mantenimiento' ? 'selected' : '' ?>>Mantenimiento</option>
+                <option value="De baja" <?= $row['estado'] == 'De baja' ? 'selected' : '' ?>>De baja</option>
+              </select>
+            </td>
             <td></td>
         </tr>
         <?php endwhile; ?>
     </tbody>
     
 </table>
+</div>
+</div>
 
 <div class="modal fade" id="ModalRegVehiculo" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg"> <!-- modal más ancho -->
@@ -89,38 +98,30 @@ $resultado = $conn->query($sql);
       <div class="modal-body">
         <form action="ValidarVehiculo.php" method="POST" enctype="multipart/form-data">
           <div class="row g-3">
-            
-            <!-- Columna izquierda -->
             <div class="col-md-6">
               <label class="form-label">Marca</label>
               <input type="text" class="form-control" name="marca" required>
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Modelo</label>
               <input type="text" class="form-control" name="modelo" required>
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Color</label>
               <input type="text" class="form-control" name="color" required>
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Placa</label>
               <input type="text" class="form-control" name="placa" required>
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Año</label>
               <input type="number" class="form-control" name="anio" min="1900" max="2099" required>
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Asientos</label>
               <input type="number" class="form-control" name="asientos" min="1" required>
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Aire Acondicionado</label>
               <select class="form-control" name="aire" required>
@@ -129,18 +130,18 @@ $resultado = $conn->query($sql);
                 <option value="0">No</option>
               </select>
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Agregar Foto</label>
               <input type="file" class="form-control" name="foto" accept="image/*">
             </div>
-
             <div class="col-md-6">
               <label class="form-label">Estado</label>
               <select class="form-control" name="estado" required>
                 <option value="">Seleccione</option>
                 <option value="Disponible">Disponible</option>
-                <option value="No disponible">Alquilado</option>
+                <option value="No disponible">No disponible</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+                <option value="De baja">De baja</option>
               </select>
             </div>
 
@@ -163,3 +164,23 @@ $resultado = $conn->query($sql);
     
 </body>
 </html>
+
+
+<script>
+
+
+function cambiarEstado(idVehiculo, nuevoEstado) {
+    fetch('cambiar_estado.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'id=' + idVehiculo + '&estado=' + nuevoEstado
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert('Estado actualizado correctamente');
+        // opcional: refrescar tabla o cambiar color de fila
+    });
+}
+
+
+</script>
