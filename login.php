@@ -1,55 +1,194 @@
-<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>Login - Acceso al Sistema</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .bg-company {
+      background: url('Logo2.png');
+      background-size: 700px auto; /* control del tamaño */
+      background-repeat: no-repeat;
+      background-position: 100px 10px; /* 100px desde la izquierda, 200px desde arriba */
+      background-attachment: fixed;
+    }  
+
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .input-glow:focus {
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-gradient {
+      background: linear-gradient(45deg, #22c55e, #22c55e, #22c55e);
+      background-size: 200% 200%;
+      animation: gradient-shift 3s ease infinite;
+    }
+    
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .floating-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(1deg); }
+      66% { transform: translateY(-10px) rotate(-1deg); }
+    }
+    
+    .pulse-border {
+      animation: pulse-border 2s infinite;
+    }
+    
+    @keyframes pulse-border {
+      0% { border-color: #0a0a0aff; }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-company min-h-screen flex items-center justify-end p-4  background-position: 100px 10px; /* 100px desde la izquierda, 200px desde arriba */
+">
+    
+  <!-- Elementos decorativos flotantes -->
+  <div class="fixed top-10 left-10 w-20 h-20 bg-yellow-400 rounded-full opacity-20 floating-animation"></div>
+  <div class="fixed top-1/3 right-20 w-16 h-16 bg-green-500 rounded-full opacity-20 floating-animation" style="animation-delay: -2s;"></div>
+  <div class="fixed bottom-20 left-1/4 w-12 h-12 bg-yellow-300 rounded-full opacity-20 floating-animation" style="animation-delay: -4s;"></div>
 
-
-<!-- component -->
-<div class="flex h-screen flex gap-60">
-  <!-- Left Pane -->
-  <div class="hidden lg:flex items-center justify-center flex-1  text-black">
-    <div class="max-w-md text-center">
-      <img src="Logo.png" alt="Placeholder Image" class="object-cover w-full h-full">
+  <!-- Contenedor principal -->
+  <div class="glass-effect rounded-3xl shadow-2xl p-8 w-full max-w-md transform hover:scale-105 transition-all duration-300">
+    
+    <!-- Header con logo y título -->
+    <div class="text-center mb-8">
+      <div class="mx-auto w-20 h-20 bg-gradient-to-r from-green-500 to-yellow-400 rounded-full flex items-center justify-center mb-4 pulse-border border-4">
+        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+        </svg>
       </div>
-  </div>
-  <!-- Right Pane -->
-  <div class="w-full bg-gray-100 lg:w-1/2 flex items-center justify-center">
-    <div class="max-w-md w-full p-6">
-      <h1 class="text-3xl font-semibold mb-6 text-black text-center">LOGIN</h1>
-      <?php if (isset($_SESSION['error'])): ?>
-      <div class="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm">
-        <?= $_SESSION['error']; unset($_SESSION['error']); ?>
-      </div>
-    <?php endif; ?>
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-yellow-500 bg-clip-text text-transparent">
+        Bienvenido
+      </h1>
+      <p class="text-gray-600 mt-2">Accede a tu cuenta para continuar</p>
+    </div>
 
-
-      <h1 class="text-sm font-semibold mb-6 text-gray-500 text-center"> </h1>
-      <div class="mt-4 flex flex-col lg:flex-row items-center justify-between">
-        
+    <!-- Mensaje de error (si existe) -->
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg mb-6 hidden" id="error-message">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-red-700" id="error-text">Error en las credenciales</p>
+        </div>
       </div>
-      <form action="verificar.php" method="POST" class="space-y-4">
-        <!-- Your form elements go here -->
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-700">Usuario</label>
-          <input type="text"  name="usuario" class="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300">
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-          <input type="password"  name="clave" class="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300">
-        </div>
-        <div>
-          <button type="submit" class="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300">Iniciar</button>
-        </div>
-      </form>
+    </div>
+
+    <!-- Formulario -->
+    <form action="verificar.php" method="POST" class="space-y-6">
       
+      <!-- Campo Usuario -->
+      <div class="relative">
+        <label for="usuario" class="block text-sm font-semibold text-gray-700 mb-2">
+          <span class="flex items-center">
+            <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+            Nombre de Usuario
+          </span>
+        </label>
+        <input 
+          type="text" 
+          name="usuario" 
+          id="usuario"
+          placeholder="Ingresa tu nombre de usuario o email"
+          class="input-glow w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-all duration-300 bg-white"
+          required
+        >
+        <p class="text-xs text-gray-500 mt-1 ml-2">💡 Usa el usuario que te proporcionó el administrador</p>
+      </div>
+
+      <!-- Campo Contraseña -->
+      <div class="relative">
+        <label for="clave" class="block text-sm font-semibold text-gray-700 mb-2">
+          <span class="flex items-center">
+            <svg class="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+            </svg>
+            Contraseña
+          </span>
+        </label>
+        <input 
+          type="password" 
+          name="clave" 
+          id="clave"
+          placeholder="Ingresa tu contraseña segura"
+          class="input-glow w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:outline-none transition-all duration-300 bg-white"
+          required
+        >
+        <p class="text-xs text-gray-500 mt-1 ml-2">🔐 Mínimo 6 caracteres. Mantén tu contraseña segura</p>
+      </div>
+
+      <!-- Botón de acceso -->
+      <div class="pt-4">
+        <button 
+          type="submit" 
+          class="btn-gradient w-full text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50"
+        >
+          <span class="flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l5-5z" clip-rule="evenodd" />
+            </svg>
+            INICIAR SESIÓN
+          </span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Información adicional -->
+    <div class="mt-8 pt-6 border-t border-gray-200">
+      <div class="text-center space-y-2">
+        <p class="text-xs text-gray-500">
+          ¿Problemas para acceder? 
+          <a href="#" class="text-green-600 hover:text-green-700 font-semibold">Contacta soporte</a>
+        </p>
+        <div class="flex items-center justify-center space-x-2 text-xs text-gray-400">
+          <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+
+  <script>
+    // Simulación de manejo de errores desde PHP
+    <?php if (isset($_SESSION['error'])): ?>
+      document.getElementById('error-message').classList.remove('hidden');
+      document.getElementById('error-text').textContent = '<?= $_SESSION['error']; ?>';
+    <?php endif; ?>
+
+    // Efectos adicionales de interactividad
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentNode.classList.add('transform', 'scale-105');
+      });
+      
+      input.addEventListener('blur', function() {
+        this.parentNode.classList.remove('transform', 'scale-105');
+      });
+    });
+  </script>
 </body>
 </html>
-
