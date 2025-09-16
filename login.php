@@ -2,60 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login - Acceso al Sistema</title>
+  <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .bg-company {
-      background: url('Logo2.png');
-      background-size: 700px auto; /* control del tamaño */
-      background-repeat: no-repeat;
-      background-position: 100px 10px; /* 100px desde la izquierda, 200px desde arriba */
-      background-attachment: fixed;
-    }  
-
-    
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .input-glow:focus {
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
-      transform: translateY(-2px);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-gradient {
-      background: linear-gradient(45deg, #22c55e, #22c55e, #22c55e);
-      background-size: 200% 200%;
-      animation: gradient-shift 3s ease infinite;
-    }
-    
-    @keyframes gradient-shift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
-    .floating-animation {
-      animation: float 6s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      33% { transform: translateY(-20px) rotate(1deg); }
-      66% { transform: translateY(-10px) rotate(-1deg); }
-    }
-    
-    .pulse-border {
-      animation: pulse-border 2s infinite;
-    }
-    
-    @keyframes pulse-border {
-      0% { border-color: #0a0a0aff; }
-    }
-  </style>
+  <link rel="stylesheet" href="login.css">
 </head>
 <body class="bg-company min-h-screen flex items-center justify-end p-4  background-position: 100px 10px; /* 100px desde la izquierda, 200px desde arriba */
 ">
@@ -112,7 +61,7 @@
           type="text" 
           name="usuario" 
           id="usuario"
-          placeholder="Ingresa tu nombre de usuario o email"
+          placeholder="Ingresa tu nombre de usuario"
           class="input-glow w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition-all duration-300 bg-white"
           required
         >
@@ -137,7 +86,7 @@
           class="input-glow w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:outline-none transition-all duration-300 bg-white"
           required
         >
-        <p class="text-xs text-gray-500 mt-1 ml-2">🔐 Mínimo 6 caracteres. Mantén tu contraseña segura</p>
+        <p class="text-xs text-gray-500 mt-1 ml-2">🔐 Mantén tu contraseña segura</p>
       </div>
 
       <!-- Botón de acceso -->
@@ -160,8 +109,8 @@
     <div class="mt-8 pt-6 border-t border-gray-200">
       <div class="text-center space-y-2">
         <p class="text-xs text-gray-500">
-          ¿Problemas para acceder? 
-          <a href="#" class="text-green-600 hover:text-green-700 font-semibold">Contacta soporte</a>
+          ¿Olvidaste tu contraseña? 
+          <a href="#" class="text-green-600 hover:text-green-700 font-semibold">Recupera tu contraseña</a>
         </p>
         <div class="flex items-center justify-center space-x-2 text-xs text-gray-400">
           <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">

@@ -49,6 +49,7 @@ $resultadoTipos = $conn->query($sqlTipos);
             <th>Nombre</th>
             <th>Usuario</th>
             <th>Email</th>
+            <th>Tipo de usuario</th>
             <th colspan="2">Acciones</th>
         </tr>
     </thead>
@@ -62,6 +63,7 @@ $resultadoTipos = $conn->query($sqlTipos);
                <td><?= $row['nombre']  ?></td>
                <td><?= $row['usuario']  ?></td>
                <td><?= $row['correo']  ?></td>
+               <td><?= $row['tipo_usuario'] ?></td>
                <td>
                 <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEditarUsuario" 
                        data-id="<?= $row["id_usuario"] ?>" data-nombre="<?= $row["nombre"] ?>" data-usuario="<?= $row["usuario"] ?>" 
