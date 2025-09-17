@@ -9,13 +9,8 @@ include '../menu.php';
 $sql = "SELECT * FROM vehiculos ORDER BY id_vehiculo DESC";
 $resultado = $conn->query($sql);
 
-
 $sqlTipos = "SELECT * FROM categorias";
 $resultadoTipos = $conn->query($sqlTipos);
-
-
-
-
 
 ?>
 
@@ -29,11 +24,320 @@ $resultadoTipos = $conn->query($sqlTipos);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos mejorados para las tarjetas */
+        .vehicle-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden; /* evita que el contenido se salga */
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* fuerza a todas las tarjetas a tener el mismo alto */
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+             padding: 12px 16px;
+             border-bottom: 1px solid #eee;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .vehicle-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .vehicle-subtitle {
+            opacity: 0.9;
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-disponible { background: #10b981; color: white; }
+        .status-no-disponible { background: #ef4444; color: white; }
+        .status-mantenimiento { background: #f59e0b; color: white; }
+        .status-de-baja { background: #6b7280; color: white; }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .vehicle-card:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        .no-image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #9ca3af;
+        }
+
+        .card-content {
+           flex: 1; /* ocupa el espacio disponible */
+           padding: 16px;
+           overflow-wrap: break-word; /* corta palabras largas */
+           word-break: break-word; /* adicional por si acaso */
+        }
+
+        .vehicle-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-item {
+            flex: 1;
+            min-width: 0; /* evita que se rompa el flex */
+        }
+
+        .detail-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-icon {
+            font-size: 1.1rem;
+            margin-right: 10px;
+            color: #667eea;
+            width: 20px;
+            text-align: center;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 80px;
+            font-size: 0.85rem;
+        }
+
+        .detail-value {
+            color: #2d3748;
+            font-weight: 500;
+            margin-left: auto;
+        }
+
+        .detail-full-width {
+            flex: 100%;
+
+        }
+
+        .damages-list {
+           margin: 0;
+           padding-left: 18px;
+           max-height: 100px; /* limita altura */
+           overflow-y: auto; /* agrega scroll si hay demasiados daños */
+        }
+
+        .damages-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .damages-list li:last-child {
+            border-bottom: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .btn-action {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .status-selector {
+            width: 100%; /* evita que se desborde */
+            margin-top: 10px;
+            padding: 6px;
+        }
+
+        .status-selector:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .status-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .price-highlight {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .detail-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animaciones adicionales */
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilos para el resto de elementos */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .add-vehicle-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .add-vehicle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="p-4 sm:ml-64 ">
-        <div class="main-container animate__animated animate__fadeIn">
+    <div class="p-4 sm:ml-64">
+        <div class="main-container">
             
             <div class="page-header">
                 <h1 class="page-title">
@@ -54,7 +358,7 @@ $resultadoTipos = $conn->query($sqlTipos);
             ?>
             
             <div class="text-center">
-                <button class="add-vehicle-btn animate__animated animate__pulse animate__infinite" data-bs-toggle="modal" data-bs-target="#ModalRegVehiculo">
+                <button class="add-vehicle-btn" data-bs-toggle="modal" data-bs-target="#ModalRegVehiculo">
                     <i class="fas fa-plus-circle"></i> Agregar Nuevo Vehículo
                 </button>
             </div>
@@ -66,11 +370,22 @@ $resultadoTipos = $conn->query($sqlTipos);
                     $contador++;
                 ?>
                 <div class="col-lg-6 col-xl-4">
-                    <div class="vehicle-card animate__animated animate__fadeInUp" style="animation-delay: <?= $contador * 0.1 ?>s;">
+                    <div class="vehicle-card fade-in" style="animation-delay: <?= $contador * 0.1 ?>s;">
                         
-                        <!-- Estado Badge -->
-                        <div class="status-badge status-<?= strtolower(str_replace(' ', '-', $row['estado'])) ?>">
-                            <?= $row['estado'] ?>
+                        <!-- Header de la tarjeta -->
+                        <div class="card-header">
+                            <h3 class="vehicle-title">
+                                <?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>
+                            </h3>
+                            <p class="vehicle-subtitle">
+                                <i class="fas fa-id-card"></i> <?= htmlspecialchars($row['placa']) ?> • 
+                                <i class="fas fa-calendar-alt"></i> <?= htmlspecialchars($row['anio']) ?>
+                            </p>
+                            
+                            <!-- Badge de estado -->
+                            <div class="status-badge status-<?= strtolower(str_replace(' ', '-', $row['estado'])) ?>">
+                                <?= $row['estado'] ?>
+                            </div>
                         </div>
                         
                         <!-- Imagen del vehículo -->
@@ -89,109 +404,115 @@ $resultadoTipos = $conn->query($sqlTipos);
                         <!-- Contenido de la tarjeta -->
                         <div class="card-content">
                             
-                            <!-- Título del vehículo -->
-                            <h3 class="vehicle-title">
-                                <i class="fas fa-car text-primary"></i>
-                                <?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>
-                            </h3>
+                            <!-- Precio destacado -->
+                            <div class="text-center mb-3">
+                                <div class="price-highlight">
+                                    <i class="fas fa-dollar-sign"></i> $<?= htmlspecialchars($row['precio_dia']) ?> / día
+                                </div>
+                            </div>
                             
-                            <!-- Detalles del vehículo -->
+                            <!-- Detalles del vehículo organizados en filas -->
                             <div class="vehicle-details">
-                                <div class="detail-item">
-                                    <i class="fas fa-palette detail-icon"></i>
-                                    <span class="detail-label">Color</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['color']) ?></span>
+                                <!-- Primera fila -->
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <i class="fas fa-palette detail-icon"></i>
+                                        <span class="detail-label">Color</span>
+                                        <span class="detail-value"><?= htmlspecialchars($row['color']) ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-users detail-icon"></i>
+                                        <span class="detail-label">Asientos</span>
+                                        <span class="detail-value"><?= htmlspecialchars($row['asientos']) ?></span>
+                                    </div>
                                 </div>
                                 
-                                <div class="detail-item">
-                                    <i class="fas fa-id-card detail-icon"></i>
-                                    <span class="detail-label">Placa</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['placa']) ?></span>
+                                <!-- Segunda fila -->
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <i class="fas fa-gas-pump detail-icon"></i>
+                                        <span class="detail-label">Combustible</span>
+                                        <span class="detail-value"><?= htmlspecialchars($row['combustible']) ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-snowflake detail-icon"></i>
+                                        <span class="detail-label">A/C</span>
+                                        <span class="detail-value">
+                                            <?= $row['aire_acondicionado'] ? 
+                                                '<i class="fas fa-check text-success"></i> Sí' : 
+                                                '<i class="fas fa-times text-danger"></i> No' ?>
+                                        </span>
+                                    </div>
                                 </div>
                                 
-                                <div class="detail-item">
-                                    <i class="fas fa-calendar-alt detail-icon"></i>
-                                    <span class="detail-label">Año</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['anio']) ?></span>
+                                <!-- Tercera fila -->
+                                <div class="detail-row">
+                                    <div class="detail-item">
+                                        <i class="fas fa-map-marker-alt detail-icon"></i>
+                                        <span class="detail-label">GPS</span>
+                                        <span class="detail-value"><?= htmlspecialchars($row['gps']) ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-shield-alt detail-icon"></i>
+                                        <span class="detail-label">Seguro</span>
+                                        <span class="detail-value"><?= htmlspecialchars($row['seguro']) ?></span>
+                                    </div>
                                 </div>
                                 
-                                <div class="detail-item">
-                                    <i class="fas fa-users detail-icon"></i>
-                                    <span class="detail-label">Asientos</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['asientos']) ?></span>
+                                <!-- Cuarta fila - VIN en ancho completo -->
+                                <div class="detail-row">
+                                    <div class="detail-item detail-full-width">
+                                        <i class="fas fa-barcode detail-icon"></i>
+                                        <span class="detail-label">VIN</span>
+                                        <span class="detail-value"><?= htmlspecialchars($row['vin']) ?></span>
+                                    </div>
                                 </div>
                                 
-                                <div class="detail-item">
-                                    <i class="fas fa-snowflake detail-icon"></i>
-                                    <span class="detail-label">A/C</span>
-                                    <span class="detail-value">
-                                        <?= $row['aire_acondicionado'] ? 
-                                            '<i class="fas fa-check text-success"></i> Sí' : 
-                                            '<i class="fas fa-times text-danger"></i> No' ?>
-                                    </span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-id-card detail-icon"></i>
-                                    <span class="detail-label">Precio por dia</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['precio_dia']) ?></span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-id-card detail-icon"></i>
-                                    <span class="detail-label">Combustible</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['combustible']) ?></span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-id-card detail-icon"></i>
-                                    <span class="detail-label">Gps</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['gps']) ?></span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-id-card detail-icon"></i>
-                                    <span class="detail-label">Seguro</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['seguro']) ?></span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-id-card detail-icon"></i>
-                                    <span class="detail-label">Vin</span>
-                                    <span class="detail-value"><?= htmlspecialchars($row['vin']) ?></span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-tools detail-icon"></i>
-                                    <span class="detail-label">Daños</span>
-                                    <span class="detail-value">
-                                        <?php
-                                        $idVehiculo = $row['id_vehiculo'];
-                                        $consulta = $conn->query("SELECT ubicacion_dano, tipo_dano FROM vehiculos_danos WHERE id_vehiculo = $idVehiculo");
+                                <!-- Quinta fila - Daños en ancho completo -->
+                                <div class="detail-row">
+                                    <div class="detail-item detail-full-width">
+                                        <i class="fas fa-tools detail-icon"></i>
+                                        <span class="detail-label">Daños</span>
+                                        <div class="detail-value">
+                                            <?php
+                                            $idVehiculo = $row['id_vehiculo'];
+                                            $consulta = $conn->query("SELECT ubicacion_dano, tipo_dano FROM vehiculos_danos WHERE id_vehiculo = $idVehiculo");
 
-                                        if ($consulta->num_rows > 0) {
-                                            echo "<ul class='mb-0'>";
-                                            while ($dano = $consulta->fetch_assoc()) {
-                                                echo "<li>" . htmlspecialchars($dano['ubicacion_dano']) . " - " . htmlspecialchars($dano['tipo_dano']) . "</li>";
+                                            if ($consulta->num_rows > 0) {
+                                                echo "<ul class='damages-list'>";
+                                                while ($dano = $consulta->fetch_assoc()) {
+                                                    echo "<li><i class='fas fa-exclamation-triangle text-warning'></i> " . 
+                                                         htmlspecialchars($dano['ubicacion_dano']) . " - " . 
+                                                         htmlspecialchars($dano['tipo_dano']) . "</li>";
+                                                }
+                                                echo "</ul>";
+                                            } else {
+                                                echo "<span class='text-success'><i class='fas fa-check-circle'></i> Sin daños registrados</span>";
                                             }
-                                            echo "</ul>";
-                                        } else {
-                                            echo "No hay daños registrados";
-                                        }
-                                        ?>
-                                    </span>
+                                            ?>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEditarVehiculo" 
+                            </div>
+                            
+                            <!-- Botones de acción -->
+                            <div class="action-buttons">
+                                <a href="#" class="btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#ModalEditarVehiculo" 
                                         data-id="<?= $row["id_vehiculo"] ?>" data-marca="<?= $row["marca"] ?>" data-modelo="<?= $row["modelo"] ?>" 
                                         data-color="<?= $row["color"] ?>" data-placa="<?= $row["placa"] ?>" data-anio="<?= $row["anio"] ?>"
-                                        data-asientos="<?= $row["asientos"] ?>"   data-foto="<?= $row["foto"] ?>"  data-precio_dia="<?= $row["precio_dia"] ?>"
-                                        data-combustible="<?= $row["combustible"] ?>" data-gps="<?= $row["gps"] ?>" data-seguro="<?= $row["seguro"] ?>" data-vin="<?= $row["vin"] ?>" >
+                                        data-asientos="<?= $row["asientos"] ?>" data-foto="<?= $row["foto"] ?>" data-precio_dia="<?= $row["precio_dia"] ?>"
+                                        data-combustible="<?= $row["combustible"] ?>" data-gps="<?= $row["gps"] ?>" data-seguro="<?= $row["seguro"] ?>" data-vin="<?= $row["vin"] ?>">
                                         <i class="fa-solid fa-edit"></i> Editar
                                 </a>
-                                <a href="#" class="btn btn-danger btn-sm" onclick="confirmDelete(<?= $row['id_vehiculo'] ?>)"> 
-                                    <i class="fa-solid fa-trash"></i>Eliminar
+                                <a href="#" class="btn-action btn-delete" onclick="confirmDelete(<?= $row['id_vehiculo'] ?>)"> 
+                                    <i class="fa-solid fa-trash"></i> Eliminar
                                 </a>
                             </div>
                             
                             <!-- Selector de estado -->
-                            <div class="mt-2">
-                                <label class="form-label fw-bold" style="font-size: 0.85rem;">
-                                    <i class="fas fa-cog"></i> Estado:
+                            <div>
+                                <label class="status-label">
+                                    <i class="fas fa-cog"></i> Cambiar Estado:
                                 </label>
                                 <select class="status-selector" 
                                         onchange="cambiarEstado(<?= $row['id_vehiculo'] ?>, this.value)"
@@ -323,7 +644,7 @@ $resultadoTipos = $conn->query($sqlTipos);
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-users text-success"></i> Precio por dia del vehiculo
                                 </label>
-                                <input type="number" class="form-control" name="precio_dia"  required>
+                                <input type="number" class="form-control" name="precio_dia" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">
@@ -359,11 +680,11 @@ $resultadoTipos = $conn->query($sqlTipos);
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-users text-success"></i> Vin
                                 </label>
-                                <input type="number" class="form-control" name="vin"  required>
+                                <input type="number" class="form-control" name="vin" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">
-                                    <i class="fas fa-cog text-warning"></i> Ubicasion del daño
+                                    <i class="fas fa-cog text-warning"></i> Ubicación del daño
                                 </label>
                                <select class="form-control" id="ubicacion_dano" name="ubicacion_dano[]" multiple>
                                     <option value="">Seleccione ubicación</option>
@@ -405,122 +726,119 @@ $resultadoTipos = $conn->query($sqlTipos);
         </div>
     </div>
 
+    <!-- Modal para editar vehículo -->
+    <div class="modal fade" id="ModalEditarVehiculo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Vehiculo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="EditarVehiculo.php" method="POST" enctype="multipart/form-data">
+                      <div class="row g-3">
+                        <input type="hidden" id="edit_idvehiculo" name="id_vehiculo">
 
+                        <div class="col-md-6">
+                            <label for="edit_marca" class="form-label">Marca</label>
+                            <input type="text" class="form-control" id="edit_marca" name="marca" required>
+                        </div>
 
+                        <div class="col-md-6">
+                            <label for="edit_modelo" class="form-label">Modelo</label>
+                            <input type="text" class="form-control" id="edit_modelo" name="modelo" required>
+                        </div>
 
-   <div class="modal fade" id="ModalEditarVehiculo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Editar Vehiculo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <form action="EditarVehiculo.php" method="POST" enctype="multipart/form-data">
-                  <div class="row g-3">
-                    <input type="hidden" id="edit_idvehiculo" name="id_vehiculo">
+                        <div class="col-md-6">
+                            <label for="edit_color" class="form-label">Color</label>
+                            <input type="text" class="form-control" id="edit_color" name="color" required>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label for="edit_marca" class="form-label">Marca</label>
-                        <input type="text" class="form-control" id="edit_marca" name="marca" required>
-                    </div>
+                        <div class="col-md-6">
+                            <label for="edit_placa" class="form-label">Placa</label>
+                            <input type="text" class="form-control" id="edit_placa" name="placa" required>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label for="edit_modelo" class="form-label">Modelo</label>
-                        <input type="text" class="form-control" id="edit_modelo" name="modelo" required>
-                    </div>
+                        <div class="col-md-6">
+                            <label for="edit_anio" class="form-label">Año</label>
+                            <input type="number" class="form-control" id="edit_anio" name="anio" required>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label for="edit_color" class="form-label">Color</label>
-                        <input type="text" class="form-control" id="edit_color" name="color" required>
-                    </div>
+                        <div class="col-md-6">
+                            <label for="edit_asientos" class="form-label">Asientos</label>
+                            <input type="number" class="form-control" id="edit_asientos" name="asientos"  min="1" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_precio_dia" class="form-label">precio por dia </label>
+                            <input type="number" class="form-control" id="edit_precio_dia" name="precio_dia" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_combustible" class="form-label">Combustible</label>
+                            <select class="form-control" id="edit_combustible"  name="combustible" required>
+                                        <option value="">Seleccione</option>
+                                        <option value="Gasolina">Gasolina</option>
+                                        <option value="Diesel">Diesel</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_gps" class="form-label">Gps</label>
+                            <select class="form-control" id="edit_gps" name="gps" required>
+                                        <option value="">Seleccione</option>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_seguro" class="form-label">Seguro</label>
+                            <select class="form-control" id="edit_seguro" name="seguro" required>
+                                        <option value="">Seleccione</option>
+                                        <option value="Si">Si</option>
+                                        <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_vin" class="form-label">Vin</label>
+                            <input type="text" class="form-control" id="edit_vin" name="vin" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Ubicación del daño</label>
+                            <select id="ubicacion_dano" name="ubicacion_dano[]" multiple class="form-control">
+                                <option value="">Seleccione ubicación</option>
+                                <?php
+                                $queryUbicaciones = $conn->query("SELECT DISTINCT ubicacion_dano FROM categorias_dano ORDER BY ubicacion_dano");
+                                while($row = $queryUbicaciones->fetch_assoc()):
+                                ?>
+                                    <option value="<?= $row['ubicacion_dano'] ?>"><?= $row['ubicacion_dano'] ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label for="edit_placa" class="form-label">Placa</label>
-                        <input type="text" class="form-control" id="edit_placa" name="placa" required>
-                    </div>
+                        <div class="col-md-6">
+                            <label>Tipo de daño</label>
+                            <select id="tipo_dano" name="tipo_dano[]" multiple class="form-control">
+                                <option value="">Seleccione tipo de daño</option>
+                            </select>
+                        </div>
 
-                    <div class="col-md-6">
-                        <label for="edit_anio" class="form-label">Año</label>
-                        <input type="number" class="form-control" id="edit_anio" name="anio" required>
-                    </div>
+                        <input type="hidden" name="foto_actual" id="edit_foto_actual">
 
-                    <div class="col-md-6">
-                        <label for="edit_asientos" class="form-label">Asientos</label>
-                        <input type="number" class="form-control" id="edit_asientos" name="asientos"  min="1" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="edit_precio_dia" class="form-label">precio por dia </label>
-                        <input type="number" class="form-control" id="edit_precio_dia" name="precio_dia" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="edit_combustible" class="form-label">Combustible</label>
-                        <select class="form-control" id="edit_combustible"  name="combustible" required>
-                                    <option value="">Seleccione</option>
-                                    <option value="Gasolina">Gasolina</option>
-                                    <option value="Diesel">Diesel</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="edit_gps" class="form-label">Gps</label>
-                        <select class="form-control" id="edit_gps" name="gps" required>
-                                    <option value="">Seleccione</option>
-                                    <option value="Si">Si</option>
-                                    <option value="No">No</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="edit_seguro" class="form-label">Seguro</label>
-                        <select class="form-control" id="edit_seguro" name="seguro" required>
-                                    <option value="">Seleccione</option>
-                                    <option value="Si">Si</option>
-                                    <option value="No">No</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="edit_vin" class="form-label">Vin</label>
-                        <input type="text" class="form-control" id="edit_vin" name="vin" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Ubicación del daño</label>
-                        <select id="ubicacion_dano" name="ubicacion_dano[]" multiple class="form-control">
-                            <option value="">Seleccione ubicación</option>
-                            <?php
-                            $queryUbicaciones = $conn->query("SELECT DISTINCT ubicacion_dano FROM categorias_dano ORDER BY ubicacion_dano");
-                            while($row = $queryUbicaciones->fetch_assoc()):
-                            ?>
-                                <option value="<?= $row['ubicacion_dano'] ?>"><?= $row['ubicacion_dano'] ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label>Tipo de daño</label>
-                        <select id="tipo_dano" name="tipo_dano[]" multiple class="form-control">
-                            <option value="">Seleccione tipo de daño</option>
-                        </select>
-                    </div>
-
-
-                    <input type="hidden" name="foto_actual" id="edit_foto_actual">
-
-                    <!-- Campo de archivo -->
-                    <div class="col-12">
-                        <label for="edit_foto" class="form-label">Foto</label>
-                        <input type="file" class="form-control" id="edit_foto" name="foto" accept="image/*">
-                        <br>
-                        <img id="preview_foto" src="" alt="Vista previa" width="120" style="display:none; border:1px solid #ccc; padding:3px;">
-                    </div>
-                                    
-                  </div>
-                  <div class="mt-3">
-                    <button type="submit" class="btn btn-warning">Guardar cambios</button>
-                  </div>
-                </form>
+                        <!-- Campo de archivo -->
+                        <div class="col-12">
+                            <label for="edit_foto" class="form-label">Foto</label>
+                            <input type="file" class="form-control" id="edit_foto" name="foto" accept="image/*">
+                            <br>
+                            <img id="preview_foto" src="" alt="Vista previa" width="120" style="display:none; border:1px solid #ccc; padding:3px;">
+                        </div>
+                                        
+                      </div>
+                      <div class="mt-3">
+                        <button type="submit" class="btn btn-warning">Guardar cambios</button>
+                      </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -556,233 +874,154 @@ $resultadoTipos = $conn->query($sqlTipos);
                     card.style.transform = '';
                 }, 300);
                 
-                // Notificación de éxito
-                showNotification('Estado actualizado correctamente', 'success');
+                // Notificación de éxito (puedes implementar una función showNotification si la tienes)
+                console.log('Estado actualizado correctamente');
             })
             .catch(error => {
                 document.querySelector('.loading-spinner').style.display = 'none';
-                showNotification('Error al actualizar el estado', 'error');
-                console.error('Error:', error);
+                console.error('Error al actualizar el estado:', error);
             });
         }
-        
-       
-        
-        // Variables para confirmación de eliminación
-        let vehicleToDelete = null;
-        
-        // Función para confirmar eliminación
-        function confirmarEliminar(idVehiculo, nombreVehiculo) {
-            vehicleToDelete = idVehiculo;
-            document.getElementById('vehicle_to_delete').textContent = nombreVehiculo;
-            
-            // Mostrar modal de confirmación
-            const modal = new bootstrap.Modal(document.getElementById('ModalConfirmDelete'));
-            modal.show();
-        }
-        
-        // Función para eliminar vehículo
-        function eliminarVehiculo() {
-            if (!vehicleToDelete) return;
-            
-            document.querySelector('.loading-spinner').style.display = 'block';
-            
-            fetch('eliminar_vehiculo.php', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: 'id=' + vehicleToDelete
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.querySelector('.loading-spinner').style.display = 'none';
-                
-                if (data.success) {
-                    // Cerrar modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('ModalConfirmDelete'));
-                    modal.hide();
-                    
-                    // Remover tarjeta con animación
-                    const vehicleCard = document.querySelector(`select[data-vehicle-id="${vehicleToDelete}"]`).closest('.col-lg-6');
-                    vehicleCard.style.transform = 'scale(0)';
-                    vehicleCard.style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        vehicleCard.remove();
-                        showNotification('Vehículo eliminado correctamente', 'success');
-                        
-                        // Si no quedan vehículos, mostrar mensaje
-                        if (document.querySelectorAll('.vehicle-card').length === 0) {
-                            location.reload();
+
+        // Event listener para el modal de editar
+        var editModal = document.getElementById('ModalEditarVehiculo');
+
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+
+            // Tomar atributos del botón
+            var id = button.getAttribute('data-id');
+            var marca = button.getAttribute('data-marca');
+            var modelo = button.getAttribute('data-modelo');
+            var color = button.getAttribute('data-color');
+            var placa = button.getAttribute('data-placa');
+            var anio = button.getAttribute('data-anio');
+            var asientos = button.getAttribute('data-asientos');
+            var foto = button.getAttribute('data-foto');
+            var precio_dia = button.getAttribute('data-precio_dia');
+            var combustible = button.getAttribute('data-combustible');
+            var gps = button.getAttribute('data-gps');
+            var seguro = button.getAttribute('data-seguro');
+            var vin = button.getAttribute('data-vin');
+
+            // Referencias a inputs
+            var modalId = editModal.querySelector('#edit_idvehiculo');
+            var modalmarca = editModal.querySelector('#edit_marca');
+            var modalmodelo = editModal.querySelector('#edit_modelo');
+            var modalcolor = editModal.querySelector('#edit_color');
+            var modalplaca = editModal.querySelector('#edit_placa');
+            var modalanio = editModal.querySelector('#edit_anio');
+            var modalasientos = editModal.querySelector('#edit_asientos');
+            var modalfoto = editModal.querySelector('#edit_foto_actual');
+            var modalprecio_dia = editModal.querySelector('#edit_precio_dia');
+            var modalcombustible = editModal.querySelector('#edit_combustible');
+            var modalgps = editModal.querySelector('#edit_gps');
+            var modalseguro = editModal.querySelector('#edit_seguro');
+            var modalvin = editModal.querySelector('#edit_vin');
+
+            var ubicacionSelect = editModal.querySelector('#ubicacion_dano');
+            var tipoSelect = editModal.querySelector('#tipo_dano');
+
+            // Limpiar selects
+            ubicacionSelect.value = null;
+            tipoSelect.innerHTML = '<option value="">Seleccione tipo de daño</option>';
+
+            // Traer todos los daños del vehículo
+            fetch('obtener_danos.php?id_vehiculo=' + id)
+                .then(res => res.json())
+                .then(data => {
+                    // Marcar las ubicaciones existentes
+                    for (let i = 0; i < ubicacionSelect.options.length; i++) {
+                        if (data.some(d => d.ubicacion_dano === ubicacionSelect.options[i].value)) {
+                            ubicacionSelect.options[i].selected = true;
                         }
-                    }, 300);
-                    
-                } else {
-                    showNotification(data.message || 'Error al eliminar el vehículo', 'error');
-                }
-                
-                vehicleToDelete = null;
-            })
-            .catch(error => {
-                document.querySelector('.loading-spinner').style.display = 'none';
-                showNotification('Error al eliminar el vehículo', 'error');
-                console.error('Error:', error);
-                vehicleToDelete = null;
-            });
-        }
-        
-        // Función para ver detalles completos del vehículo
-        
-        
-        // Event listener para confirmación de eliminación
-       
-        
-        // Validación del formulario
-       
-        
-        // Animaciones al cargar
-      
-        
-        // Preview de imagen en el modal
-      
-
-
-var editModal = document.getElementById('ModalEditarVehiculo');
-
-editModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget;
-
-    // Tomar atributos del botón
-    var id = button.getAttribute('data-id');
-    var marca = button.getAttribute('data-marca');
-    var modelo = button.getAttribute('data-modelo');
-    var color = button.getAttribute('data-color');
-    var placa = button.getAttribute('data-placa');
-    var anio = button.getAttribute('data-anio');
-    var asientos = button.getAttribute('data-asientos');
-    var foto = button.getAttribute('data-foto');
-    var precio_dia = button.getAttribute('data-precio_dia');
-    var combustible = button.getAttribute('data-combustible');
-    var gps = button.getAttribute('data-gps');
-    var seguro = button.getAttribute('data-seguro');
-    var vin = button.getAttribute('data-vin');
-
-    // Referencias a inputs
-    var modalId = editModal.querySelector('#edit_idvehiculo');
-    var modalmarca = editModal.querySelector('#edit_marca');
-    var modalmodelo = editModal.querySelector('#edit_modelo');
-    var modalcolor = editModal.querySelector('#edit_color');
-    var modalplaca = editModal.querySelector('#edit_placa');
-    var modalanio = editModal.querySelector('#edit_anio');
-    var modalasientos = editModal.querySelector('#edit_asientos');
-    var modalfoto = editModal.querySelector('#edit_foto_actual');
-    var modalprecio_dia = editModal.querySelector('#edit_precio_dia');
-    var modalcombustible = editModal.querySelector('#edit_combustible');
-    var modalgps = editModal.querySelector('#edit_gps');
-    var modalseguro = editModal.querySelector('#edit_seguro');
-    var modalvin = editModal.querySelector('#edit_vin');
-
-    var ubicacionSelect = editModal.querySelector('#ubicacion_dano');
-    var tipoSelect = editModal.querySelector('#tipo_dano');
-
-    // Limpiar selects
-    ubicacionSelect.value = null;
-    tipoSelect.innerHTML = '<option value="">Seleccione tipo de daño</option>';
-
-    // Traer todos los daños del vehículo
-    fetch('obtener_danos.php?id_vehiculo=' + id) // <-- CORREGIDO: id
-        .then(res => res.json())
-        .then(data => {
-            // Marcar las ubicaciones existentes
-            for (let i = 0; i < ubicacionSelect.options.length; i++) {
-                if (data.some(d => d.ubicacion_dano === ubicacionSelect.options[i].value)) {
-                    ubicacionSelect.options[i].selected = true;
-                }
-            }
-
-            // Traer todos los tipos de daño posibles (de todas las ubicaciones)
-            fetch('obtener_tipos.php?ubicaciones=' + encodeURIComponent(JSON.stringify(
-                Array.from(ubicacionSelect.selectedOptions).map(o => o.value)
-            )))
-            .then(res => res.json())
-            .then(tipos => {
-                tipos.forEach(tipo => {
-                    let opt = document.createElement('option');
-                    opt.value = tipo.tipo_dano;
-                    opt.text = tipo.tipo_dano;
-
-                    // Seleccionar si ya existe en los daños del vehículo
-                    if(data.some(d => d.tipo_dano === tipo.tipo_dano && d.ubicacion_dano === tipo.ubicacion_dano)){
-                        opt.selected = true;
                     }
 
-                    tipoSelect.appendChild(opt);
-                });
-            });
-        });
+                    // Traer todos los tipos de daño posibles (de todas las ubicaciones)
+                    fetch('obtener_tipos.php?ubicaciones=' + encodeURIComponent(JSON.stringify(
+                        Array.from(ubicacionSelect.selectedOptions).map(o => o.value)
+                    )))
+                    .then(res => res.json())
+                    .then(tipos => {
+                        tipos.forEach(tipo => {
+                            let opt = document.createElement('option');
+                            opt.value = tipo.tipo_dano;
+                            opt.text = tipo.tipo_dano;
 
-    // Mostrar preview de foto
-    var preview = document.getElementById('preview_foto');
-    if (foto && foto !== '') {
-        preview.src = '../FotosSubidas/' + foto;
-        preview.style.display = 'block';
-    } else {
-        preview.style.display = 'none';
-    }
+                            // Seleccionar si ya existe en los daños del vehículo
+                            if(data.some(d => d.tipo_dano === tipo.tipo_dano && d.ubicacion_dano === tipo.ubicacion_dano)){
+                                opt.selected = true;
+                            }
 
-    // Asignar valores
-    modalId.value = id;
-    modalmarca.value = marca;
-    modalmodelo.value = modelo;
-    modalcolor.value = color;
-    modalplaca.value = placa;
-    modalanio.value = anio;
-    modalasientos.value = asientos;
-    modalfoto.value = foto;
-    modalprecio_dia.value = precio_dia;
-    modalcombustible.value = combustible;
-    modalgps.value = gps;
-    modalseguro.value = seguro;
-    modalvin.value = vin;
-});
-
-
-        function confirmDelete(id) {
-        if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
-            window.location.href = 'eliminar_vehiculo.php?id_vehiculo=' + id;
-        }
-    }
-
-
-
-
-
-
-            document.getElementById('ubicacion_dano').addEventListener('change', function() {
-                var ubicacion = this.value;
-                var tipoSelect = document.getElementById('tipo_dano');
-
-                // Limpiamos las opciones anteriores
-                tipoSelect.innerHTML = '<option value="">Seleccione tipo de daño</option>';
-
-                if(ubicacion) {
-                    // Llamada AJAX a PHP que devuelve los tipos de daño según la ubicación
-                    fetch('get_tipos_dano.php?ubicacion=' + encodeURIComponent(ubicacion))
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(function(tipo) {
-                            var option = document.createElement('option');
-                            option.value = tipo;
-                            option.text = tipo;
-                            tipoSelect.add(option);
+                            tipoSelect.appendChild(opt);
                         });
                     });
-                }
+                });
+
+            // Mostrar preview de foto
+            var preview = document.getElementById('preview_foto');
+            if (foto && foto !== '') {
+                preview.src = '../FotosSubidas/' + foto;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+
+            // Asignar valores
+            modalId.value = id;
+            modalmarca.value = marca;
+            modalmodelo.value = modelo;
+            modalcolor.value = color;
+            modalplaca.value = placa;
+            modalanio.value = anio;
+            modalasientos.value = asientos;
+            modalfoto.value = foto;
+            modalprecio_dia.value = precio_dia;
+            modalcombustible.value = combustible;
+            modalgps.value = gps;
+            modalseguro.value = seguro;
+            modalvin.value = vin;
+        });
+
+        function confirmDelete(id) {
+            if (confirm("¿Está seguro de que desea eliminar este vehículo?")) {
+                window.location.href = 'eliminar_vehiculo.php?id_vehiculo=' + id;
+            }
+        }
+
+        // Script para manejar ubicaciones y tipos de daño en el modal de agregar
+        document.getElementById('ubicacion_dano').addEventListener('change', function() {
+            var ubicacion = this.value;
+            var tipoSelect = document.getElementById('tipo_dano');
+
+            // Limpiamos las opciones anteriores
+            tipoSelect.innerHTML = '<option value="">Seleccione tipo de daño</option>';
+
+            if(ubicacion) {
+                // Llamada AJAX a PHP que devuelve los tipos de daño según la ubicación
+                fetch('get_tipos_dano.php?ubicacion=' + encodeURIComponent(ubicacion))
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(function(tipo) {
+                        var option = document.createElement('option');
+                        option.value = tipo;
+                        option.text = tipo;
+                        tipoSelect.add(option);
+                    });
+                });
+            }
+        });
+
+        // Animaciones al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aplicar animaciones escalonadas a las tarjetas
+            const cards = document.querySelectorAll('.vehicle-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
             });
-
-
+        });
     </script>
 </body>
 </html>
-
 
 sc
