@@ -1,11 +1,14 @@
 :root {
-            --primary-color: #3b82f6;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #06b6d4;
+            --primary-color: #ffba16;
+            --success-color: #d8d8d8;
+            --warning-color: #000000;
+            --danger-color: #ffffff;
+            --info-color: #2ba81e;
             --dark-color: #1f2937;
         }
+
+
+
         
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -23,7 +26,7 @@
         }
         
         .vehicle-card {
-            background: white;
+            background: rgb(218, 38, 38);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
