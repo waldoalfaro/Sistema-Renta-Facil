@@ -4,7 +4,6 @@ session_start();
 
 include '../conexion.php';
 include '../seguridad.php';
-include '../menu.php';
 
 $sql = "SELECT * FROM vehiculos ORDER BY id_vehiculo DESC";
 $resultado = $conn->query($sql);
@@ -23,11 +22,13 @@ $resultadoTipos = $conn->query($sqlTipos);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="vehiculo.css">
 
 </head>
 <body>
+    <?php include '../menu.php'; ?>
+
+
     <div class="p-4 sm:ml-64">
         <div class="main-container">
             
@@ -196,7 +197,7 @@ $resultadoTipos = $conn->query($sqlTipos);
                                         data-combustible="<?= $row["combustible"] ?>" data-gps="<?= $row["gps"] ?>" data-seguro="<?= $row["seguro"] ?>" data-vin="<?= $row["vin"] ?>">
                                         <i class="fa-solid fa-edit"></i> Editar
                                 </a>
-                                <a href="#" class="btn-action btn-delete" onclick="confirmDelete(<?= $row['id_vehiculo'] ?>)"> 
+                                <a href="#"  class="btn-action btn-delete" onclick="confirmDelete(<?= $row['id_vehiculo'] ?>)"> 
                                     <i class="fa-solid fa-trash"></i> Eliminar
                                 </a>
                             </div>
@@ -534,6 +535,7 @@ $resultadoTipos = $conn->query($sqlTipos);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
+    
     <script>
         // Función para cambiar estado con efectos visuales
         function cambiarEstado(idVehiculo, nuevoEstado) {
@@ -680,6 +682,24 @@ $resultadoTipos = $conn->query($sqlTipos);
                 window.location.href = 'eliminar_vehiculo.php?id_vehiculo=' + id;
             }
         }
+
+
+                    document.getElementById('logout-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                alertify.confirm('Confirmar Cierre de Sesión', 
+                    '¿Estás seguro de que deseas cerrar sesión?', 
+                    function() {
+                        alertify.success('Cerrando sesión...');
+                        setTimeout(() => {
+                            window.location.href = '/Sistema-Renta-Facil/salir.php';
+                        }, 1000);
+                    }, 
+                    function() {
+                        alertify.error('Operación cancelada');
+                    }
+                );
+            });
 
         // Script para manejar ubicaciones y tipos de daño en el modal de agregar
         document.getElementById('ubicacion_dano').addEventListener('change', function() {
