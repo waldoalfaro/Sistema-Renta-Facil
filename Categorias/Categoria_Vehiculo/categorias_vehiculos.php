@@ -1,7 +1,7 @@
 <?php 
 
-include '../conexion.php';
-include '../seguridad.php';
+include '../../conexion.php';
+include '../../seguridad.php';
 
 $sql = "SELECT * FROM categorias";
 $resultado = $conn->query($sql);
@@ -18,11 +18,11 @@ $resultado = $conn->query($sql);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="cate.css">
+    <link rel="stylesheet" href="../cate.css">
 
 </head>
 <body>
-    <?php include '../menu.php'; ?>
+    <?php include '../../menu.php'; ?>
 
     <div class="p-4 sm:ml-64">
 
@@ -33,7 +33,7 @@ $resultado = $conn->query($sql);
                 <p class="page-subtitle">Modulo para agregar ó editar categorias..</p>
             </div>
 
-            <a href="#" class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#ModalRegUsuario">
+            <a href="#" class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#ModalRegCategoria">
                 <i class="fa-solid fa-car-plus"></i> Agregar Categoria
             </a>
 
@@ -44,7 +44,9 @@ $resultado = $conn->query($sql);
                         <th>N</th>
                         <th>Nombre</th>
                         <th>Descripcion</th>
+                         <?php if ($tipo == 'Administrador'): ?>
                         <th colspan="2">Acciones</th>
+                         <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,15 +58,20 @@ $resultado = $conn->query($sql);
                             <td><?= $contador++ ?></td>
                         <td><?= $row['nombre_categoria']  ?></td>
                         <td><?= $row['descripcion']  ?></td>
+                        <?php if ($tipo == 'Administrador'): ?>
                         <td>
-                            <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEditarUsuario" 
+                            
+                            <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEditCategoria" 
                                 data-id_categoria="<?= $row["id_categoria"] ?>" data-nombre_categoria="<?= $row["nombre_categoria"] ?>" data-descripcion="<?= $row["descripcion"] ?>" 
                                 >
                                 <i class="fa-solid fa-edit"></i> Editar
-                                </a> |
+                                </a>
+                                 |
                             <a href="#" class="btn btn-danger btn-sm" onclick="confirmDelete(<?= $row['id_categoria'] ?>)"> 
                                 <i class="fa-solid fa-trash"></i>Eliminar</a>
+                                
                         </td>
+                        <?php endif; ?>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
@@ -72,7 +79,7 @@ $resultado = $conn->query($sql);
             </div> 
 
 
-            <div class="modal fade" id="ModalRegUsuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="ModalRegCategoria" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -98,7 +105,7 @@ $resultado = $conn->query($sql);
             </div>
 
 
-            <div class="modal fade" id="ModalEditarUsuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="ModalEditCategoria" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -138,7 +145,7 @@ $resultado = $conn->query($sql);
 
 
     <script>
-        var editModal = document.getElementById('ModalEditarUsuario');
+        var editModal = document.getElementById('ModalEditCategoria');
 
 editModal.addEventListener('show.bs.modal', function (event) {
     var button = event.relatedTarget; // Botón que abrió el modal
@@ -151,13 +158,21 @@ editModal.addEventListener('show.bs.modal', function (event) {
     // Referenciar inputs dentro del modal
     var modalId = editModal.querySelector('#edit_idcategoria');
     var modalNombre_categoria = editModal.querySelector('#edit_nombre_categoria');
-    var modaldescripcion = editModal.querySelector('#edit_descripcion');
+    var modalDescripcion = editModal.querySelector('#edit_descripcion');
 
     // Asignar valores
     modalId.value = id;
     modalNombre_categoria.value = nombre_categoria;
-    modaldescripcion.value = descripcion;
+    modalDescripcion.value = descripcion;
 });
+
+
+function confirmDelete(id) {
+        if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
+            window.location.href = 'Eliminar_categoria.php?id_cate=' + id;
+        }
+    }
+
     </script>
 </body>
 </html>
