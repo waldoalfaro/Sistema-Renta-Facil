@@ -65,11 +65,7 @@ $usuario = $_SESSION['usuario'] ?? "Invitado";
                     <p class="card-description">Gestiona el inventario completo de vehículos disponibles para renta</p>
                 </div>
 
-                <div class="dashboard-card" onclick="window.location.href='clientes.php'">
-                    <div class="icon icon-clients"></div>
-                    <h3 class="card-title">Clientes</h3>
-                    <p class="card-description">Administra la información de todos los clientes registrados</p>
-                </div>
+                
 
                 <div class="dashboard-card" onclick="window.location.href='reservaciones.php'">
                     <div class="icon icon-reservations"></div>

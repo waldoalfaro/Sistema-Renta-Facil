@@ -1,9 +1,9 @@
 <?php 
 
-include "../conexion.php";
+include "../../conexion.php"; 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $idusuario = $_POST['id_categoria']; 
+    $idcategoria = $_POST['id_categoria']; 
     $nombre_categoria = $_POST['nombre_categoria'];
     $descripcion = $_POST['descripcion'];
 

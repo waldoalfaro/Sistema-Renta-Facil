@@ -1,3 +1,12 @@
+<?php
+
+
+
+$tipo = $_SESSION['tipo']; 
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,6 +36,7 @@
          <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Renta Facil</span>
       </a>
       <ul class="space-y-2 font-medium">
+         <?php if ($tipo == 'Administrador'): ?>
          <li>
             <a href="/Sistema-Renta-Facil/Usuarios/Usuarios.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -35,6 +45,7 @@
                <span class="flex-1 ms-3 whitespace-nowrap">Usuarios</span>
              </a>
          </li>
+          <?php endif; ?>
          <li>
             <a href="/Sistema-Renta-Facil/Vehiculos/Vehiculos.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -65,13 +76,13 @@
          <!-- Submenú (oculto por defecto) -->
          <ul id="submenu-categorias" class="hidden py-2 space-y-1 pl-6">
             <li>
-               <a href="/Sistema-Renta-Facil/Categorias/categorias_usuarios.php"
+               <a href="/Sistema-Renta-Facil/Categorias/Categoria_Usuarios/categorias_usuarios.php"
                   class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                   Categorías de Usuarios
                </a>
             </li>
             <li>
-               <a href="/Sistema-Renta-Facil/Categorias/categorias_vehiculos.php"
+               <a href="/Sistema-Renta-Facil/Categorias/Categoria_Vehiculo/categorias_vehiculos.php"
                   class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                   Categorías de Vehículos
                </a>

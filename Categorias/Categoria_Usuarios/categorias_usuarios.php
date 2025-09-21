@@ -1,7 +1,7 @@
 <?php 
 
-include '../conexion.php';
-include '../seguridad.php';
+include '../../conexion.php';
+include '../../seguridad.php';
 
 ?>
 
@@ -15,11 +15,11 @@ include '../seguridad.php';
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="cate.css">
+    <link rel="stylesheet" href="../cate.css">
 
 </head>
 <body>
-    <?php include '../menu.php'; ?>
+    <?php include '../../menu.php'; ?>
 
     <div class="p-4 sm:ml-64">
 
