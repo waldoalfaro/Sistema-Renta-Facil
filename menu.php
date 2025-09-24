@@ -76,19 +76,13 @@ $tipo = $_SESSION['tipo'];
          <!-- Submenú (oculto por defecto) -->
          <ul id="submenu-categorias" class="hidden py-2 space-y-1 pl-6">
             <li>
-               <a href="/Sistema-Renta-Facil/Categorias/Categoria_Usuarios/categorias_usuarios.php"
-                  class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                  Categorías de Usuarios
-               </a>
-            </li>
-            <li>
                <a href="/Sistema-Renta-Facil/Categorias/Categoria_Vehiculo/categorias_vehiculos.php"
                   class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                   Categorías de Vehículos
                </a>
             </li>
             <li>
-               <a href="/Sistema-Renta-Facil/Categorias/categorias_danos.php"
+               <a href="/Sistema-Renta-Facil/Categorias/categoria_Danos/Danos.php"
                   class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                   Categorías de Daños
                </a>

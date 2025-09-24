@@ -1,17 +1,35 @@
 <?php
-
 session_start();
 
 include '../conexion.php';
 include '../seguridad.php';
 
-$sql = "SELECT * FROM vehiculos ORDER BY id_vehiculo DESC";
+// 🔎 Recibir filtros del formulario (si existen)
+$categoria = $_GET['categoria'] ?? '';
+$placa = $_GET['placa'] ?? '';
+
+// 🔎 Consulta dinámica de vehículos
+$sql = "SELECT v.*, c.nombre_categoria 
+        FROM vehiculos v
+        INNER JOIN categorias c ON v.id_categoria = c.id_categoria
+        WHERE 1=1";
+
+if ($placa !== '') {
+    $sql .= " AND v.placa LIKE '%" . $conn->real_escape_string($placa) . "%'";
+}
+
+if ($categoria !== '') {
+    $sql .= " AND v.id_categoria = " . intval($categoria);
+}
+
+$sql .= " ORDER BY v.id_vehiculo DESC";
 $resultado = $conn->query($sql);
 
+// 🔎 Consulta de categorías para llenar el select
 $sqlTipos = "SELECT * FROM categorias";
 $resultadoTipos = $conn->query($sqlTipos);
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -49,12 +67,46 @@ $resultadoTipos = $conn->query($sqlTipos);
                 unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']); 
             endif; 
             ?>
-            
-            <div class="text-center">
-                <button class="add-vehicle-btn" data-bs-toggle="modal" data-bs-target="#ModalRegVehiculo">
-                    <i class="fas fa-plus-circle"></i> Agregar Nuevo Vehículo
-                </button>
-            </div>
+
+            <form class="max-w-6xl mx-auto mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full md:w-auto">
+        <!-- Filtro por categoría -->
+        <select name="categoria"
+            class="py-3 px-4 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <option value="">Todas las categorías</option>
+            <?php
+            $cats = $conn->query("SELECT id_categoria, nombre_categoria FROM categorias");
+            while ($c = $cats->fetch_assoc()) {
+                $selected = ($_GET['categoria'] ?? '') == $c['id_categoria'] ? 'selected' : '';
+                echo "<option value='".$c['id_categoria']."' $selected>".$c['nombre_categoria']."</option>";
+            }
+            ?>
+        </select>
+
+        <!-- Campo búsqueda por placa -->
+        <div class="relative w-full md:w-64">
+            <input type="search" name="placa"
+                value="<?= htmlspecialchars($_GET['placa'] ?? '') ?>"
+                class="block w-full py-3 px-4 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                placeholder="Buscar por placa..." />
+
+            <button type="submit"
+                class="absolute right-1 top-1/2 -translate-y-1/2 px-4 py-2 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+                Buscar
+            </button>
+        </div>
+    </div>
+
+    <!-- Botón agregar vehículo -->
+    <button type="button"
+        class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 text-lg font-medium transition flex items-center gap-2"
+        data-bs-toggle="modal" data-bs-target="#ModalRegVehiculo">
+        <i class="fas fa-plus-circle"></i> Agregar Vehículo
+    </button>
+    <a href="vehiculos_eliminados.php"  class="btn-action btn-delete" > 
+                                    <i class="fa-solid fa-trash"></i> Vehiculos eliminados 
+                                </a>
+</form>     
             
             <div class="row g-4">
                 <?php 
@@ -100,7 +152,7 @@ $resultadoTipos = $conn->query($sqlTipos);
                             <!-- Precio destacado -->
                             <div class="text-center mb-3">
                                 <div class="price-highlight">
-                                    <i class="fas fa-dollar-sign"></i> $<?= htmlspecialchars($row['precio_dia']) ?> / día
+                                    <i class="fas fa-dollar-sign"></i> <?= htmlspecialchars($row['precio_dia']) ?> / día
                                 </div>
                             </div>
                             
@@ -152,14 +204,7 @@ $resultadoTipos = $conn->query($sqlTipos);
                                     </div>
                                 </div>
                                 
-                                <!-- Cuarta fila - VIN en ancho completo -->
-                                <div class="detail-row">
-                                    <div class="detail-item detail-full-width">
-                                        <i class="fas fa-barcode detail-icon"></i>
-                                        <span class="detail-label">VIN</span>
-                                        <span class="detail-value"><?= htmlspecialchars($row['vin']) ?></span>
-                                    </div>
-                                </div>
+                               
                                 
                                 <!-- Quinta fila - Daños en ancho completo -->
                                 <div class="detail-row">
