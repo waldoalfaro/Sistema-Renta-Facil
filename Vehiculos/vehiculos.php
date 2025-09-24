@@ -538,25 +538,7 @@ $resultadoTipos = $conn->query($sqlTipos);
                             <label for="edit_vin" class="form-label">Vin</label>
                             <input type="text" class="form-control" id="edit_vin" name="vin" required>
                         </div>
-                        <div class="col-md-6">
-                            <label>Ubicación del daño</label>
-                            <select id="ubicacion_dano" name="ubicacion_dano[]" multiple class="form-control">
-                                <option value="">Seleccione ubicación</option>
-                                <?php
-                                $queryUbicaciones = $conn->query("SELECT DISTINCT ubicacion_dano FROM categorias_dano ORDER BY ubicacion_dano");
-                                while($row = $queryUbicaciones->fetch_assoc()):
-                                ?>
-                                    <option value="<?= $row['ubicacion_dano'] ?>"><?= $row['ubicacion_dano'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label>Tipo de daño</label>
-                            <select id="tipo_dano" name="tipo_dano[]" multiple class="form-control">
-                                <option value="">Seleccione tipo de daño</option>
-                            </select>
-                        </div>
+                        
 
                         <input type="hidden" name="foto_actual" id="edit_foto_actual">
 
@@ -658,45 +640,9 @@ $resultadoTipos = $conn->query($sqlTipos);
             var modalseguro = editModal.querySelector('#edit_seguro');
             var modalvin = editModal.querySelector('#edit_vin');
 
-            var ubicacionSelect = editModal.querySelector('#ubicacion_dano');
-            var tipoSelect = editModal.querySelector('#tipo_dano');
+            
 
-            // Limpiar selects
-            ubicacionSelect.value = null;
-            tipoSelect.innerHTML = '<option value="">Seleccione tipo de daño</option>';
-
-            // Traer todos los daños del vehículo
-            fetch('obtener_danos.php?id_vehiculo=' + id)
-                .then(res => res.json())
-                .then(data => {
-                    // Marcar las ubicaciones existentes
-                    for (let i = 0; i < ubicacionSelect.options.length; i++) {
-                        if (data.some(d => d.ubicacion_dano === ubicacionSelect.options[i].value)) {
-                            ubicacionSelect.options[i].selected = true;
-                        }
-                    }
-
-                    // Traer todos los tipos de daño posibles (de todas las ubicaciones)
-                    fetch('obtener_tipos.php?ubicaciones=' + encodeURIComponent(JSON.stringify(
-                        Array.from(ubicacionSelect.selectedOptions).map(o => o.value)
-                    )))
-                    .then(res => res.json())
-                    .then(tipos => {
-                        tipos.forEach(tipo => {
-                            let opt = document.createElement('option');
-                            opt.value = tipo.tipo_dano;
-                            opt.text = tipo.tipo_dano;
-
-                            // Seleccionar si ya existe en los daños del vehículo
-                            if(data.some(d => d.tipo_dano === tipo.tipo_dano && d.ubicacion_dano === tipo.ubicacion_dano)){
-                                opt.selected = true;
-                            }
-
-                            tipoSelect.appendChild(opt);
-                        });
-                    });
-                });
-
+                   
             // Mostrar preview de foto
             var preview = document.getElementById('preview_foto');
             if (foto && foto !== '') {
