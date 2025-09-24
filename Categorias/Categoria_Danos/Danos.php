@@ -203,7 +203,7 @@ $resultado = $conn->query($sql);
 
     function confirmDelete(id) {
         if (confirm("¿Está seguro de eliminar este registro?")) {
-            window.location.href = 'eliminar_dano.php?id=' + id;
+            window.location.href = 'eliminar_danos.php?id=' + id;
         }
     }
     </script>
