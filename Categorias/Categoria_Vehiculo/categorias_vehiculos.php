@@ -18,6 +18,7 @@ $resultado = $conn->query($sql);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../cate.css">
 
 </head>
@@ -67,7 +68,7 @@ $resultado = $conn->query($sql);
                                 <i class="fa-solid fa-edit"></i> Editar
                                 </a>
                                  |
-                            <a href="#" class="btn btn-danger btn-sm" onclick="confirmDelete(<?= $row['id_categoria'] ?>)"> 
+                            <a href="#" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirmarEliminacion(<?= $row['id_categoria'] ?>)"> 
                                 <i class="fa-solid fa-trash"></i>Eliminar</a>
                                 
                         </td>
@@ -142,7 +143,17 @@ $resultado = $conn->query($sql);
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
+<script>
+Swal.fire({
+    title: 'Usuario eliminado',
+    text: 'El usuario fue eliminado correctamente.',
+    icon: 'success',
+    confirmButtonColor: '#3085d6',
+    confirmButtonText: 'Aceptar'
+});
+</script>
+<?php endif; ?>
 
     <script>
         var editModal = document.getElementById('ModalEditCategoria');
@@ -167,11 +178,41 @@ editModal.addEventListener('show.bs.modal', function (event) {
 });
 
 
-function confirmDelete(id) {
-        if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
-            window.location.href = 'Eliminar_categoria.php?id_cate=' + id;
+
+
+
+   function confirmarEliminacion(id) {
+    Swal.fire({
+        title: '¿Eliminar categoría de vehículos?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('Eliminar_categoria.php?id_cate=' + id)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        Swal.fire('¡Eliminado!', data.message, 'success').then(() => {
+                            location.reload(); // recarga la tabla
+                        });
+                    } else {
+                        Swal.fire('No se puede eliminar', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error', 'Hubo un problema en la eliminación.', 'error');
+                    console.error(error);
+                });
         }
-    }
+    });
+}
+
+
 
     </script>
 </body>

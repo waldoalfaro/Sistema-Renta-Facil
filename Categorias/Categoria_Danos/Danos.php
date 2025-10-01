@@ -37,6 +37,7 @@ $resultado = $conn->query($sql);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../cate.css">
 
 </head>
@@ -82,7 +83,7 @@ $resultado = $conn->query($sql);
                             <?php if ($tipo == 'Administrador'): ?>
                             <td>
                                 
-                                <a href="#" class="btn btn-danger btn-sm" onclick="confirmDelete(<?= $row['id_categoria_dano'] ?>)">
+                                <a href="#" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirmarEliminacion(<?= $row['id_categoria_dano'] ?>)">
                                     <i class="fa-solid fa-trash"></i> Eliminar
                                 </a>
                             </td>
@@ -189,7 +190,17 @@ $resultado = $conn->query($sql);
     </div>  
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
+<script>
+Swal.fire({
+    title: 'Usuario eliminado',
+    text: 'El usuario fue eliminado correctamente.',
+    icon: 'success',
+    confirmButtonColor: '#3085d6',
+    confirmButtonText: 'Aceptar'
+});
+</script>
+<?php endif; ?>
     <script>
     var editModal = document.getElementById('ModalEditDano');
     editModal.addEventListener('show.bs.modal', function (event) {
@@ -201,11 +212,23 @@ $resultado = $conn->query($sql);
         document.getElementById('edit_estado').value = button.getAttribute('data-estado');
     });
 
-    function confirmDelete(id) {
-        if (confirm("¿Está seguro de eliminar este registro?")) {
+    
+    function confirmarEliminacion(id) {
+    Swal.fire({
+        title: '¿Eliminar categoria de Daños?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
             window.location.href = 'eliminar_danos.php?id=' + id;
         }
-    }
+    });
+}
     </script>
 </body>
 </html>

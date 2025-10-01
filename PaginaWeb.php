@@ -1,3 +1,11 @@
+<?php
+include 'conexion.php';
+
+
+$sql = "SELECT * FROM vehiculos";
+$resultado = $conn->query($sql)
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -5,7 +13,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Renta Fácil</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="pagina.css">
@@ -18,7 +27,7 @@
     <nav class="navbar">
       <div class="logo" style="display: flex; align-items: center;">
         <!-- Solo el logo en imagen -->
-        <img src="foto/logo1.jpg" alt="Logo de Renta Fácil" style="width: 120px; height: auto;">
+        <img src="logo1.jpg" alt="Logo de Renta Fácil" style="width: 120px; height: auto;">
       </div>
 
       <ul class="nav-menu">
@@ -32,14 +41,64 @@
     </nav>
   </header>
 
+  
   <!-- Sección de inicio -->
   <section id="inicio" class="hero">
     <div class="hero-content">
       <h1></h1>
       
-      <button class="btn-primary">Ver Vehículos</button>
+      
     </div>
   </section> 
+
+
+<section id="vehiculos" class="vehicles-section py-12 bg-gray-100">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">Vehículos </h2>
+    <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <?php while ($row = $resultado->fetch_assoc()): ?>
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+        
+        <!-- Imagen -->
+        <div class="h-48 w-full relative">
+          <?php if (!empty($row['foto'])): ?>
+            <img src="FotosSubidas/<?= htmlspecialchars($row['foto']) ?>" 
+                 alt="<?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>" 
+                 class="w-full h-full object-cover">
+          <?php else: ?>
+            <div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 text-4xl">
+              <i class="fas fa-car"></i>
+            </div>
+          <?php endif; ?>
+          
+          
+        </div>
+
+        <!-- Información -->
+        <div class="p-5">
+          <h3 class="text-xl font-bold text-gray-800 mb-2"><?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?></h3>
+          <p class="text-gray-600 mb-2 flex items-center gap-2">
+            <i class="fas fa-id-card"></i> <?= htmlspecialchars($row['placa']) ?>
+            <i class="fas fa-calendar-alt ml-4"></i> <?= htmlspecialchars($row['anio']) ?>
+          </p>
+
+          <div class="flex justify-between items-center mt-4">
+            <span class="text-lg font-semibold text-gray-800">$<?= number_format($row['precio_dia'], 2) ?>/día</span>
+            <a href="Reservas/reservaciones.php?id=<?= $row['id_vehiculo'] ?>" 
+              class="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition">
+              Reservar
+            </a>
+          
+          </div>
+          <div class="flex justify-between items-center mt-4">
+            <a href="#">Dale click a reservas para ver mas detalles del vehiculo y poder reservas...</a>
+          </div>
+        </div>
+      </div>
+      <?php endwhile; ?>
+    </div>
+  </div>
+</section>
 
 
   
