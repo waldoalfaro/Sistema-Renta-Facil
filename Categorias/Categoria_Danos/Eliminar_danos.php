@@ -15,7 +15,7 @@ if (isset($_GET['id'])){
     }
 
     // Redirigir a la lista de usuarios
-    header('Location: Danos.php');
+    header('Location: Danos.php?eliminado=1');
     exit();
 
 }

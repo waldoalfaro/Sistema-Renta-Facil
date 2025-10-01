@@ -15,7 +15,7 @@ if (isset($_GET['id_vehiculo'])){
     }
 
     // Redirigir a la lista de usuarios
-    header('Location: vehiculos.php');
+    header('Location: vehiculos.php?eliminado=1');
     exit();
 
 }

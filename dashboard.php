@@ -41,6 +41,15 @@ $usuario = $_SESSION['usuario'] ?? "Invitado";
             }
 
                 </style>
+
+
+<script>
+window.onload = function() {
+    if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+};
+</script>
 </head>
 <body>
     
@@ -67,7 +76,7 @@ $usuario = $_SESSION['usuario'] ?? "Invitado";
 
                 
 
-                <div class="dashboard-card" onclick="window.location.href='reservaciones.php'">
+                <div class="dashboard-card" onclick="window.location.href='Reservas/Reservas.php'">
                     <div class="icon icon-reservations"></div>
                     <h3 class="card-title">Reservaciones</h3>
                     <p class="card-description">Consulta y gestiona todas las reservaciones activas y pendientes</p>

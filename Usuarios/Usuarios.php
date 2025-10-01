@@ -28,10 +28,58 @@ $resultadoTipos = $conn->query($sqlTipos);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="user.css">
 
 </head>
 <body>
+<?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
+<script>
+Swal.fire({
+    title: 'Usuario eliminado',
+    text: 'El usuario fue eliminado correctamente.',
+    icon: 'success',
+    confirmButtonColor: '#3085d6',
+    confirmButtonText: 'Aceptar'
+});
+</script>
+
+<?php endif; ?>
+
+
+
+<?php if (isset($_GET['error']) && $_GET['error'] == 1): ?>
+<script>
+Swal.fire({
+    title: 'Acción no permitida',
+    text: 'No puedes eliminar tu propio usuario mientras estás conectado.',
+    icon: 'error',
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Aceptar'
+});
+</script>
+<?php endif; ?>
+
+<?php if (isset($_GET['error']) && $_GET['error'] == 2): ?>
+<script>
+Swal.fire({
+    title: 'Error',
+    text: 'Hubo un problema al eliminar el usuario.',
+    icon: 'error',
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Aceptar'
+});
+</script>
+<?php endif; ?>
+
+<script>
+window.onload = function() {
+    if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+};
+</script>
+
 
  <?php include '../menu.php'; ?>
 
@@ -72,16 +120,16 @@ $resultadoTipos = $conn->query($sqlTipos);
                <td><?= $row['usuario']  ?></td>
                <td><?= $row['correo']  ?></td>
                <td><?= $row['tipo_usuario'] ?></td>
-               <td>
-                <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEditarUsuario" 
-                       data-id="<?= $row["id_usuario"] ?>" data-nombre="<?= $row["nombre"] ?>" data-usuario="<?= $row["usuario"] ?>" 
-                       data-email="<?= $row["correo"] ?>" data-tipo="<?= $row["id_tipo"] ?>">
-                       <i class="fa-solid fa-edit"></i> Editar
-                    </a> |
-                <a href="#" class="btn btn-danger btn-sm" onclick="confirmDelete(<?= $row['id_usuario'] ?>)"> 
-                    <i class="fa-solid fa-trash"></i>Eliminar</a>
-               </td>
-            </tr>
+                <td>
+                    <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#ModalEditarUsuario" 
+                        data-id="<?= $row["id_usuario"] ?>" data-nombre="<?= $row["nombre"] ?>" data-usuario="<?= $row["usuario"] ?>" 
+                        data-email="<?= $row["correo"] ?>" data-tipo="<?= $row["id_tipo"] ?>">
+                        <i class="fa-solid fa-edit"></i> Editar
+                        </a> |
+                    <a href="#" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirmarEliminacion(<?= $row['id_usuario'] ?>)" > 
+                        <i class="fa-solid fa-trash"></i>Eliminar</a>
+                </td>
+              </tr>
         <?php endwhile; ?>
     </tbody>
 </table>
@@ -178,13 +226,14 @@ $resultadoTipos = $conn->query($sqlTipos);
             </div>
         </div>
     </div>
+    
 </div>
 
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
@@ -215,11 +264,27 @@ editModal.addEventListener('show.bs.modal', function (event) {
     modalTipo.value = tipo;
 });
 
-function confirmDelete(id) {
-        if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
+
+
+
+    function confirmarEliminacion(id) {
+    Swal.fire({
+        title: '¿Eliminar usuario?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
             window.location.href = 'eliminar.php?id_usu=' + id;
         }
-    }
+    });
+}
+
+
 
 
 </script>

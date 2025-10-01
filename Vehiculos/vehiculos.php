@@ -40,8 +40,17 @@ $resultadoTipos = $conn->query($sqlTipos);
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="vehiculo.css">
 
+
+    <script>
+window.onload = function() {
+    if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+};
+</script>
 </head>
 <body>
     <?php include '../menu.php'; ?>
@@ -242,7 +251,7 @@ $resultadoTipos = $conn->query($sqlTipos);
                                         data-combustible="<?= $row["combustible"] ?>" data-gps="<?= $row["gps"] ?>" data-seguro="<?= $row["seguro"] ?>" data-vin="<?= $row["vin"] ?>">
                                         <i class="fa-solid fa-edit"></i> Editar
                                 </a>
-                                <a href="#"  class="btn-action btn-delete" onclick="confirmDelete(<?= $row['id_vehiculo'] ?>)"> 
+                                <a href="#"  class="btn-action btn-delete" onclick="event.preventDefault(); confirmarEliminacion(<?= $row['id_vehiculo'] ?>)"> 
                                     <i class="fa-solid fa-trash"></i> Eliminar
                                 </a>
                             </div>
@@ -444,12 +453,19 @@ $resultadoTipos = $conn->query($sqlTipos);
                                 </select>
 
                             </div>
+                            <div class="col-12 mt-3">
+                                <h5>Selecciones:</h5>
+                                <ul id="lista_selecciones" class="list-group"></ul>
+                            </div>
                             <div class="col-12">
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-camera text-primary"></i> Foto del Vehículo
                                 </label>
-                                <input type="file" class="form-control" name="foto" accept="image/*">
+
+
+                                <input type="file" class="form-control" name="fotos[]" accept="image/*" multiple>
                                 <small class="text-muted">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+
                             </div>
                         </div>
 
@@ -562,6 +578,17 @@ $resultadoTipos = $conn->query($sqlTipos);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
+    <?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
+    <script>
+    Swal.fire({
+        title: 'Usuario eliminado',
+        text: 'El usuario fue eliminado correctamente.',
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Aceptar'
+    });
+    </script>
+    <?php endif; ?>
     
     <script>
         // Función para cambiar estado con efectos visuales
@@ -668,29 +695,27 @@ $resultadoTipos = $conn->query($sqlTipos);
             modalvin.value = vin;
         });
 
-        function confirmDelete(id) {
-            if (confirm("¿Está seguro de que desea eliminar este vehículo?")) {
-                window.location.href = 'eliminar_vehiculo.php?id_vehiculo=' + id;
-            }
+        
+
+
+        function confirmarEliminacion(id) {
+            Swal.fire({
+                title: '¿Eliminar Vehiculo?',
+                text: 'Esta acción no se puede deshacer.',
+                text: 'Puedes ver el historial de los vehiculos eliminados',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'eliminar_vehiculo.php?id_vehiculo=' + id;
+                }
+            });
         }
 
-
-                    document.getElementById('logout-btn').addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                alertify.confirm('Confirmar Cierre de Sesión', 
-                    '¿Estás seguro de que deseas cerrar sesión?', 
-                    function() {
-                        alertify.success('Cerrando sesión...');
-                        setTimeout(() => {
-                            window.location.href = '/Sistema-Renta-Facil/salir.php';
-                        }, 1000);
-                    }, 
-                    function() {
-                        alertify.error('Operación cancelada');
-                    }
-                );
-            });
 
         // Script para manejar ubicaciones y tipos de daño en el modal de agregar
         document.getElementById('ubicacion_dano').addEventListener('change', function() {
@@ -723,8 +748,35 @@ $resultadoTipos = $conn->query($sqlTipos);
                 card.style.animationDelay = `${index * 0.1}s`;
             });
         });
+
+
+
+
+document.getElementById('ubicacion_dano').addEventListener('change', mostrarLista);
+document.getElementById('tipo_dano').addEventListener('change', mostrarLista);
+
+function mostrarLista() {
+    let ubicaciones = Array.from(document.getElementById('ubicacion_dano').selectedOptions).map(o => o.value);
+    let tipos = Array.from(document.getElementById('tipo_dano').selectedOptions).map(o => o.value);
+
+    let lista = document.getElementById('lista_selecciones');
+    lista.innerHTML = ''; // limpiar antes de mostrar
+
+    ubicaciones.forEach(u => {
+        let li = document.createElement('li');
+        li.className = "list-group-item";
+        li.textContent = "Ubicación: " + u;
+        lista.appendChild(li);
+    });
+
+    tipos.forEach(t => {
+        let li = document.createElement('li');
+        li.className = "list-group-item";
+        li.textContent = "Tipo: " + t;
+        lista.appendChild(li);
+    });
+}
     </script>
 </body>
 </html>
 
-sc

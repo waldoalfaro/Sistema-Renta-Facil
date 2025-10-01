@@ -18,7 +18,7 @@ if ($resultado->num_rows === 1) {
     $fila = $resultado->fetch_assoc();
 
     if (password_verify($clave, $fila['clave'])) {
-        $_SESSION['usuario_id'] = $fila['id'];
+        $_SESSION['id_usuario'] = $fila['id_usuario'];
         $_SESSION['usuario'] = $fila['usuario'];
         $_SESSION['nombre'] = $fila['nombre'];
         $_SESSION['tipo'] = $fila['tipo_nombre'];

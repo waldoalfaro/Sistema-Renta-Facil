@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
         if ($stmt->execute()) {
-            header('Location: categorias_vehiculos.php'); // tu listado de usuarios
+            header('Location: categorias_vehiculos.php');
             exit(); 
         } else {
             echo "❌ Error al actualizar el usuario: " . $stmt->error;
