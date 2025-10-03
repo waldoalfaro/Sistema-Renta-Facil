@@ -59,12 +59,23 @@ window.onload = function() {
     <div class="p-4 sm:ml-64">
         <div class="main-container">
             
-            <div class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-car"></i> Gestión de Vehículos
-                </h1>
-                <p class="page-subtitle">Administra tu flota de vehículos de manera eficiente</p>
+            <div class="bg-gradient-to-r from-green-600 to-green-800 rounded-lg shadow-lg p-6 mb-6 fade-in">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fas fa-calendar-check"></i>
+                        Gestión de Vehículos
+                    </h1>
+                    <p class="text-blue-100 mt-2">Administra y controla todos tus vehículos</p>
+                </div>
+                <div class="hidden md:block">
+                    <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
+                        <p class="text-white text-sm">Total de vehículos</p>
+                        <p class="text-3xl font-bold text-white"><?= $resultado->num_rows ?></p>
+                    </div>
+                </div>
             </div>
+        </div>
             
             <?php if (isset($_SESSION['mensaje'])): ?>
             <div class="alert alert-<?= $_SESSION['tipo_mensaje'] === 'success' ? 'success' : ($_SESSION['tipo_mensaje'] === 'info' ? 'info' : 'danger') ?> alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
