@@ -316,6 +316,7 @@ window.onload = function() {
         </div>
     </div>
 
+    
     <!-- Modal para agregar vehículo -->
     <div class="modal fade" id="ModalRegVehiculo" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">

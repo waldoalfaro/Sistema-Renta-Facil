@@ -80,7 +80,7 @@ $resultado = $conn->query($sql);
                                 <i class="fas fa-envelope mr-2"></i>Email
                             </th>
                             <th class="px-4 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                <i class="fas fa-phone mr-2"></i>Teléfono
+                                <i class="fas fa-phone mr-2"></i>Tel
                             </th>
                             <th class="px-4 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                 <i class="fas fa-calendar-alt mr-2"></i>Inicio
@@ -166,7 +166,12 @@ $resultado = $conn->query($sql);
                                         <a href="rechar_reserva.php?id=<?= $row['id_reservacion'] ?>" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" title="Rechazar">
                                             <i class="fa-solid fa-xmark"></i>
                                         </a>
-                                        <a href="#" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" title="Enviar Email">
+                                        <a href="#"
+                                            class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" 
+                                            title="Enviar Email"
+                                            data-id="<?= $row['id_reservacion'] ?>"
+                                            data-correo="<?= htmlspecialchars($row['solicitante_correo']) ?>"
+                                            onclick="abrirModalCorreo(this)">
                                             <i class="fas fa-envelope text-sm"></i>
                                         </a>
                                         <a href="#" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" title="Realizar contrato">
@@ -187,6 +192,47 @@ $resultado = $conn->query($sql);
         </div>
     </div>
 </div>
+<!-- Modal Correo -->
+<div id="modalCorreo" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold text-gray-800">Enviar correo al cliente</h2>
+      <button onclick="cerrarModalCorreo()" class="text-gray-500 hover:text-gray-700">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
+    <form method="POST" action="enviar_correo.php">
+      <!-- Campo oculto para el correo -->
+      <input type="hidden" name="correo" id="correoCliente">
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Mensaje</label>
+        <textarea name="mensaje" rows="5" required
+          class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-yellow-400"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="cerrarModalCorreo()" 
+          class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 text-gray-800">Cancelar</button>
+        <button type="submit" 
+          class="px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white">Enviar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script>
+  function abrirModalCorreo(element) {
+    let correo = element.getAttribute("data-correo");
+    document.getElementById("correoCliente").value = correo;
+    document.getElementById("modalCorreo").classList.remove("hidden");
+  }
+
+  function cerrarModalCorreo() {
+    document.getElementById("modalCorreo").classList.add("hidden");
+  }
+</script>
 </body>
 </html>

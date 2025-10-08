@@ -88,7 +88,7 @@ window.onload = function() {
                     <p class="card-description">Genera reportes financieros y estadísticas del negocio</p>
                 </div>
 
-                <div class="dashboard-card" onclick="window.location.href='Mantenimiento/mantenimiento.php'">
+                <div class="dashboard-card" onclick="window.location.href='Mantenimientos/mantenimiento.php'">
                     <div class="icon icon-maintenance"></div>
                     <h3 class="card-title">Mantenimiento</h3>
                     <p class="card-description">Control de mantenimiento y estado de los vehículos</p>

@@ -52,56 +52,77 @@ $resultado = $conn->query($sql)
   </section> 
 
 
+
+
 <section id="vehiculos" class="vehicles-section py-12 bg-gray-100">
-  <div class="container mx-auto px-4">
-    <h2 class="text-3xl font-bold mb-8 text-center text-gray-800">Vehículos </h2>
-    <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-      <?php while ($row = $resultado->fetch_assoc()): ?>
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+  <div class="container mx-auto px-4 max-w-7xl">
+    <h2 class="text-3xl font-bold mb-12 text-center text-gray-800">Vehículos</h2>
+    
+    <div class="space-y-8">
+      <?php 
+      $isFirst = true;
+      $counter = 0;
+      while ($row = $resultado->fetch_assoc()): 
+        $isEven = ($counter % 2 == 0);
+        $counter++;
+      ?>
+      
+      <?php if (!$isFirst): ?>
+        <hr class="border-gray-400 my-8">
+      <?php endif; $isFirst = false; ?>
+      
+      <div class="flex flex-col md:flex-row gap-6 md:gap-8 <?= $isEven ? '' : 'md:flex-row-reverse' ?>">
         
+        <!-- Información -->
+        <div class="w-full md:w-1/2 flex flex-col justify-between">
+          <div>
+            <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+              <?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>
+            </h3>
+            <p class="text-gray-700 text-lg mb-4 flex items-center gap-2">
+              <i class="fas fa-calendar-alt"></i> 
+              Año: <?= htmlspecialchars($row['anio']) ?>
+            </p>
+            <p class="text-gray-600 mb-6">
+              Dale click a reservar para ver más detalles del vehículo y poder reservarlo...
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-4">
+            <span class="text-2xl font-bold text-gray-800">
+              $<?= number_format($row['precio_dia'], 2) ?>/día
+            </span>
+            <a href="Reservas/reservaciones.php?id=<?= $row['id_vehiculo'] ?>" 
+              class="bg-yellow-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition w-full sm:w-auto text-center shadow-md">
+              Reservar
+            </a>
+          </div>
+        </div>
+
         <!-- Imagen -->
-        <div class="h-48 w-full relative">
+        <div class="w-full md:w-1/2 h-64 md:h-80 relative rounded-lg overflow-hidden shadow-lg">
           <?php if (!empty($row['foto'])): ?>
             <img src="FotosSubidas/<?= htmlspecialchars($row['foto']) ?>" 
                  alt="<?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>" 
                  class="w-full h-full object-cover">
           <?php else: ?>
-            <div class="flex items-center justify-center h-full bg-gray-200 text-gray-400 text-4xl">
+            <div class="flex items-center justify-center h-full bg-gray-300 text-gray-500 text-5xl">
               <i class="fas fa-car"></i>
             </div>
           <?php endif; ?>
-          
-          
         </div>
 
-        <!-- Información -->
-        <div class="p-5">
-          <h3 class="text-xl font-bold text-gray-800 mb-2"><?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?></h3>
-          <p class="text-gray-600 mb-2 flex items-center gap-2">
-            <i class="fas fa-id-card"></i> <?= htmlspecialchars($row['placa']) ?>
-            <i class="fas fa-calendar-alt ml-4"></i> <?= htmlspecialchars($row['anio']) ?>
-          </p>
-
-          <div class="flex justify-between items-center mt-4">
-            <span class="text-lg font-semibold text-gray-800">$<?= number_format($row['precio_dia'], 2) ?>/día</span>
-            <a href="Reservas/reservaciones.php?id=<?= $row['id_vehiculo'] ?>" 
-              class="bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition">
-              Reservar
-            </a>
-          
-          </div>
-          <div class="flex justify-between items-center mt-4">
-            <a href="#">Dale click a reservas para ver mas detalles del vehiculo y poder reservas...</a>
-          </div>
-        </div>
       </div>
       <?php endwhile; ?>
     </div>
   </div>
+
+  <div class="flex items-center justify-center mt-12">
+    <div class="text-sm text-gray-700 py-1">
+      Reserva tu vehiculo para tu mejor Plan!!!
+    </div>
+  </div>
 </section>
-
-
-  
 
   <!-- Sección Nosotros (Misión, Visión, Valores) -->
   <section id="nosotros" class="about-section">
