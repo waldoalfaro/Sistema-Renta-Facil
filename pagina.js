@@ -236,3 +236,12 @@ window.addEventListener('scroll', function() {
     });
 });
 
+//para el area de promociones//
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(function() {
+    // Mostrar feedback visual
+    alert('¡Código copiado: ' + code + '!');
+  }).catch(function(err) {
+    console.error('Error al copiar: ', err);
+  });
+}
