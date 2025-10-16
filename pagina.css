@@ -1005,7 +1005,7 @@ html {
 
 /*foto de incio*/
 .hero {
-  background-image: url('foto/slider.jpg?v=2');  /* Cambia la ruta según tu imagen */
+  background-image: url('PortadaWeb.jpg');  /* Cambia la ruta según tu imagen */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1036,8 +1036,7 @@ html {
 /*icono de redes*/
 .social-links {
   display: flex;
-  gap: 15px;
-  justify-content: center;
+  gap: 25px;
   margin-top: 20px;
 }
 
@@ -1056,7 +1055,7 @@ html {
 }
 
 .social-links a:hover {
-  transform: scale(1.2);
+  transform: scale(3.2);
 }
 
 .social-links a:nth-child(1):hover {

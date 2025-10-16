@@ -88,13 +88,45 @@ $tipo = $_SESSION['tipo'];
                </a>
             </li>
          </ul>
-         </li>
-         <li>
+       </li>
+       <li>
             <a href="/Sistema-Renta-Facil/Mantenimientos/mantenimiento.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <i class="fa-solid fa-screwdriver-wrench"></i>
                <span class="flex-1 ms-3 whitespace-nowrap">Mantenimientos</span>
             </a>
          </li>
+
+      <li class="relative">
+         <!-- Botón principal -->
+         <button id="btn-Historial" type="button"
+               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+               aria-expanded="false" aria-controls="submenu-Historial">
+               <!-- icono -->
+              <i class="fa-solid fa-layer-group"></i>
+
+               <span class="flex-1 ms-3 text-left whitespace-nowrap">Historial</span>
+
+               <!-- Flecha (se rotará) -->
+               <svg id="arrow-Historial" class="w-3 h-3 transition-transform" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+               </svg>
+         </button>
+
+         <!-- Submenú (oculto por defecto) -->
+         <ul id="submenu-Historial" class="hidden py-2 space-y-1 pl-6">
+            <li>
+               <a href="/Sistema-Renta-Facil/Historial/Cambio_Aceite/historialaceite.php"
+                  class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                  Cambios de aceite
+               </a>
+            </li>
+            
+         </ul>
+       </li>
+
+
+       
+        
          <li>
             <a href="#" id="logout-btn" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -113,6 +145,37 @@ $tipo = $_SESSION['tipo'];
     const btn = document.getElementById('btn-categorias');
     const submenu = document.getElementById('submenu-categorias');
     const arrow = document.getElementById('arrow-categorias');
+
+    // Toggle al hacer click
+    btn.addEventListener('click', function (e) {
+      const isHidden = submenu.classList.toggle('hidden'); 
+      btn.setAttribute('aria-expanded', String(!isHidden));
+      arrow.classList.toggle('rotate-180'); 
+    });
+
+    const links = Array.from(submenu.querySelectorAll('a'));
+    const currentPath = window.location.pathname; 
+    let opened = false;
+    for (const a of links) {
+      if (currentPath.endsWith(a.getAttribute('href')) || currentPath === new URL(a.href, location.origin).pathname) {
+        
+        submenu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        arrow.classList.add('rotate-180');
+        a.classList.add('bg-gray-200', 'dark:bg-gray-700'); 
+        opened = true;
+        break;
+      }
+    }
+
+  })();
+
+
+
+  (function(){
+    const btn = document.getElementById('btn-Historial');
+    const submenu = document.getElementById('submenu-Historial');
+    const arrow = document.getElementById('arrow-Historial');
 
     // Toggle al hacer click
     btn.addEventListener('click', function (e) {

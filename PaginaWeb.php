@@ -13,7 +13,6 @@ $resultado = $conn->query($sql)
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Renta Fácil</title>
-  <link href="style.css" rel="stylesheet" type="text/css"/>
     <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -490,9 +489,6 @@ $resultado = $conn->query($sql)
             <a href="https://www.instagram.com/sonsorentafacil?igsh=YTlwbXlqN212Znhy" target="_blank">
               <i class="fab fa-instagram"></i>
             </a>
-            <!--<a href="https://twitter.com/rentafacilsv" target="_blank">
-    <i class="fab fa-twitter"></i>
-  </a> -->
             <a href="https://wa.me/50378678421?text=Hola%20quiero%20información%20sobre%20renta%20de%20vehículos"
               target="_blank">
               <i class="fab fa-whatsapp"></i>
@@ -510,7 +506,7 @@ $resultado = $conn->query($sql)
         <div class="footer-section">
           <h4>Horarios</h4>
           <p>Lunes a Domingo </p>
-          <p>24/7</p>
+          <p>Atención a toda hora</p>
         </div>
       </div>
       <div class="footer-bottom">
