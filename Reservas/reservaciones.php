@@ -39,6 +39,8 @@ while ($fila = $reserva->fetch_assoc()) {
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales/es.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -119,7 +121,7 @@ while ($fila = $reserva->fetch_assoc()) {
       cursor: pointer;
     }
     
-    /* Modal styles */
+    /* Modal styles */ 
     .modal {
       display: none;
       position: fixed;
@@ -293,6 +295,7 @@ while ($fila = $reserva->fetch_assoc()) {
           <i class="fas fa-clipboard-list text-purple-600"></i>
           Resumen de Reserva
         </h3>
+        <span>Toda la informacion es completamente confidencial, y solomente sera utilizado con fines de realizar contrato.</span>
         
         <div class="space-y-4 mb-6">
           <div>
@@ -314,6 +317,9 @@ while ($fila = $reserva->fetch_assoc()) {
                    placeholder="Selecciona en el calendario"
                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold focus:outline-none focus:border-purple-500 transition-colors">
           </div>
+
+
+          
         </div>
 
         <button type="button" onclick="abrirModal()" 
@@ -326,112 +332,210 @@ while ($fila = $reserva->fetch_assoc()) {
   </div>
 
   <!-- Modal de datos del cliente -->
-  <div id="modalCliente" class="modal">
-    <div class="modal-content">
-      <span class="cerrar" onclick="cerrarModal()">&times;</span>
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <i class="fas fa-user-edit text-purple-600"></i>
-        Datos del Cliente
-      </h2>
+    <div id="modalCliente" class="modal">
+      <div class="modal-content">
+        <span class="cerrar" onclick="cerrarModal()">&times;</span>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <i class="fas fa-user-edit text-purple-600"></i>
+          Datos del Cliente
+        </h2>
 
-      <form id="formCliente" method="POST" action="guardar_reserva.php" class="space-y-4">
-        <input type="hidden" name="id_vehiculo" value="<?= $vehiculo['id_vehiculo'] ?>">
-        <input type="hidden" name="fecha_inicio" id="modal_fecha_inicio">
-        <input type="hidden" name="fecha_fin" id="modal_fecha_fin">
+        <form id="formCliente" method="POST" action="guardar_reserva.php" class="space-y-4" enctype="multipart/form-data">
+          <input type="hidden" name="id_vehiculo" value="<?= $vehiculo['id_vehiculo'] ?>">
+          <input type="hidden" name="fecha_inicio" id="modal_fecha_inicio">
+          <input type="hidden" name="fecha_fin" id="modal_fecha_fin">
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-user text-blue-600 mr-2"></i>
-            Nombre completo
-          </label>
-          <input type="text" name="nombre_cliente" required
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-        </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-user text-blue-600 mr-2"></i>
+              Nombre completo
+            </label>
+            <input type="text" name="nombre_cliente" required
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+          </div>
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-id-card text-green-600 mr-2"></i>
-            DUI
-          </label>
-          <input type="text" name="dui" required
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-phone text-orange-600 mr-2"></i>
-            Teléfono
-          </label>
-          <input type="tel" name="telefono_cliente" required
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-        </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-id-card text-green-600 mr-2"></i>
+              DUI
+            </label>
+            <input type="text" name="dui" required
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+          </div>
 
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-envelope text-red-600 mr-2"></i>
-            Correo electrónico
-          </label>
-          <input type="email" name="email_cliente" required
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-calendar-day text-green-600 mr-2"></i>
-            Fecha de inicio
-          </label>
-          <input type="text" id="modal_fecha_inicio_visible" readonly
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-calendar-day text-red-600 mr-2"></i>
-            Fecha de finalización
-          </label>
-          <input type="text" id="modal_fecha_fin_visible" readonly
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
-        </div>
-        
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-clock text-purple-600 mr-2"></i>
-            Días solicitados
-          </label>
-          <input type="number" name="dias" required
-                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-        </div>
-        
-        <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 mt-6">
-          <i class="fas fa-check-circle"></i>
-          Confirmar Reserva
-        </button>
-      </form>
+    <label class="block text-sm font-semibold text-gray-700 mb-2">
+      <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
+    </label>
+    
+    <div class="flex items-center">
+      <span class="text-gray-600 font-medium mr-2">+503</span>
+      <input 
+        type="tel" 
+        name="telefono_cliente" 
+        id="telefono_cliente" 
+        maxlength="9"
+        required
+        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+        placeholder="1234-5678"
+        oninput="formatearTelefono(this)">
     </div>
   </div>
 
   <script>
+  function formatearTelefono(input) {
+    // Elimina todo lo que no sea número
+    let valor = input.value.replace(/\D/g, '');
+    
+    // Limita a 8 dígitos (sin contar el guion)
+    valor = valor.substring(0, 8);
+
+    // Agrega el guion después de los primeros 4 dígitos
+    if (valor.length > 4) {
+      input.value = valor.substring(0, 4) + '-' + valor.substring(4);
+    } else {
+      input.value = valor;
+    }
+  }
+  </script>
+
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-envelope text-red-600 mr-2"></i>
+              Correo electrónico
+            </label>
+            <input type="email" name="email_cliente" required
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-calendar-day text-green-600 mr-2"></i>
+              Fecha de inicio
+            </label>
+            <input type="text" id="modal_fecha_inicio_visible" readonly
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-calendar-day text-red-600 mr-2"></i>
+              Fecha de finalización
+            </label>
+            <input type="text" id="modal_fecha_fin_visible" readonly
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-clock text-purple-600 mr-2"></i>
+              Días solicitados
+            </label>
+            <input type="number" name="dias" readonly
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2"> 
+
+              Documento - Dui
+            </label>
+            <input type="file" name="fotos_dui" accept="image/*" multiple
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+                  <small class="text-muted">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+
+              Documento - Licencia
+            </label>
+            <input type="file" name="fotos_licencia" accept="image/*" multiple
+                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+                  <small class="text-muted">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+
+              Observaciones
+            </label>
+            <textarea name="observaciones" id=""    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"></textarea>
+            <small class="text-muted">Cuentanos, donde quieres recibir tu vehiculo ó alguna duda que tengas</small>
+          </div>
+          
+          
+          <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 mt-6">
+            <i class="fas fa-check-circle"></i>
+            Confirmar Reserva
+          </button>
+        </form>
+      </div>
+    </div>
+
+  <script>
     // Modal
     function abrirModal() {
-      const fechaInicio = document.getElementById('fecha_inicio').value;
-      const fechaFin = document.getElementById('fecha_fin').value;
+  const fechaInicio = document.getElementById('fecha_inicio').value;
+  const fechaFin = document.getElementById('fecha_fin').value;
 
-      if (!fechaInicio || !fechaFin) {
-        alert('Por favor, selecciona las fechas en el calendario');
-        return;
-      }
+  if (!fechaInicio || !fechaFin) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Fechas incompletas',
+      text: 'Por favor selecciona una fecha de inicio y una fecha de finalización antes de continuar.',
+      confirmButtonColor: '#7c3aed',
+    });
+    return;
+  }
 
-      document.getElementById('modal_fecha_inicio').value = fechaInicio;
-      document.getElementById('modal_fecha_fin').value = fechaFin;
-      document.getElementById('modal_fecha_inicio_visible').value = fechaInicio;
-      document.getElementById('modal_fecha_fin_visible').value = fechaFin;
+ 
 
-      document.getElementById("modalCliente").style.display = "flex";
-    }
+  // Rellenar los campos ocultos y visibles
+  document.getElementById('modal_fecha_inicio').value = fechaInicio;
+  document.getElementById('modal_fecha_fin').value = fechaFin;
+  document.getElementById('modal_fecha_inicio_visible').value = fechaInicio;
+  document.getElementById('modal_fecha_fin_visible').value = fechaFin;
+
+  // Calcular los días automáticamente
+  const inicio = new Date(fechaInicio);
+  const fin = new Date(fechaFin);
+
+  // Diferencia en milisegundos y luego convertir a días
+  const diffTime = fin - inicio;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir el día inicial
+
+  // Rellenar el campo de días
+  document.querySelector('input[name="dias"]').value = diffDays;
+
+  // Mostrar el modal
+  document.getElementById("modalCliente").style.display = "flex";
+
+  
+}
 
     function cerrarModal() {
       document.getElementById("modalCliente").style.display = "none";
     }
+
+
+    document.getElementById('formCliente').addEventListener('submit', function (event) {
+  event.preventDefault(); // Detener envío para confirmar primero
+
+  Swal.fire({
+    title: '¿Confirmar reserva?',
+    text: 'Verifica que toda la información sea correcta antes de continuar.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#22c55e',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, registrar reserva',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.submit(); // Enviar el formulario al PHP
+    }
+  });
+});
 
     window.onclick = function(event) {
       const modal = document.getElementById("modalCliente");
@@ -539,3 +643,5 @@ while ($fila = $reserva->fetch_assoc()) {
   </script>
 </body>
 </html>
+
+

@@ -3,9 +3,11 @@
 include '../conexion.php';
 include '../seguridad.php';
 
-$sql = " SELECT u.id_reservacion, u.solicitante_nombre, u.solicitante_dui, solicitante_telefono, u.solicitante_correo, u.fecha_inicio_solicitada, u.fecha_fin_solicitada, u.dias_solicitados, u.estado, CONCAT(t.marca, ' ', t.modelo) AS nombre_vehiculo
+$sql = " SELECT u.id_reservacion, u.solicitante_nombre, u.solicitante_dui, solicitante_telefono, u.solicitante_correo, u.fecha_inicio_solicitada, u.fecha_fin_solicitada, u.dias_solicitados, u.documentosDui, u.licencia, u.observaciones, u.estado, CONCAT(t.marca, ' ', t.modelo) AS nombre_vehiculo
          From reservaciones u
-         JOIN vehiculos t ON u.id_vehiculo = t.id_vehiculo";
+         JOIN vehiculos t ON u.id_vehiculo = t.id_vehiculo
+         ORDER BY U.id_reservacion DESC"
+         ;
          
 $resultado = $conn->query($sql);
 
@@ -60,6 +62,14 @@ $resultado = $conn->query($sql);
             </div>
         </div>
 
+       <div>
+         <button type="button" onclick="abrirModal()" 
+        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2">
+          <i class="fas fa-check-circle"></i>
+          Registrar una reserva
+        </button>
+
+       </div>
         <!-- Tabla responsive con diseño moderno -->
         <div class="bg-white rounded-lg shadow-lg overflow-hidden fade-in">
             <div class="overflow-x-auto">
@@ -90,6 +100,9 @@ $resultado = $conn->query($sql);
                             </th>
                             <th class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
                                 <i class="fas fa-clock mr-2"></i>Días
+                            </th>
+                             <th class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                <i class="fas fa-clock mr-2"></i>Observaciones
                             </th>
                             <th class="px-4 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
                                 <i class="fas fa-info-circle mr-2"></i>Estado
@@ -139,7 +152,7 @@ $resultado = $conn->query($sql);
                                     <div class="text-sm text-gray-600"><?= $row['solicitante_correo'] ?></div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-600"><?= $row['solicitante_telefono'] ?></div>
+                                    <div class="text-sm text-gray-600">+503 <?= $row['solicitante_telefono'] ?></div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900"><?= date('d/m/Y', strtotime($row['fecha_inicio_solicitada'])) ?></div>
@@ -151,6 +164,9 @@ $resultado = $conn->query($sql);
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                                         <?= $row['dias_solicitados'] ?> días
                                     </span>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-600"><?= $row['observaciones'] ?></div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap text-center">
                                     <span class="status-badge inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold <?= $estadoClasses ?>">
@@ -177,6 +193,12 @@ $resultado = $conn->query($sql);
                                         <a href="#" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" title="Realizar contrato">
                                             <i class="fas fa-pen-to-square text-sm"></i>
                                         </a>
+                                        <a href="#"
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-purple-500 hover:bg-purple-600 text-white transition-all duration-200 hover:scale-110 shadow-sm"
+                                                title="Ver fotos"
+                                                onclick="abrirModalFotos('<?= $row['documentosDui'] ?>', '<?= $row['licencia'] ?>')">
+                                                <i class="fas fa-images text-sm"></i>
+                                            </a>
                                     </div>
                                 </td>
                             </tr>
@@ -222,6 +244,28 @@ $resultado = $conn->query($sql);
   </div>
 </div>
 
+<!-- Modal Ver Fotos -->
+<div id="modalFotos" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white w-full max-w-3xl rounded-2xl shadow-xl p-6 relative">
+    <button onclick="cerrarModalFotos()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+      <i class="fas fa-times text-xl"></i>
+    </button>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+      <i class="fas fa-images text-purple-500"></i> Fotos del Cliente
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="text-center">
+        <h3 class="font-semibold text-gray-700 mb-2">DUI</h3>
+        <img id="imgDUI" src="" alt="Foto DUI" class="w-full h-64 object-cover rounded-lg shadow-md border">
+      </div>
+      <div class="text-center">
+        <h3 class="font-semibold text-gray-700 mb-2">Licencia</h3>
+        <img id="imgLicencia" src="" alt="Foto Licencia" class="w-full h-64 object-cover rounded-lg shadow-md border">
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   function abrirModalCorreo(element) {
@@ -234,5 +278,24 @@ $resultado = $conn->query($sql);
     document.getElementById("modalCorreo").classList.add("hidden");
   }
 </script>
+
+<script>
+function abrirModalFotos(fotoDui, fotoLicencia) {
+  const modal = document.getElementById("modalFotos");
+  const imgDUI = document.getElementById("imgDUI");
+  const imgLicencia = document.getElementById("imgLicencia");
+
+  // Asumiendo que las imágenes están en la carpeta "uploads/"
+  imgDUI.src = "../uploads/" + fotoDui;
+  imgLicencia.src = "../uploads/" + fotoLicencia;
+
+  modal.classList.remove("hidden");
+}
+
+function cerrarModalFotos() {
+  document.getElementById("modalFotos").classList.add("hidden");
+}
+</script>
+
 </body>
 </html>

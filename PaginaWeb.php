@@ -16,6 +16,7 @@ $resultado = $conn->query($sql)
     <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="pagina.css">
 
 </head>
@@ -29,6 +30,10 @@ $resultado = $conn->query($sql)
         <img src="logo1.jpg" alt="Logo de Renta Fácil" style="width: 120px; height: auto;">
       </div>
 
+      <button id="menu-btn" class="block md:hidden text-white focus:outline-none">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+
       <ul class="nav-menu">
         <li><a href="#inicio">Inicio</a></li>
         <li><a href="#vehiculos">Vehículos</a></li>
@@ -38,6 +43,16 @@ $resultado = $conn->query($sql)
         <li><a href="login.php">Sistema Administrativo</a></li>
       </ul>
     </nav>
+
+
+    <ul id="mobile-menu" class="md:hidden hidden bg-black text-white text-center space-y-4 py-4">
+      <li><a href="#inicio" class="block hover:text-yellow-500 transition">Inicio</a></li>
+      <li><a href="#vehiculos" class="block hover:text-yellow-500 transition">Vehículos</a></li>
+      <li><a href="#nosotros" class="block hover:text-yellow-500 transition">Nosotros</a></li>
+      <li><a href="#promociones" class="block hover:text-yellow-500 transition">Promociones</a></li>
+      <li><a href="#contacto" class="block hover:text-yellow-500 transition">Contacto</a></li>
+      <li><a href="login.php" class="block hover:text-yellow-500 transition">Sistema Administrativo</a></li>
+    </ul>
   </header>
 
   
@@ -149,7 +164,7 @@ $resultado = $conn->query($sql)
 </section>
 
   <!-- area de promociones -->
-<section id="promociones-mes" class="py-16 bg-black">
+<section id="promociones" class="py-16 bg-black">
   <div class="container mx-auto px-4 max-w-7xl">
     
     <!-- Encabezado de la Sección -->
@@ -172,70 +187,7 @@ $resultado = $conn->query($sql)
     if (isset($resultado_promo) && $resultado_promo->num_rows > 0):
     ?>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <?php while ($promo = $resultado_promo->fetch_assoc()): ?>
-      
-      <!-- Tarjeta de Promoción -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 border border-gray-700 hover:scale-105 transform">
-        
-        <!-- Imagen de la Promoción -->
-        <div class="relative h-64 overflow-hidden bg-gray-700">
-          <?php if (!empty($promo['imagen_promocion'])): ?>
-            <img src="PromocionesSubidas/<?= htmlspecialchars($promo['imagen_promocion']) ?>" 
-                 alt="<?= htmlspecialchars($promo['titulo']) ?>"
-                 class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
-          <?php else: ?>
-            <div class="flex items-center justify-center h-full">
-              <i class="fas fa-image text-gray-500 text-6xl"></i>
-            </div>
-          <?php endif; ?>
-          
-          <!-- Badge de Descuento -->
-          <div class="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full font-black text-xl shadow-lg transform rotate-12">
-            -<?= htmlspecialchars($promo['descuento']) ?>%
-          </div>
-        </div>
-        
-        <!-- Contenido de la Promoción -->
-        <div class="p-6">
-          <h3 class="text-2xl font-bold text-white mb-3">
-            <?= htmlspecialchars($promo['titulo']) ?>
-          </h3>
-          
-          <p class="text-gray-300 mb-4 line-clamp-3">
-            <?= htmlspecialchars($promo['descripcion']) ?>
-          </p>
-          
-          <!-- Fecha de Vigencia -->
-          <div class="flex items-center text-sm text-gray-400 mb-4">
-            <i class="fas fa-calendar-alt text-yellow-500 mr-2"></i>
-            Válido hasta: <?= date('d/m/Y', strtotime($promo['fecha_fin'])) ?>
-          </div>
-          
-          <!-- Código Promocional -->
-          <?php if (!empty($promo['codigo_promo'])): ?>
-          <div class="bg-gray-700 px-4 py-2 rounded-lg mb-4 flex items-center justify-between">
-            <span class="text-yellow-500 font-bold tracking-wider">
-              <?= htmlspecialchars($promo['codigo_promo']) ?>
-            </span>
-            <button onclick="copyPromoCode('<?= htmlspecialchars($promo['codigo_promo']) ?>')" 
-                    class="text-white hover:text-yellow-500 transition">
-              <i class="fas fa-copy"></i>
-            </button>
-          </div>
-          <?php endif; ?>
-          
-          <!-- Botón de Acción -->
-          <a href="Reservas/reservaciones.php?promo=<?= $promo['id_promocion'] ?>" 
-             class="block w-full bg-yellow-500 text-black text-center px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-all duration-300 shadow-lg">
-            <i class="fas fa-tag mr-2"></i>
-            Aplicar Promoción
-          </a>
-        </div>
-      </div>
-      
-      <?php endwhile; ?>
-    </div>
+    
     
     <?php else: ?>
     
@@ -476,7 +428,7 @@ $resultado = $conn->query($sql)
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer id="contacto" class="footer">
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
@@ -515,7 +467,34 @@ $resultado = $conn->query($sql)
     </div>
   </footer>
 
-  <script src="pagina.js"></script>
 </body>
 
 </html>
+
+<script>
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+if (params.get('reserva') === 'ok') {
+  Swal.fire({
+    icon: 'success',
+    title: '¡Reserva registrada correctamente!',
+    text: 'Tu reserva ha sido guardada con éxito. Nos pondremos en contacto contigo pronto.',
+    confirmButtonColor: '#22c55e'
+  });
+} else if (params.get('reserva') === 'error') {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error al registrar la reserva',
+    text: 'Ocurrió un problema al guardar la reserva. Intenta nuevamente más tarde.',
+    confirmButtonColor: '#ef4444'
+  });
+}
+</script>
