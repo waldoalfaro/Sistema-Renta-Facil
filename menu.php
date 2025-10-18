@@ -15,6 +15,8 @@ $tipo = $_SESSION['tipo'];
    <title>Document</title>
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/alertify.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/css/themes/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.13.1/alertify.min.js"></script>
 
 
@@ -131,6 +133,20 @@ $tipo = $_SESSION['tipo'];
             <a href="#" id="logout-btn" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <i class="fa-solid fa-arrow-right-from-bracket"></i>
                <span class="flex-1 ms-3 whitespace-nowrap">Salir</span>
+            </a>
+         </li>
+
+         <li>
+            <a href="/Sistema-Renta-Facil/ayuda/Ayuda.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+              <i class="fa-solid fa-book-open"></i>
+               <span class="flex-1 ms-3 whitespace-nowrap">Ayudas</span>
+            </a>
+         </li>
+
+         <li>
+            <a href="/Sistema-Renta-Facil/Creditos/creditos.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+              <i class="fa-solid fa-book-open"></i>
+               <span class="flex-1 ms-3 whitespace-nowrap">Creditos</span>
             </a>
          </li>
          <li>
