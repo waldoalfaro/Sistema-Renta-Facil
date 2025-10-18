@@ -3,7 +3,6 @@ include '../conexion.php';
 include '../seguridad.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = 
     $id_vehiculo = $_POST['id_vehiculo'];
     $fecha = $_POST['Fecha'];
     $kilometraje_actual = $_POST['kilometraje_actual'];
