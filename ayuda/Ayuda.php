@@ -1,3 +1,6 @@
+<?php include '../seguridad.php'; ?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,20 +17,7 @@
 
 <div class="p-4 sm:ml-64">
 
-<header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-car"></i>
-                    <h1>Centro de Ayuda y Recursos</h1>
-                </div>
-                <nav class="nav">
-                    <a href="#manuales" class="nav-link">Manuales</a>
-                    <a href="#videos" class="nav-link">Videos Tutoriales</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+
 
    
 
@@ -192,11 +182,7 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Sistema de Renta de Vehículos. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+    
 
 </div>
 

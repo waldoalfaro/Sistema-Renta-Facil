@@ -22,7 +22,7 @@ $sqlMnatenimientoReparaciones = "SELECT m.*, v.modelo, v.marca, v.placa
 $ResulReparaciones = $conn->query($sqlMnatenimientoReparaciones);
 
 
-$sqlcambiobateria = "SELECT b.*, v.modelo, v.marca, v.placa, v.id_vehiculo
+$sqlcambiobateria = "SELECT b.*, v.modelo, v.marca, v.placa
                     FROM cambio_bateria b
                     INNER JOIN vehiculos v ON b.id_vehiculo = v.id_vehiculo
                     ORDER BY b.fecha DESC";
@@ -911,47 +911,47 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
       
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Fecha de registro:</label>
-        <input type="date" id="Fecha" name="Fecha" class="w-full border rounded p-2" required>
+        <input type="date" id="Fecha" name="Fecha_bateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Marca de batería:</label>
-        <input type="text" name="marca" class="w-full border rounded p-2" required>
+        <input type="text" name="marca_bateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Modelo de batería:</label>
-        <input type="text" name="modelo" class="w-full border rounded p-2" required>
+        <input type="text" name="modelo_bateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Voltaje:</label>
-        <input type="text" name="voltaje" class="w-full border rounded p-2" required>
+        <input type="text" name="voltaje_vateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Garantía (meses):</label>
-        <input type="number" name="garantia" class="w-full border rounded p-2" required>
+        <input type="number" name="garantia_bateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Costo:</label>
-        <input type="number" step="0.01" name="costo" class="w-full border rounded p-2" required>
+        <input type="number" step="0.01" name="costo_bateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Realizado por:</label>
-        <input type="text" name="realizado_por" class="w-full border rounded p-2" required>
+        <input type="text" name="realizado_por_bateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Teléfono:</label>
-        <input type="text" name="telefono" class="w-full border rounded p-2" required>
+        <input type="text" name="telefono_bateria" class="w-full border rounded p-2" required>
       </div>
 
       <div class="mb-3">
         <label class="block text-gray-600 font-semibold">Observaciones:</label>
-        <textarea name="observaciones" class="w-full border rounded p-2 resize-none" rows="3" required></textarea>
+        <textarea name="observaciones_bateria" class="w-full border rounded p-2 resize-none" rows="3" required></textarea>
       </div>
 
       <div class="flex justify-end space-x-3">

@@ -1,3 +1,6 @@
+<?php include '../seguridad.php';  ?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -18,11 +21,11 @@
 
 <?php include "../menu.php";?>
 
-    <header class="header">
+<div class="p-4 sm:ml-64">
+     <header class="header">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-car"></i>
                     <h1>Centro de Ayuda y Recursos</h1>
                 </div>
                 <nav class="nav">
@@ -45,33 +48,28 @@
                 <!-- Integrante 1 - Scrum Master -->
                 <div class="team-card">
                     <div class="card-image">
-                        <img src="images/member1.jpg"
-                            alt="Foto de perfil de Juan Pérez García, Scrum Master del equipo Sistema-Renta-Fácil">
+                        <img src=""
+                            alt="Foto de perfil de Nelson Stanley Venis Moran, Scrum Master del equipo Sistema-Renta-Fácil">
                         <div class="card-overlay">
                             <div class="social-links">
-                                <a href="mailto:scrummaster@ejemplo.com" title="Enviar email a Juan Pérez García"
-                                    aria-label="Enviar email a Juan Pérez García"><i class="fas fa-envelope"
-                                        aria-hidden="true"></i></a>
-                                <a href="#"
-                                    onclick="alert('Actualiza este enlace con el perfil real de LinkedIn'); return false;"
-                                    title="Ver perfil de LinkedIn de Juan Pérez García"
-                                    aria-label="Ver perfil de LinkedIn"><i class="fab fa-linkedin"
+                                <a href="mailto:nvenimoran@gmail.com" title="Enviar email a Nelson Moran"
+                                    aria-label="Enviar email a Nelson Moran"><i class="fas fa-envelope"
                                         aria-hidden="true"></i></a>
                                 <a href="#"
                                     onclick="alert('Actualiza este enlace con el perfil real de GitHub'); return false;"
-                                    title="Ver perfil de GitHub de Juan Pérez García"
+                                    title="Ver perfil de GitHub de Nelson Moran"
                                     aria-label="Ver perfil de GitHub"><i class="fab fa-github"
                                         aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
                     <div class="card-content">
-                        <h3 class="member-name">Juan Pérez García</h3>
+                        <h3 class="member-name">Nelson Stanley Venis</h3>
                         <p class="member-role">Scrum Master</p>
                         <div class="member-info">
                             <p><i class="fas fa-briefcase" aria-hidden="true"></i> Líder del equipo</p>
                             <p><i class="fas fa-envelope" aria-hidden="true"></i> <a
-                                    href="mailto:scrummaster@ejemplo.com">scrummaster@ejemplo.com</a></p>
+                                    href="mailto:nvenimoran@gmail.com">nvenimora@gmail.com</a></p>
                             <p><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+521234567890">+52 123 456
                                     7890</a></p>
                         </div>
@@ -83,33 +81,29 @@
                 <!-- Integrante 2 - Product Owner -->
                 <div class="team-card">
                     <div class="card-image">
-                        <img src="images/member2.jpg"
-                            alt="Foto de perfil de María Rodríguez López, Product Owner del equipo Sistema-Renta-Fácil">
+                        <img src="images/majano.jpg"
+                            alt="Foto de perfil de José Elias Majano Lovato, Team Scrum Sistema-Renta-Fácil">
                         <div class="card-overlay">
                             <div class="social-links">
-                                <a href="mailto:productowner@ejemplo.com" title="Enviar email a María Rodríguez López"
-                                    aria-label="Enviar email a María Rodríguez López"><i class="fas fa-envelope"
+                                <a href="mailto:joselovato020@gmail.com.com" title="Enviar email a María José Lovato"
+                                    aria-label="Enviar email a José Lovato"><i class="fas fa-envelope"
                                         aria-hidden="true"></i></a>
-                                <a href="#"
-                                    onclick="alert('Actualiza este enlace con el perfil real de LinkedIn'); return false;"
-                                    title="Ver perfil de LinkedIn de María Rodríguez López"
-                                    aria-label="Ver perfil de LinkedIn"><i class="fab fa-linkedin"
-                                        aria-hidden="true"></i></a>
+                               
                                 <a href="#"
                                     onclick="alert('Actualiza este enlace con el perfil real de GitHub'); return false;"
-                                    title="Ver perfil de GitHub de María Rodríguez López"
+                                    title="Ver perfil de GitHub de José Lovato"
                                     aria-label="Ver perfil de GitHub"><i class="fab fa-github"
                                         aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
                     <div class="card-content">
-                        <h3 class="member-name">María Rodríguez López</h3>
-                        <p class="member-role">Product Owner</p>
+                        <h3 class="member-name">José Elias Majano</h3>
+                        <p class="member-role">Team Scrum</p>
                         <div class="member-info">
                             <p><i class="fas fa-briefcase" aria-hidden="true"></i> Visión del producto</p>
                             <p><i class="fas fa-envelope" aria-hidden="true"></i> <a
-                                    href="mailto:productowner@ejemplo.com">productowner@ejemplo.com</a></p>
+                                    href="mailto:productowner@ejemplo.com">Joselovato020@gmail.com</a></p>
                             <p><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+521234567891">+52 123 456
                                     7891</a></p>
                         </div>
@@ -118,78 +112,38 @@
                     </div>
                 </div>
 
-                <!-- Integrante 3 - Developer -->
-                <div class="team-card">
-                    <div class="card-image">
-                        <img src="images/member3.jpg"
-                            alt="Foto de perfil de Carlos Mendoza Ruiz, Desarrollador Frontend del equipo Sistema-Renta-Fácil">
-                        <div class="card-overlay">
-                            <div class="social-links">
-                                <a href="mailto:frontend@ejemplo.com" title="Enviar email a Carlos Mendoza Ruiz"
-                                    aria-label="Enviar email a Carlos Mendoza Ruiz"><i class="fas fa-envelope"
-                                        aria-hidden="true"></i></a>
-                                <a href="#"
-                                    onclick="alert('Actualiza este enlace con el perfil real de LinkedIn'); return false;"
-                                    title="Ver perfil de LinkedIn de Carlos Mendoza Ruiz"
-                                    aria-label="Ver perfil de LinkedIn"><i class="fab fa-linkedin"
-                                        aria-hidden="true"></i></a>
-                                <a href="#"
-                                    onclick="alert('Actualiza este enlace con el perfil real de GitHub'); return false;"
-                                    title="Ver perfil de GitHub de Carlos Mendoza Ruiz"
-                                    aria-label="Ver perfil de GitHub"><i class="fab fa-github"
-                                        aria-hidden="true"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="member-name">Carlos Mendoza Ruiz</h3>
-                        <p class="member-role">Desarrollador Frontend</p>
-                        <div class="member-info">
-                            <p><i class="fas fa-briefcase" aria-hidden="true"></i> Interfaz de usuario</p>
-                            <p><i class="fas fa-envelope" aria-hidden="true"></i> <a
-                                    href="mailto:frontend@ejemplo.com">frontend@ejemplo.com</a></p>
-                            <p><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+521234567892">+52 123 456
-                                    7892</a></p>
-                        </div>
-                        <p class="member-description">Desarrollo de la interfaz de usuario y experiencia del cliente.
-                        </p>
-                    </div>
-                </div>
+                
 
                 <!-- Integrante 4 - Developer -->
                 <div class="team-card">
                     <div class="card-image">
-                        <img src="images/member4.jpg"
-                            alt="Foto de perfil de Ana Martínez Sánchez, Desarrolladora Backend del equipo Sistema-Renta-Fácil">
+                        <img src=""
+                            alt="Foto de perfil de Jose Oswaldo Alfaro Morales, Desarrollador del equipo Sistema-Renta-Fácil">
                         <div class="card-overlay">
                             <div class="social-links">
-                                <a href="mailto:backend@ejemplo.com" title="Enviar email a Ana Martínez Sánchez"
-                                    aria-label="Enviar email a Ana Martínez Sánchez"><i class="fas fa-envelope"
+                                <a href="mailto:backend@ejemplo.com" title="Enviar email a Oswaldo Alfaro"
+                                    aria-label="Enviar email a Oswaldo Alfaro"><i class="fas fa-envelope"
                                         aria-hidden="true"></i></a>
-                                <a href="#"
-                                    onclick="alert('Actualiza este enlace con el perfil real de LinkedIn'); return false;"
-                                    title="Ver perfil de LinkedIn de Ana Martínez Sánchez"
-                                    aria-label="Ver perfil de LinkedIn"><i class="fab fa-linkedin"
-                                        aria-hidden="true"></i></a>
+                                
                                 <a href="#"
                                     onclick="alert('Actualiza este enlace con el perfil real de GitHub'); return false;"
-                                    title="Ver perfil de GitHub de Ana Martínez Sánchez"
+                                    title="Ver perfil de GitHub de Oswaldo Alfaro"
                                     aria-label="Ver perfil de GitHub"><i class="fab fa-github"
                                         aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
                     <div class="card-content">
-                        <h3 class="member-name">Ana Martínez Sánchez</h3>
-                        <p class="member-role">Desarrolladora Backend</p>
+                        <h3 class="member-name">José Oswaldo Alfaro</h3>
+                        <p class="member-role">Team Scrum</p>
                         <div class="member-info">
                             <p><i class="fas fa-briefcase" aria-hidden="true"></i> Lógica del negocio</p>
                             <p><i class="fas fa-envelope" aria-hidden="true"></i> <a
-                                    href="mailto:backend@ejemplo.com">backend@ejemplo.com</a></p>
+                                    href="mailto:backend@ejemplo.com">waldoalfa011@gmail.com</a></p>
                             <p><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+521234567893">+52 123 456
                                     7893</a></p>
                         </div>
-                        <p class="member-description">Desarrollo del servidor, base de datos y lógica de negocio del
+                        <p class="member-description">Desarrollo de base de datos y lógica de negocio del
                             sistema.</p>
                     </div>
                 </div>
@@ -197,33 +151,29 @@
                 <!-- Integrante 5 - Developer/Tester -->
                 <div class="team-card">
                     <div class="card-image">
-                        <img src="images/member5.jpg"
-                            alt="Foto de perfil de Luis Hernández Cruz, QA Tester del equipo Sistema-Renta-Fácil">
+                        <img src="images/dennis.jpg"
+                            alt="Foto de perfil de Dennis Sanchez, Team Scrum del equipo Sistema-Renta-Fácil">
                         <div class="card-overlay">
                             <div class="social-links">
-                                <a href="mailto:qa@ejemplo.com" title="Enviar email a Luis Hernández Cruz"
-                                    aria-label="Enviar email a Luis Hernández Cruz"><i class="fas fa-envelope"
+                                <a href="mailto:sanchezdennis114@gmail.com" title="Enviar email Dennis Sanchez"
+                                    aria-label="Enviar email a Dennis Sanchez"><i class="fas fa-envelope"
                                         aria-hidden="true"></i></a>
-                                <a href="#"
-                                    onclick="alert('Actualiza este enlace con el perfil real de LinkedIn'); return false;"
-                                    title="Ver perfil de LinkedIn de Luis Hernández Cruz"
-                                    aria-label="Ver perfil de LinkedIn"><i class="fab fa-linkedin"
-                                        aria-hidden="true"></i></a>
+                                
                                 <a href="#"
                                     onclick="alert('Actualiza este enlace con el perfil real de GitHub'); return false;"
-                                    title="Ver perfil de GitHub de Luis Hernández Cruz"
+                                    title="Ver perfil de GitHub de Dennis Sanchez"
                                     aria-label="Ver perfil de GitHub"><i class="fab fa-github"
                                         aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
                     <div class="card-content">
-                        <h3 class="member-name">Luis Hernández Cruz</h3>
-                        <p class="member-role">QA Tester & Developer</p>
+                        <h3 class="member-name">Dennis Steven Zaldaña</h3>
+                        <p class="member-role">Team Scrum</p>
                         <div class="member-info">
                             <p><i class="fas fa-briefcase" aria-hidden="true"></i> Control de calidad</p>
                             <p><i class="fas fa-envelope" aria-hidden="true"></i> <a
-                                    href="mailto:qa@ejemplo.com">qa@ejemplo.com</a></p>
+                                    href="mailto:qa@ejemplo.com">sanchezdennis114@gmail.com</a></p>
                             <p><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+521234567894">+52 123 456
                                     7894</a></p>
                         </div>
@@ -238,6 +188,11 @@
             </div>
         </div>
     </section>
+</div>
+
+
+
+   
 </body>
 
 </html>
