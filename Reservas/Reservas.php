@@ -64,10 +64,133 @@ $resultado = $conn->query($sql);
 
        <div>
          <button type="button" onclick="abrirModal()" 
-        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2">
-          <i class="fas fa-check-circle"></i>
-          Registrar una reserva
+            class="w-full bg-gradient-to-r from-purple-600 to-indigo-200 ...">
+            <i class="fas fa-check-circle"></i>
+            Registrar una reserva
         </button>
+
+
+
+        <!-- Modal Registrar Reserva -->
+<!-- Modal Registrar Reserva (con scroll interno) -->
+<div id="modalCliente" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto">
+  <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 relative my-10 overflow-y-auto max-h-[90vh]">
+    <button onclick="cerrarModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
+      <i class="fas fa-times text-xl"></i>
+    </button>
+    
+    <h2 class="text-xl font-bold mb-4 text-gray-700">
+      <i class="fas fa-user-edit text-purple-600"></i> Nueva Reservación
+    </h2>
+
+    <form id="formCliente" method="POST" action="guardar_reserva.php" class="space-y-4" enctype="multipart/form-data">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-car text-blue-600 mr-2"></i> Vehículo
+        </label>
+        <select name="id_vehiculo" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+          <option value="">Seleccione un vehículo</option>
+          <?php
+            $vehiculos = $conn->query("SELECT id_vehiculo, CONCAT(marca, ' ', modelo) AS nombre FROM vehiculos");
+            while ($v = $vehiculos->fetch_assoc()):
+          ?>
+            <option value="<?= $v['id_vehiculo'] ?>"><?= htmlspecialchars($v['nombre']) ?></option>
+          <?php endwhile; ?>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-user text-blue-600 mr-2"></i> Nombre completo
+        </label>
+        <input type="text" name="nombre_cliente" required
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-id-card text-green-600 mr-2"></i> DUI
+        </label>
+        <input type="text" name="dui" required
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
+        </label>
+        <div class="flex items-center">
+          <span class="text-gray-600 font-medium mr-2">+503</span>
+          <input type="tel" name="telefono_cliente" id="telefono_cliente" maxlength="9" required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500"
+                placeholder="1234-5678"
+                oninput="formatearTelefono(this)">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-envelope text-red-600 mr-2"></i> Correo electrónico
+        </label>
+        <input type="email" name="email_cliente" required
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-calendar-day text-green-600 mr-2"></i> Fecha de inicio
+          </label>
+          <input type="date" name="fecha_inicio" required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-calendar-day text-red-600 mr-2"></i> Fecha de finalización
+          </label>
+          <input type="date" name="fecha_fin" required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-clock text-purple-600 mr-2"></i> Días solicitados
+        </label>
+        <input type="number" name="dias" required min="1"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Documento - DUI</label>
+        <input type="file" name="fotos_dui" accept="image/*"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+        <small class="text-gray-500">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Documento - Licencia</label>
+        <input type="file" name="fotos_licencia" accept="image/*"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+        <small class="text-gray-500">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Observaciones</label>
+        <textarea name="observaciones"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500"></textarea>
+        <small class="text-gray-500">Ejemplo: "Entregar en oficina central"</small>
+      </div>
+
+      <button type="submit"
+        class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 mt-6">
+        <i class="fas fa-check-circle"></i> Guardar Reservación
+      </button>
+    </form>
+  </div>
+</div>
+
+
 
        </div>
         <!-- Tabla responsive con diseño moderno -->
@@ -296,6 +419,28 @@ function cerrarModalFotos() {
   document.getElementById("modalFotos").classList.add("hidden");
 }
 </script>
+
+
+<script>
+function abrirModal() {
+  document.getElementById("modalCliente").classList.remove("hidden");
+}
+
+function cerrarModal() {
+  document.getElementById("modalCliente").classList.add("hidden");
+}
+
+// Formatear teléfono automáticamente
+function formatearTelefono(input) {
+  let valor = input.value.replace(/\D/g, ''); // eliminar no números
+  if (valor.length > 4) {
+    input.value = valor.slice(0, 4) + '-' + valor.slice(4, 8);
+  } else {
+    input.value = valor;
+  }
+}
+</script>
+
 
 </body>
 </html>

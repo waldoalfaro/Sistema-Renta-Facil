@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fecha_inicio    = $_POST['fecha_inicio'];
     $fecha_fin       = $_POST['fecha_fin'];
     $dias            = $_POST['dias'];
+    $costo           = $_POST['total_pagar'];
     $observaciones   = $_POST['observaciones'];
 
     // Archivos recibidos
@@ -84,11 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 💾 Guardar en base de datos
     $stmt = $conn->prepare("INSERT INTO reservaciones 
         (id_vehiculo, solicitante_nombre, solicitante_dui, solicitante_telefono, solicitante_correo, 
-        fecha_inicio_solicitada, fecha_fin_solicitada, dias_solicitados, documentosDui, licencia, observaciones)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        fecha_inicio_solicitada, fecha_fin_solicitada, dias_solicitados, total_pagar, documentosDui, licencia, observaciones)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     $stmt->bind_param(
-        "ississsisss",
+        "ississsiisss",
         $id_vehiculo,
         $nombre_cliente,
         $dui,
@@ -97,20 +98,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fecha_inicio,
         $fecha_fin,
         $dias,
+        $costo,
         $nombreFotoDui,
         $nombreFotoLic,
         $observaciones
     );
 
    if ($stmt->execute()) {
+    // obtener id de la reservación recién creada
+    $id_reserva = $stmt->insert_id; // o $conn->insert_id
+
+    // Crear mensaje de notificación
+    $mensaje = "Nueva reservación de $nombre_cliente (DUI: $dui) para vehículo ID $id_vehiculo";
+    $tipo = "reservacion";
+
+    // Insertar en tabla notificaciones incluyendo id_reservacion
+    $sqlNotif = "INSERT INTO notificaciones (mensaje, tipo, id_reservacion) VALUES (?, ?, ?)";
+    $stmtNotif = $conn->prepare($sqlNotif);
+    $stmtNotif->bind_param("ssi", $mensaje, $tipo, $id_reserva);
+    $stmtNotif->execute();
+    $stmtNotif->close();
+
     // Redirigimos con un parámetro de éxito
     header("Location: ../PaginaWeb.php?reserva=ok");
     exit;
 } else {
-    // Redirigimos con un parámetro de error
     header("Location: ../PaginaWeb.php?reserva=error");
     exit;
 }
+
 
 } else {
     die("Acceso no permitido");

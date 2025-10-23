@@ -6,7 +6,6 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f1c40f 0%, #27ae60 25%, #2c3e50 50%, #f39c12 75%, #16a085 100%);
     background-size: 400% 400%;
     animation: gradientShift 8s ease infinite;
     min-height: 100vh;
@@ -21,16 +20,6 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.98);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    border: 3px solid rgba(241, 196, 15, 0.3);
-    backdrop-filter: blur(10px);
-}
 
 h1 {
     text-align: center;
@@ -78,7 +67,6 @@ h1 {
     left: 0;
     right: 0;
     height: 6px;
-    background: linear-gradient(90deg, #f1c40f 0%, #27ae60 50%, #16a085 100%);
     transform: scaleX(0);
     transition: transform 0.4s ease;
     z-index: 1;

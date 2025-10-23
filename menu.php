@@ -1,6 +1,6 @@
 <?php
 
-
+include 'seguridad.php';
 
 $tipo = $_SESSION['tipo']; 
 
@@ -158,6 +158,8 @@ $tipo = $_SESSION['tipo'];
          </li>
       </ul>
    </div>
+   <form id="logout-form" action="/Sistema-Renta-Facil/salir.php" method="POST" style="display: none;"></form>
+
 </aside>
 <script src="/Sistema-Renta-Facil/scrip.js"></script>
 <script>
@@ -221,6 +223,75 @@ $tipo = $_SESSION['tipo'];
 
   })();
 </script>
+
+
+
+<script>
+(function() {
+    function hacerLogout() {
+        const form = document.getElementById('logout-form');
+        if (form) form.submit();
+    }
+
+    function mostrarAlerta() {
+        // evita múltiples alertas simultáneas
+        if (window.alertaMostrada) return;
+        window.alertaMostrada = true;
+
+        alertify.confirm(
+            '⚠️ Seguridad del sistema',
+            'Por seguridad, no puedes usar el botón "Atrás". Si deseas salir, se cerrará tu sesión.',
+            function() {
+                hacerLogout();
+            },
+            function() {
+                alertify.success('Por favor, usa solo los botones del sistema.');
+                // volvemos a bloquear y permitimos futuras alertas
+                bloquearRetroceso();
+                window.alertaMostrada = false;
+            }
+        )
+        .set('labels', { ok: 'Cerrar sesión', cancel: 'Cancelar' })
+        .set('transition', 'pulse')
+        .set('closable', false);
+    }
+
+    function bloquearRetroceso() {
+        // agregamos un estado de bloqueo en el historial
+        history.pushState({ bloqueado: true }, null, location.href);
+        window.onpopstate = function(event) {
+            // si viene del botón atrás (no de una navegación interna)
+            if (event.state && event.state.bloqueado) {
+                history.pushState({ bloqueado: true }, null, location.href);
+                mostrarAlerta();
+            }
+        };
+    }
+
+    bloquearRetroceso();
+
+    // si el usuario intenta volver desde caché, cerrar sesión directamente
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            mostrarAlerta();
+        }
+    });
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
 

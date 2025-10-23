@@ -344,6 +344,8 @@ while ($fila = $reserva->fetch_assoc()) {
           <input type="hidden" name="id_vehiculo" value="<?= $vehiculo['id_vehiculo'] ?>">
           <input type="hidden" name="fecha_inicio" id="modal_fecha_inicio">
           <input type="hidden" name="fecha_fin" id="modal_fecha_fin">
+          <input type="hidden" id="precio_por_dia" value="<?= $vehiculo['precio_dia'] ?>">
+          <input type="hidden" id="total_pagar_hidden" name="total_pagar">
 
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -432,8 +434,12 @@ while ($fila = $reserva->fetch_assoc()) {
               <i class="fas fa-clock text-purple-600 mr-2"></i>
               Días solicitados
             </label>
-            <input type="number" name="dias" readonly
+            <input type="number" id="dias" name="dias" readonly
                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+          </div>
+           <div>
+            <label class="block text-gray-700 font-semibold">Total a pagar</label>
+            <input type="text" id="total_pagar" readonly class="border p-2 rounded w-full bg-green-100 font-bold text-green-700">
           </div>
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2"> 
@@ -506,6 +512,8 @@ while ($fila = $reserva->fetch_assoc()) {
 
   // Rellenar el campo de días
   document.querySelector('input[name="dias"]').value = diffDays;
+
+  calcularDiasYTotal();
 
   // Mostrar el modal
   document.getElementById("modalCliente").style.display = "flex";
@@ -641,6 +649,34 @@ while ($fila = $reserva->fetch_assoc()) {
   calendar.render();
 });
   </script>
+
+
+
+<script>
+function calcularDiasYTotal() {
+  const fechaInicio = new Date(document.getElementById('modal_fecha_inicio_visible').value);
+  const fechaFin = new Date(document.getElementById('modal_fecha_fin_visible').value);
+  const precioDia = parseFloat(document.getElementById('precio_por_dia').value);
+
+  if (!isNaN(fechaInicio) && !isNaN(fechaFin) && fechaFin >= fechaInicio) {
+    const diffTime = Math.abs(fechaFin - fechaInicio);
+    const dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+    document.getElementById('dias').value = dias;
+
+    const total = dias * precioDia;
+    document.getElementById('total_pagar').value = `$ ${total.toFixed(2)}`;
+    document.getElementById('total_pagar_hidden').value = total.toFixed(2);
+  } else {
+    document.getElementById('dias').value = '';
+    document.getElementById('total_pagar').value = '';
+    document.getElementById('total_pagar_hidden').value = '';
+  }
+}
+
+document.getElementById('modal_fecha_inicio_visible').addEventListener('change', calcularDiasYTotal);
+document.getElementById('modal_fecha_fin_visible').addEventListener('change', calcularDiasYTotal);
+</script>
+
 </body>
 </html>
 

@@ -24,8 +24,8 @@ session_start(); // <- necesario para leer $_SESSION['error']
   <div class="fixed bottom-20 left-1/4 w-12 h-12 bg-yellow-300 rounded-full opacity-20 floating-animation" style="animation-delay: -4s;"></div>
 
   <!-- Contenedor principal -->
-  <div class="glass-effect rounded-3xl shadow-2xl p-8 w-full max-w-md transform hover:scale-105 transition-all duration-300">
-    
+  <div class="glass-effect rounded-3xl shadow-2xl p-8 w-full max-w-md md:max-w-md sm:max-w-full sm:rounded-none sm:h-screen sm:flex sm:flex-col sm:justify-center sm:items-center">
+
     <!-- Header con logo y título -->
     <div class="text-center mb-8">
       <div class="mx-auto w-20 h-20 bg-gradient-to-r from-green-500 to-yellow-400 rounded-full flex items-center justify-center mb-4 pulse-border border-4">
@@ -80,35 +80,35 @@ session_start(); // <- necesario para leer $_SESSION['error']
 
       <!-- Campo Contraseña -->
      <!-- Campo Contraseña -->
-<div class="relative">
-  <label for="clave" class="block text-sm font-semibold text-gray-700 mb-2">
-    <span class="flex items-center">
-      <svg class="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-      </svg>
-      Contraseña
-    </span>
-  </label>
+      <div class="relative">
+        <label for="clave" class="block text-sm font-semibold text-gray-700 mb-2">
+          <span class="flex items-center">
+            <svg class="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+            </svg>
+            Contraseña
+          </span>
+        </label>
 
-  <!-- Campo de entrada -->
-  <div class="relative">
-    <input 
-      type="password" 
-      name="clave" 
-      id="clave"
-      placeholder="Ingresa tu contraseña segura"
-      class="input-glow w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:outline-none transition-all duration-300 bg-white pr-12"
-      required
-    >
+        <!-- Campo de entrada -->
+        <div class="relative">
+          <input 
+            type="password" 
+            name="clave" 
+            id="clave"
+            placeholder="Ingresa tu contraseña segura"
+            class="input-glow w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:outline-none transition-all duration-300 bg-white pr-12"
+            required
+          >
     
-   
-  </div>
-  <button type="button" id="togglePassword"
+   <button type="button" id="togglePassword"
             class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-yellow-600 focus:outline-none">
       <i class="fas fa-eye" id="icono_ojo"></i>
     </button>
 
   <p class="text-xs text-gray-500 mt-1 ml-2">🔐 Mantén tu contraseña segura</p>
+  </div>
+  
 </div>
 
 
