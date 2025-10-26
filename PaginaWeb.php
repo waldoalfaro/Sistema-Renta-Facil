@@ -27,7 +27,7 @@ $resultado = $conn->query($sql)
     <nav class="navbar">
       <div class="logo" style="display: flex; align-items: center;">
         <!-- Solo el logo en imagen -->
-        <img src="logo1.jpg" alt="Logo de Renta Fácil" style="width: 120px; height: auto;">
+        <img src="Logo-Renta-Facil.jpg" alt="Logo de Renta Fácil" style="width: 120px; height: auto;">
       </div>
 
       <button id="menu-btn" class="block md:hidden text-white focus:outline-none">
@@ -67,81 +67,83 @@ $resultado = $conn->query($sql)
 
 
 
-
-<section id="vehiculos" class="vehicles-section py-16 bg-black">
+<section id="vehiculos" class="vehicles-section py-12 bg-black">
   <div class="container mx-auto px-4 max-w-7xl">
-    <h2 class="text-4xl font-bold mb-16 text-center text-white">
+    <h2 class="text-3xl font-bold mb-12 text-center text-white">
       Nuestros Vehículos
     </h2>
     
-    <div class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <?php 
       $counter = 0;
       while ($row = $resultado->fetch_assoc()): 
       ?>
       
       <!-- Tarjeta de Vehículo -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl hover:shadow-yellow-500/20 transition-all duration-300 border border-gray-700">
-        <div class="flex flex-col md:flex-row">
-          
-          <!-- Información del Vehículo (Izquierda) -->
-          <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-between">
-            <div>
-              <div class="inline-block bg-yellow-500 text-black px-4 py-1 rounded-full text-sm font-bold mb-4">
-                DISPONIBLE
-              </div>
-              
-              <h3 class="text-3xl md:text-4xl font-bold text-white mb-4">
-                <?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>
-              </h3>
-              
-              <div class="flex items-center gap-3 mb-6">
-                <div class="bg-gray-700 px-4 py-2 rounded-lg">
-                  <i class="fas fa-calendar-alt text-yellow-500 mr-2"></i>
-                  <span class="text-white font-semibold">
-                    Año <?= htmlspecialchars($row['anio']) ?>
-                  </span>
-                </div>
-              </div>
-              
-              <p class="text-gray-300 text-lg mb-6 leading-relaxed">
-                Haz clic en reservar para ver todos los detalles del vehículo y asegurar tu próxima aventura.
-              </p>
+      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-yellow-500/30 transition-all duration-300 border border-gray-700 hover:border-yellow-500/50 transform hover:-translate-y-1">
+        
+        <!-- Imagen del Vehículo -->
+        <div class="relative h-48 overflow-hidden">
+          <?php if (!empty($row['foto'])): ?>
+            <img src="FotosSubidas/<?= htmlspecialchars($row['foto']) ?>"
+                 alt="<?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>"
+                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+          <?php else: ?>
+            <div class="flex items-center justify-center h-full bg-gray-700 text-gray-400">
+              <i class="fas fa-car text-5xl"></i>
             </div>
+          <?php endif; ?>
+          
+          <!-- Badge de disponibilidad -->
+          <div class="absolute top-3 right-3">
+            <span class="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              DISPONIBLE
+            </span>
+          </div>
+        </div>
+        
+        <!-- Contenido de la Tarjeta -->
+        <div class="p-5">
+          <!-- Título y Año -->
+          <div class="mb-4">
+            <h3 class="text-xl font-bold text-white mb-2 line-clamp-1">
+              <?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>
+            </h3>
             
-            <!-- Precio y Botón -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6 pt-6 border-t border-gray-700">
-              <div>
-                <p class="text-gray-400 text-sm mb-1">Desde</p>
-                <span class="text-3xl font-bold text-yellow-500">
+            <div class="inline-flex items-center bg-gray-700/50 px-3 py-1 rounded-lg">
+              <i class="fas fa-calendar-alt text-yellow-500 text-sm mr-2"></i>
+              <span class="text-white text-sm font-medium">
+                <?= htmlspecialchars($row['anio']) ?>
+              </span>
+            </div>
+          </div>
+          
+          <!-- Descripción compacta -->
+          <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+            Vehículo en excelente estado, perfecto para tu próxima aventura.
+          </p>
+          
+          <!-- Precio y Botón -->
+          <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+            <div>
+              <p class="text-gray-500 text-xs mb-0.5">Desde</p>
+              <div class="flex items-baseline gap-1">
+                <span class="text-2xl font-bold text-yellow-500">
                   $<?= number_format($row['precio_dia'], 2) ?>
                 </span>
-                <span class="text-gray-300 text-lg">/día</span>
+                <span class="text-gray-400 text-sm">/día</span>
               </div>
-              
-              <a href="Reservas/reservaciones.php?id=<?= $row['id_vehiculo'] ?>"
-                 class="bg-yellow-500 text-black px-8 py-4 rounded-xl font-bold hover:bg-yellow-400 transition-all duration-300 w-full sm:w-auto text-center shadow-lg hover:shadow-yellow-500/50 transform hover:scale-105">
-                <i class="fas fa-calendar-check mr-2"></i>
-                Reservar Ahora
-              </a>
             </div>
+            
+            <a href="Reservas/reservaciones.php?id=<?= $row['id_vehiculo'] ?>"
+               class="bg-yellow-500 text-black px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-400 transition-all duration-300 shadow-md hover:shadow-yellow-500/50 transform hover:scale-105 inline-flex items-center gap-2">
+              <i class="fas fa-calendar-check text-sm"></i>
+              Reservar
+            </a>
           </div>
-          
-          <!-- Imagen del Vehículo (Derecha) -->
-          <div class="w-full md:w-1/2 h-72 md:h-96 relative">
-            <?php if (!empty($row['foto'])): ?>
-              <img src="FotosSubidas/<?= htmlspecialchars($row['foto']) ?>"
-                   alt="<?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>"
-                   class="w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-l from-transparent to-gray-900/50"></div>
-            <?php else: ?>
-              <div class="flex items-center justify-center h-full bg-gray-700 text-gray-400">
-                <i class="fas fa-car text-6xl"></i>
-              </div>
-            <?php endif; ?>
-          </div>
-          
         </div>
+        
       </div>
       
       <?php 
@@ -150,7 +152,9 @@ $resultado = $conn->query($sql)
       ?>
     </div>
   </div>
-  
+
+
+
   <!-- Mensaje Final -->
   <div class="flex items-center justify-center mt-16">
     <div class="text-center bg-gray-900 px-8 py-4 rounded-full border border-yellow-500/30">
@@ -162,6 +166,8 @@ $resultado = $conn->query($sql)
     </div>
   </div>
 </section>
+  
+  
 
   <!-- area de promociones -->
 <section id="promociones" class="py-16 bg-black">
