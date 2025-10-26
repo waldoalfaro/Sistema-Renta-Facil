@@ -42,9 +42,11 @@ $resultado = $conn->query($sql);
 <?php include '../menu.php' ?>
 
 <div class="p-4 sm:ml-64">
+      <div class="h-16 sm:h-20"></div>
+
     <div class="max-w-7xl mx-auto">
         <!-- Header mejorado -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-6 mb-6 fade-in">
+        <div class="bg-gradient-to-r from-gray-700 to-gray-700 rounded-lg shadow-lg p-6 mb-6 fade-in">
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold text-white flex items-center gap-3">
@@ -64,7 +66,7 @@ $resultado = $conn->query($sql);
 
        <div>
          <button type="button" onclick="abrirModal()" 
-            class="w-full bg-gradient-to-r from-purple-600 to-indigo-200 ...">
+            class="w-full bg-gradient-to-r from-gray-600 to-gray-600 ...">
             <i class="fas fa-check-circle"></i>
             Registrar una reserva
         </button>
@@ -313,8 +315,10 @@ $resultado = $conn->query($sql);
                                             onclick="abrirModalCorreo(this)">
                                             <i class="fas fa-envelope text-sm"></i>
                                         </a>
-                                        <a href="#" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" title="Realizar contrato">
-                                            <i class="fas fa-pen-to-square text-sm"></i>
+                                        <a href="../Contratos/realizar_contrato.php?id_reservacion=<?= $row['id_reservacion'] ?>"
+                                          class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 hover:scale-110 shadow-sm"
+                                          title="Realizar contrato">
+                                          <i class="fas fa-pen-to-square text-sm"></i>
                                         </a>
                                         <a href="#"
                                                 class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-purple-500 hover:bg-purple-600 text-white transition-all duration-200 hover:scale-110 shadow-sm"

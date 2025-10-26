@@ -57,9 +57,11 @@ window.onload = function() {
 
 
     <div class="p-4 sm:ml-64">
+            <div class="h-16 sm:h-20"></div>
+
         <div class="main-container">
             
-            <div class="bg-gradient-to-r from-green-600 to-green-800 rounded-lg shadow-lg p-6 mb-6 fade-in">
+            <div class="bg-gradient-to-r from-gray-700 to-gray-700 rounded-lg shadow-lg p-6 mb-6 fade-in">
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold text-white flex items-center gap-3">
@@ -593,8 +595,8 @@ window.onload = function() {
     <?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
     <script>
     Swal.fire({
-        title: 'Usuario eliminado',
-        text: 'El usuario fue eliminado correctamente.',
+        title: 'Vehiculo eliminado',
+        text: 'El vehiculo fue eliminado correctamente.',
         icon: 'success',
         confirmButtonColor: '#3085d6',
         confirmButtonText: 'Aceptar'
@@ -719,7 +721,7 @@ window.onload = function() {
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
+                confirmButtonText: 'Sí, eliminar', 
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {

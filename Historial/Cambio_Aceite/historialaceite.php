@@ -20,6 +20,8 @@ $resultadohistorial = $conn->query($sqlhistorial);
 <body class="bg-gray-50">
 <?php include '../../menu.php'; ?>
 <div class="p-4 sm:ml-64">
+        <div class="h-16 sm:h-20"></div>
+
     <div class="max-w-7xl mx-auto">
         <div class="bg-gradient-to-r from-grey-900 to-grey-900 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between">

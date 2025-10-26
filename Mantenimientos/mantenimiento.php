@@ -3,7 +3,7 @@ include '../conexion.php';
 include '../seguridad.php';
 include 'obtener_kilometraje.php';
 
-$sql = "SELECT id_vehiculo, modelo, placa FROM vehiculos WHERE estado = 'Mantenimiento'";
+$sql = "SELECT id_vehiculo, marca,  modelo, placa FROM vehiculos WHERE estado = 'Mantenimiento'";
 $result = $conn->query($sql);
 
 $sqlMantenimientoAceite = "SELECT m.*, v.modelo, v.marca, v.placa 
@@ -53,15 +53,17 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
   <?php include '../menu.php'; ?>
 
   <div class="p-4 sm:ml-64">
+    <div class="h-16 sm:h-20"></div>
+
     <div class="max-w-7xl mx-auto">
-      <div class="bg-gradient-to-r from-yellow-600 to-yellow-800 rounded-lg shadow-lg p-6 mb-6">
+      <div class="bg-gradient-to-r from-gray-600 to-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-3xl font-bold text-white flex items-center gap-3">
               <i class="fas fa-calendar-check"></i>
               Gestión de Mantenimiento
             </h1>
-            <p class="text-yellow-100 mt-2">Administra y controla todos los mantenimientos de tus vehículos</p>
+            <p class="text-white mt-2">Administra y controla todos los mantenimientos de tus vehículos</p>
           </div>
           <div class="hidden md:block">
                     <div class="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
@@ -80,7 +82,7 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
 
       <!-- BOTÓN PARA MOSTRAR FORMULARIO -->
       <div class="mb-6">
-        <button id="btnMostrarForm" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+        <button id="btnMostrarForm" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
           <i class="fa-solid fa-plus mr-2"></i>
           Agregar Nuevo Mantenimiento
         </button>
@@ -88,9 +90,9 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
 
       <!-- FORMULARIO OCULTO -->
       <div id="formContainer" class="hidden transition-all duration-500 ease-in-out">
-        <div class="bg-white shadow-xl rounded-lg p-6 mb-6 border-l-4 border-yellow-500">
+        <div class="bg-white shadow-xl rounded-lg p-6 mb-6 border-l-4 border-gray-500">
           <h5 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
-            <i class="fas fa-plus-circle text-yellow-600"></i> Registrar Nuevo Mantenimiento
+            <i class="fas fa-plus-circle text-gray-600"></i> Registrar Nuevo Mantenimiento
           </h5>
 
           <form action="ValidarMantenimiento.php" method="POST" enctype="multipart/form-data" id="vehicleForm">
@@ -98,13 +100,13 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
               <!-- Vehículo -->
               <div class="col-md-6">
                 <label class="form-label fw-bold text-gray-700">
-                  <i class="fas fa-car text-yellow-600 mr-1"></i> Vehículo
+                  <i class="fas fa-car text-gray-600 mr-1"></i> Vehículo
                 </label>
-                <select name="id_vehiculo" class="form-select border-2 border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition" required>
+                <select name="id_vehiculo" class="form-select border-2 border-gray-300 focus:border-gray-500 focus:ring-2 focus:ring-gray-200 transition" required>
                   <option value="">Seleccione un vehículo...</option>
                   <?php while ($row = $result->fetch_assoc()) { ?>
                   <option value="<?= $row['id_vehiculo'] ?>">
-                    <?= $row['modelo'] . " - " . $row['placa'] ?>
+                    <?= $row['marca'] . " - " .$row['modelo']. " - "  . $row['placa'] ?>
                   </option>
                   <?php } ?>
                 </select>
@@ -113,14 +115,12 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
               <!-- Tipo de Mantenimiento -->
               <div class="col-md-6">
                 <label class="form-label fw-bold text-gray-700">
-                  <i class="fas fa-wrench text-yellow-600 mr-1"></i> Tipo de Mantenimiento
+                  <i class="fas fa-wrench text-gray-600 mr-1"></i> Tipo de Mantenimiento
                 </label>
                 <select id="tipoMantenimiento" name="tipo_mantenimiento" class="form-select border-2 border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition" required>
                   <option value="">Seleccione el tipo...</option>
                   <option value="cambio_aceite">Cambio de Aceite</option>
                   <option value="reparacion">Reparación / Otro Daño</option>
-                  <option value="cambio_bateria">Cambio de Batería</option>
-                  <option value="cambio_llantas">Cambio de Llantas</option>
                 </select>
               </div>
             </div>
@@ -209,102 +209,10 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
 
             <!-- SECCION DE CAMBIO DE BATERIA -->
 
-            <div id="seccionBateria" class="section-mantenimiento hidden mt-4">
-              <div class="bg-red-50 border-2 border-red-300 rounded-lg p-4">
-                <h6 class="font-bold text-red-800 mb-3 flex items-center gap-2">
-                  <i class="fas fa-tools"></i> Cambio de bateria
-                </h6>
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Fecha</label>
-                    <input type="date" class="form-control border-2 border-red-200 focus:border-red-500" name="fecha">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Marca de bateria</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="marca_bateria">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Modelo de bateria</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="modelo">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Voltaje</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="voltaje" >
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">garantia</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="garantia">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Costo de Reparación ($)</label>
-                    <input type="number" step="0.01" class="form-control border-2 border-red-200 focus:border-red-500" name="costo">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Realizado por</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="realizados">
-                  </div>
-                   <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Telefono</label>
-                    <input type="tel" class="form-control border-2 border-red-200 focus:border-red-500" name="cell">
-                  </div>
-                  <div class="col-md-12">
-                    <label class="form-label fw-bold text-gray-700">Observaciones</label>
-                    <textarea class="form-control border-2 border-red-200 focus:border-red-500" name="observa" rows="3"></textarea>
-                  </div>
-                 
-                </div>
-              </div>
-            </div> 
-
-            <!-- SECCION DE CAMBIO DE LLANTAS -->
-
-            <div id="seccionLlantas" class="section-mantenimiento hidden mt-4">
-              <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4">
-                <h6 class="font-bold text-green-800 mb-3 flex items-center gap-2">
-                  <i class="fas fa-tools"></i> Cambio de llantas
-                </h6>
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Fecha</label>
-                    <input type="date" class="form-control border-2 border-red-200 focus:border-red-500" name="fecha">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Marca de llantas</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="marca_llantas">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Posición</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="posicion" >
-                  </div>
-          
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Kilometraje de cambio</label>
-                    <input type="number" class="form-control border-2 border-red-200 focus:border-red-500" name="kilometraje">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Realizado por</label>
-                    <input type="text" class="form-control border-2 border-red-200 focus:border-red-500" name="realizado_por">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Costo de Reparación ($)</label>
-                    <input type="number" step="0.01" class="form-control border-2 border-red-200 focus:border-red-500" name="costo_llantas" placeholder="0.00">
-                  </div>
-                   <div class="col-md-6">
-                    <label class="form-label fw-bold text-gray-700">Telefono</label>
-                    <input type="tel" class="form-control border-2 border-red-200 focus:border-red-500" name="telefono">
-                  </div>
-                  <div class="col-md-12">
-                    <label class="form-label fw-bold text-gray-700">Observaciones</label>
                     
-                    <textarea class="form-control border-2 border-red-200 focus:border-red-500" name="observaciones" rows="3"></textarea>
-                  </div>
-                 
-                </div>
-              </div>
-            </div> 
 
             <div class="mt-5 text-center">
-              <button type="submit" class="px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <button type="submit" class="px-8 py-3 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <i class="fas fa-save mr-2"></i> Guardar Mantenimiento
               </button>
               <button type="button" id="btnCancelar" class="px-8 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ml-3">
@@ -321,22 +229,19 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
       <div class="container">
         <div class="content">
           <div class="search-bar mb-3">
-            <div class="relative">
-              <input type="text" id="searchInput" class="form-control pl-10 border-2 border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition" placeholder="🔍 Buscar mantenimientos por modelo, año, o tipo...">
-              <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-            </div>
+            
           </div>
 
          
 
           <div class="vehicle-list bg-white rounded-lg p-4 shadow-md">
-            <h2 class="text-lg font-bold mb-3 text-yellow-700 flex items-center gap-2">
+            <h2 class="text-lg font-bold mb-3 text-gray-700 flex items-center gap-2">
               <i class="fas fa-list"></i> Lista de Mantenimientos de cambio de aceite...
             </h2>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden fade-in">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gradient-to-r from-yellow-700 to-yellow-900">
+                    <thead class="bg-gradient-to-r from-gray-700 to-gray-900">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
@@ -398,9 +303,7 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-12 w-12 bg-gradient-to-br <?= $gradiente ?> rounded-lg flex items-center justify-center shadow-md">
-                                            <i class="fas fa-car text-white"></i>
-                                        </div>
+                                        
                                         <div class="ml-4">
                                             <p class="text-sm font-bold text-gray-900"><?= $row['modelo'] ?></p>
                                         </div>
@@ -454,143 +357,6 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
       </div>
       
     </div>
-    
-
-     <div class="container">
-        <div class="content">
-          <div class="search-bar mb-3">
-            
-          </div>
-
-          <div class="vehicle-list bg-white rounded-lg p-4 shadow-md">
-            <h2 class="text-lg font-bold mb-3 text-yellow-700 flex items-center gap-2">
-              <i class="fas fa-list"></i> Lista de Mantenimientos de cambios de baterias...
-            </h2>
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden fade-in">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gradient-to-r from-yellow-700 to-yellow-900">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                Modelo
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                placa 
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                Fecha de reparacion
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                              Marca
-                            </th>
-                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Modelo
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Voltaje
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Grantia
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Costo
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Realizado por
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Telefono
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                              observaciones
-                            </th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                                <i class="fas fa-cog mr-2"></i>Acciones
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <?php 
-                        $contador = 1;
-                        $colores = [
-                            'from-blue-400 to-blue-600',
-                            'from-green-400 to-green-600',
-                            'from-purple-400 to-purple-600',
-                            'from-pink-400 to-pink-600',
-                            'from-indigo-400 to-indigo-600',
-                            'from-red-400 to-red-600'
-                        ];
-                        while ($row = $resultadobateria->fetch_assoc()): 
-                            $colorIndex = ($contador - 1) % count($colores);
-                            $gradiente = $colores[$colorIndex];
-                        ?>
-                            <tr class="hover:bg-gray-50 transition-colors duration-200">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br <?= $gradiente ?> text-white font-bold text-sm shadow-md">
-                                        <?= $contador++ ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-12 w-12 bg-gradient-to-br <?= $gradiente ?> rounded-lg flex items-center justify-center shadow-md">
-                                            <i class="fas fa-car text-white"></i>
-                                        </div>
-                                        <div class="ml-4">
-                                            <p class="text-sm font-bold text-gray-900"><?= $row['modelo'] ?></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['placa'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['fecha'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['marca_bateria'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['modelo_bateria'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['voltaje'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['garantia_meses']  ?>-meses</div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['costo'] ?></div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['realizado_por'] ?></div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['telefono'] ?></div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['observaciones'] ?></div>
-                                </td>
-                                 <td>
-                                   <a href="#"
-                                    onclick="abrirModalCambioBateria(<?= $row['id_cambio_bateria'] ?>)"
-                                    class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 hover:scale-110 shadow-sm"
-                                    title="Registrar nuevo cambio de bateria">
-                                    <i class="fas fa-pen-to-square text-sm"></i>
-                                  </a>
-                                  
-                                 </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-            
-          </div>
-        </div>
-    </div>
-
 
     <div class="container">
         <div class="content">
@@ -599,136 +365,13 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
           </div>
 
           <div class="vehicle-list bg-white rounded-lg p-4 shadow-md">
-            <h2 class="text-lg font-bold mb-3 text-yellow-700 flex items-center gap-2">
-              <i class="fas fa-list"></i> Lista de Mantenimientos de cambios de baterias...
-            </h2>
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden fade-in">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gradient-to-r from-yellow-700 to-yellow-900">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                Modelo
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                placa 
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                Fecha de reparacion
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                              Marca
-                            </th>
-                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Posicion
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                              Kilometraje de cambio
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Costo
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Realizado por
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                               Telefono
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                              observaciones
-                            </th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                                <i class="fas fa-cog mr-2"></i>Acciones
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <?php 
-                        $contador = 1;
-                        $colores = [
-                            'from-blue-400 to-blue-600',
-                            'from-green-400 to-green-600',
-                            'from-purple-400 to-purple-600',
-                            'from-pink-400 to-pink-600',
-                            'from-indigo-400 to-indigo-600',
-                            'from-red-400 to-red-600'
-                        ];
-                        while ($row = $resultadosllantas->fetch_assoc()): 
-                            $colorIndex = ($contador - 1) % count($colores);
-                            $gradiente = $colores[$colorIndex];
-                        ?>
-                            <tr class="hover:bg-gray-50 transition-colors duration-200">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br <?= $gradiente ?> text-white font-bold text-sm shadow-md">
-                                        <?= $contador++ ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-12 w-12 bg-gradient-to-br <?= $gradiente ?> rounded-lg flex items-center justify-center shadow-md">
-                                            <i class="fas fa-car text-white"></i>
-                                        </div>
-                                        <div class="ml-4">
-                                            <p class="text-sm font-bold text-gray-900"><?= $row['modelo'] ?></p>
-                                        </div>
-                                    </div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['placa'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['fecha'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['marca_llanta'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['posicion'] ?></div>
-                                </td>
-                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['kilometraje_cambio'] ?></div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['costo'] ?></div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['realizado_por'] ?></div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['telefono'] ?></div>
-                                </td>
-                                <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900"><?= $row['observaciones'] ?></div>
-                                </td>
-                                 <td>
-                                  
-                                 </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-            
-          </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="content">
-          <div class="search-bar mb-3">
-            
-          </div>
-
-          <div class="vehicle-list bg-white rounded-lg p-4 shadow-md">
-            <h2 class="text-lg font-bold mb-3 text-yellow-700 flex items-center gap-2">
+            <h2 class="text-lg font-bold mb-3 text-gray-700 flex items-center gap-2">
               <i class="fas fa-list"></i> Lista de Mantenimientos de reparaciones...
             </h2>
             <div class="bg-white rounded-lg shadow-lg overflow-hidden fade-in">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gradient-to-r from-yellow-700 to-yellow-900">
+                    <thead class="bg-gradient-to-r from-gray-700 to-gray-900">
                         <tr>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
@@ -758,9 +401,7 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
                             <th class="px-6 py-4 text-left text-xs font-semibold text-white uppercase tracking-wider">
                                Costo
                             </th>
-                            <th class="px-6 py-4 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                                <i class="fas fa-cog mr-2"></i>Acciones
-                            </th>
+                            
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -786,9 +427,7 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-12 w-12 bg-gradient-to-br <?= $gradiente ?> rounded-lg flex items-center justify-center shadow-md">
-                                            <i class="fas fa-car text-white"></i>
-                                        </div>
+                                        
                                         <div class="ml-4">
                                             <p class="text-sm font-bold text-gray-900"><?= $row['modelo'] ?></p>
                                         </div>
@@ -818,9 +457,7 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
                                  <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900"><?= $row['costo_reparacion'] ?></div>
                                 </td>
-                                 <td>
-                                  
-                                 </td>
+                                
                             </tr>
                         <?php endwhile; ?>
                     </tbody>
@@ -900,69 +537,7 @@ $resultadosllantas = $conn->query($sqlmantenimientollantas);
 </div>
 
 
-<div id="modalCambioBateria" 
-     class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
-  <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 my-10 max-h-[90vh] overflow-y-auto">
-    <h2 class="text-xl font-bold mb-4 text-gray-700">Registrar Nuevo Cambio de batería</h2>
 
-    <form id="formCambioBateria" method="POST" action="registrar_cambio_bateria.php">
-      <input type="hidden" id="id_cambio_bateria" name="id_cambio_bateria">
-      <input type="hidden" id="id_vehiculo" name="id_vehiculo">
-      
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Fecha de registro:</label>
-        <input type="date" id="Fecha" name="Fecha_bateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Marca de batería:</label>
-        <input type="text" name="marca_bateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Modelo de batería:</label>
-        <input type="text" name="modelo_bateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Voltaje:</label>
-        <input type="text" name="voltaje_vateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Garantía (meses):</label>
-        <input type="number" name="garantia_bateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Costo:</label>
-        <input type="number" step="0.01" name="costo_bateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Realizado por:</label>
-        <input type="text" name="realizado_por_bateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Teléfono:</label>
-        <input type="text" name="telefono_bateria" class="w-full border rounded p-2" required>
-      </div>
-
-      <div class="mb-3">
-        <label class="block text-gray-600 font-semibold">Observaciones:</label>
-        <textarea name="observaciones_bateria" class="w-full border rounded p-2 resize-none" rows="3" required></textarea>
-      </div>
-
-      <div class="flex justify-end space-x-3">
-        <button type="button" onclick="cerrarModalCambioBateria()" 
-                class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500">Cancelar</button>
-        <button type="submit" 
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
 
 
 <script>
@@ -1035,20 +610,14 @@ function cerrarModalCambioBateria() {
   document.getElementById('tipoMantenimiento').addEventListener('change', function() {
     const seccionAceite = document.getElementById('seccionAceite');
     const seccionReparacion = document.getElementById('seccionReparacion');
-    const seccionBateria = document.getElementById('seccionBateria');
-    const seccionLlantas = document.getElementById('seccionLlantas');
     
     // Ocultar todas las secciones
     seccionAceite.classList.add('hidden');
     seccionReparacion.classList.add('hidden');
-    seccionBateria.classList.add('hidden');
-    seccionLlantas.classList.add('hidden');
     
     // Deshabilitar todos los campos
     seccionAceite.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('required'));
     seccionReparacion.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('required'));
-    seccionBateria.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('required'));
-    seccionLlantas.querySelectorAll('input, textarea, select').forEach(el => el.removeAttribute('required'));
     
     // Mostrar la sección correspondiente
     if (this.value === 'cambio_aceite') {
@@ -1064,12 +633,7 @@ function cerrarModalCambioBateria() {
       seccionReparacion.querySelector('[name="tipo_danio"]').setAttribute('required', 'required');
       seccionReparacion.querySelector('[name="fecha_reparacion"]').setAttribute('required', 'required');
       seccionReparacion.querySelector('[name="descripcion_danio"]').setAttribute('required', 'required');
-    } else if (this.value === 'cambio_bateria') {
-      seccionBateria.classList.remove('hidden');
-      seccionBateria.classList.add('animate-fadeIn');
-    } else if (this.value === 'cambio_llantas') {
-      seccionLlantas.classList.remove('hidden');
-      seccionLlantas.classList.add('animate-fadeIn');
+    
     }
   });
 </script>
