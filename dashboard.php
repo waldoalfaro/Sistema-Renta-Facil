@@ -20,6 +20,36 @@ foreach ($tablasMantenimiento as $tabla) {
         $totalMantenimientos += intval($fila['total']);
     }
 }
+
+
+$logoActual = $conn->query("SELECT ruta_imagen FROM configuracion_web WHERE tipo='logo'")->fetch_assoc()['ruta_imagen'] ?? 'Logo.png';
+$portadaActual = $conn->query("SELECT ruta_imagen FROM configuracion_web WHERE tipo='portada'")->fetch_assoc()['ruta_imagen'] ?? 'portada.jpg';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $tipo = $_POST['tipo'];
+    $uploadDir = 'uploads/configuracion/';
+
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === 0) {
+        $nombreArchivo = time() . '_' . basename($_FILES['imagen']['name']);
+        $rutaDestino = $uploadDir . $nombreArchivo;
+
+        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
+            $conn->query("UPDATE configuracion_web SET ruta_imagen='$rutaDestino' WHERE tipo='$tipo'");
+            echo "<script>alert('✅ Imagen actualizada correctamente');window.location='dashboard.php';</script>";
+            exit;
+        } else {
+            echo "<script>alert('❌ Error al subir la imagen');</script>";
+        }
+    } else {
+        echo "<script>alert('⚠️ No se seleccionó ninguna imagen');</script>";
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,17 +72,8 @@ foreach ($tablasMantenimiento as $tabla) {
         };
     </script>
 
-
-
-
-
-
 </head>
 <body>
-
-
-    <!-- 🔝 Barra superior -->
-
 
 
 <!-- Espacio para que no tape el contenido -->
@@ -119,6 +140,40 @@ foreach ($tablasMantenimiento as $tabla) {
       </div>
 
     </div>
+
+    <!-- Sección para cambiar el logo e imagen de presentación -->
+<div class="bg-white rounded-2xl shadow-lg mt-10 p-8">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+    Cambio de Logo e Imagen de Presentación
+  </h2>
+
+  <div class="grid md:grid-cols-2 gap-8">
+
+    <!-- Formulario de cambio de Logo -->
+    <form method="POST" enctype="multipart/form-data" class="text-center border p-4 rounded-xl shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-700 mb-3">Logo Actual</h3>
+      <img src="<?php echo $logoActual; ?>" alt="Logo actual" class="w-40 mx-auto mb-4 border rounded-lg shadow">
+      <input type="hidden" name="tipo" value="logo">
+      <input type="file" name="imagen" accept="image/*" class="block w-full text-sm text-gray-700 mb-4">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">
+        Cambiar Logo
+      </button>
+    </form>
+
+    <!-- Formulario de cambio de Portada -->
+    <form method="POST" enctype="multipart/form-data" class="text-center border p-4 rounded-xl shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-700 mb-3">Imagen de Presentación</h3>
+      <img src="<?php echo $portadaActual; ?>" alt="Portada actual" class="w-full h-40 object-cover mb-4 border rounded-lg shadow">
+      <input type="hidden" name="tipo" value="portada">
+      <input type="file" name="imagen" accept="image/*" class="block w-full text-sm text-gray-700 mb-4">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow">
+        Cambiar Imagen
+      </button>
+    </form>
+
+  </div>
+</div>
+
     
   </div>
   

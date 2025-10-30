@@ -53,42 +53,42 @@ while ($fila = $reserva->fetch_assoc()) {
     .fade-in { animation: fadeIn 0.6s ease-out; }
     .slide-in { animation: slideIn 0.5s ease-out; }
     
-    .carrusel-wrapper {
-      display: flex;
-      transition: transform 0.5s ease-in-out;
-    }
-    .carrusel-slide {
-      min-width: 100%;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    /* Galería de fotos mejorada */
+    .imagen-principal {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 1rem;
+      transition: all 0.3s ease;
     }
     
-    /* Móvil: imagen completa */
+    .miniatura {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+    }
+    
+    .miniatura:hover {
+      transform: scale(1.05);
+      border-color: #7c3aed;
+    }
+    
+    .miniatura.activa {
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+    }
+    
     @media (max-width: 640px) {
-      .carrusel-slide {
-        min-height: 300px;
-        max-height: 70vh;
+      .imagen-principal {
+        height: 300px;
       }
-      .carrusel-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        border-radius: 1rem;
-      }
-    }
-    
-    /* Escritorio: imagen recortada */
-    @media (min-width: 641px) {
-      .carrusel-slide {
-        height: 400px;
-      }
-      .carrusel-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 1rem;
+      .miniatura {
+        width: 60px;
+        height: 60px;
       }
     }
     
@@ -179,18 +179,50 @@ while ($fila = $reserva->fetch_assoc()) {
     <!-- Tarjeta de información del vehículo -->
     <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 fade-in">
       <div class="grid md:grid-cols-2 gap-6 p-6">
-        <!-- Imagen principal -->
-        <div class="carrusel-slide relative group">
-          <?php if (!empty($vehiculo['foto'])): ?>
-            <img src="../FotosSubidas/<?= htmlspecialchars($vehiculo['foto']) ?>" 
+        <!-- Galería de imágenes mejorada -->
+        <div class="space-y-4">
+          <!-- Imagen principal -->
+          <div class="relative group overflow-hidden rounded-xl shadow-lg">
+            <?php 
+            $foto_principal = !empty($vehiculo['foto']) ? $vehiculo['foto'] : null;
+            ?>
+            <img id="imagenPrincipal" 
+                 src="../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>" 
                  alt="<?= htmlspecialchars($vehiculo['marca'] . ' ' . $vehiculo['modelo']) ?>"
-                 class="w-full h-80 object-cover rounded-xl shadow-lg transition-transform duration-300 group-hover:scale-105">
-          <?php else: ?>
-            <div class="w-full h-80 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl flex items-center justify-center shadow-lg">
-              <i class="fas fa-car text-gray-400 text-8xl"></i>
+                 class="imagen-principal">
+            
+            <!-- Indicador de zoom -->
+            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+              <i class="fas fa-search-plus text-purple-600"></i>
             </div>
+          </div>
+          
+          <!-- Miniaturas -->
+          <?php if (!empty($fotos_adicionales) || !empty($foto_principal)): ?>
+          <div class="flex gap-2 overflow-x-auto pb-2">
+            <!-- Miniatura de la foto principal -->
+            <?php if (!empty($foto_principal)): ?>
+            <img src="../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>" 
+                 alt="Principal" 
+                 class="miniatura activa"
+                 onclick="cambiarImagen(this, '../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>')">
+            <?php endif; ?>
+            
+            <!-- Miniaturas de fotos adicionales -->
+            <?php foreach($fotos_adicionales as $foto): ?>
+            <img src="../FotosSubidas/<?= htmlspecialchars($foto) ?>" 
+                 alt="Foto adicional" 
+                 class="miniatura"
+                 onclick="cambiarImagen(this, '../FotosSubidas/<?= htmlspecialchars($foto) ?>')">
+            <?php endforeach; ?>
+          </div>
           <?php endif; ?>
           
+          <!-- Contador de fotos -->
+          <div class="text-center text-sm text-gray-600">
+            <i class="fas fa-images text-purple-600 mr-2"></i>
+            <?= count($fotos_adicionales) + 1 ?> fotos disponibles
+          </div>
         </div>
 
         <!-- Detalles del vehículo -->
@@ -235,48 +267,10 @@ while ($fila = $reserva->fetch_assoc()) {
                 </div>
               </div>
             </div>
-
-            
-            </div>
           </div>
         </div>
       </div>
     </div>
-
-<!-- Carrusel de fotos adicionales -->
-<?php if (!empty($fotos_adicionales)): ?>
-  <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 fade-in">
-    <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-      <i class="fas fa-images text-purple-600"></i>
-      Galería de Fotos
-    </h3>
-    <div class="relative flex justify-center">
-      <div class="overflow-hidden rounded-xl w-full sm:max-w-2xl">
-        <div class="carrusel-wrapper" id="carruselWrapper">
-          <?php foreach($fotos_adicionales as $i => $foto): ?>
-            <div class="carrusel-slide bg-gray-50">
-              <img src="../FotosSubidas/<?= htmlspecialchars($foto) ?>" 
-                   alt="Foto adicional <?= $i + 1 ?>">
-            </div>
-          <?php endforeach; ?>
-        </div>
-      </div>
-      
-      <button onclick="cambiarSlide(-1)" 
-              class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 z-10">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button onclick="cambiarSlide(1)" 
-              class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 z-10">
-        <i class="fas fa-chevron-right"></i>
-      </button>
-    </div>
-    
-    <div class="flex justify-center gap-2 mt-4" id="indicadores"></div>
-  </div>
-<?php endif; ?>
-
-
 
     <!-- Calendario y formulario -->
     <div class="grid md:grid-cols-2 gap-8">
@@ -295,9 +289,9 @@ while ($fila = $reserva->fetch_assoc()) {
           <i class="fas fa-clipboard-list text-purple-600"></i>
           Resumen de Reserva
         </h3>
-        <span>Toda la informacion es completamente confidencial, y solomente sera utilizado con fines de realizar contrato.</span>
+        <span>Toda la información es completamente confidencial, y solamente será utilizada con fines de realizar contrato.</span>
         
-        <div class="space-y-4 mb-6">
+        <div class="space-y-4 mb-6 mt-4">
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">
               <i class="fas fa-calendar-day text-green-600 mr-2"></i>
@@ -317,9 +311,6 @@ while ($fila = $reserva->fetch_assoc()) {
                    placeholder="Selecciona en el calendario"
                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold focus:outline-none focus:border-purple-500 transition-colors">
           </div>
-
-
-          
         </div>
 
         <button type="button" onclick="abrirModal()" 
@@ -332,218 +323,211 @@ while ($fila = $reserva->fetch_assoc()) {
   </div>
 
   <!-- Modal de datos del cliente -->
-    <div id="modalCliente" class="modal">
-      <div class="modal-content">
-        <span class="cerrar" onclick="cerrarModal()">&times;</span>
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-          <i class="fas fa-user-edit text-purple-600"></i>
-          Datos del Cliente
-        </h2>
+  <div id="modalCliente" class="modal">
+    <div class="modal-content">
+      <span class="cerrar" onclick="cerrarModal()">&times;</span>
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <i class="fas fa-user-edit text-purple-600"></i>
+        Datos del Cliente
+      </h2>
 
-        <form id="formCliente" method="POST" action="guardar_reserva.php" class="space-y-4" enctype="multipart/form-data">
-          <input type="hidden" name="id_vehiculo" value="<?= $vehiculo['id_vehiculo'] ?>">
-          <input type="hidden" name="fecha_inicio" id="modal_fecha_inicio">
-          <input type="hidden" name="fecha_fin" id="modal_fecha_fin">
-          <input type="hidden" id="precio_por_dia" value="<?= $vehiculo['precio_dia'] ?>">
-          <input type="hidden" id="total_pagar_hidden" name="total_pagar">
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              <i class="fas fa-user text-blue-600 mr-2"></i>
-              Nombre completo
-            </label>
-            <input type="text" name="nombre_cliente" required
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              <i class="fas fa-id-card text-green-600 mr-2"></i>
-              DUI
-            </label>
-            <input type="text" name="dui" required
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-          </div>
+      <form id="formCliente" method="POST" action="guardar_reserva.php" class="space-y-4" enctype="multipart/form-data">
+        <input type="hidden" name="id_vehiculo" value="<?= $vehiculo['id_vehiculo'] ?>">
+        <input type="hidden" name="fecha_inicio" id="modal_fecha_inicio">
+        <input type="hidden" name="fecha_fin" id="modal_fecha_fin">
+        <input type="hidden" id="precio_por_dia" value="<?= $vehiculo['precio_dia'] ?>">
+        <input type="hidden" id="total_pagar_hidden" name="total_pagar">
 
         <div>
-    <label class="block text-sm font-semibold text-gray-700 mb-2">
-      <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
-    </label>
-    
-    <div class="flex items-center">
-      <span class="text-gray-600 font-medium mr-2">+503</span>
-      <input 
-        type="tel" 
-        name="telefono_cliente" 
-        id="telefono_cliente" 
-        maxlength="9"
-        required
-        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
-        placeholder="1234-5678"
-        oninput="formatearTelefono(this)">
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-user text-blue-600 mr-2"></i>
+            Nombre completo
+          </label>
+          <input type="text" name="nombre_cliente" required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-id-card text-green-600 mr-2"></i>
+            DUI
+          </label>
+          <input type="text" name="dui" required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
+          </label>
+          
+          <div class="flex items-center">
+            <span class="text-gray-600 font-medium mr-2">+503</span>
+            <input 
+              type="tel" 
+              name="telefono_cliente" 
+              id="telefono_cliente" 
+              maxlength="9"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+              placeholder="1234-5678"
+              oninput="formatearTelefono(this)">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-envelope text-red-600 mr-2"></i>
+            Correo electrónico
+          </label>
+          <input type="email" name="email_cliente" required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-calendar-day text-green-600 mr-2"></i>
+            Fecha de inicio
+          </label>
+          <input type="text" id="modal_fecha_inicio_visible" readonly
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-calendar-day text-red-600 mr-2"></i>
+            Fecha de finalización
+          </label>
+          <input type="text" id="modal_fecha_fin_visible" readonly
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            <i class="fas fa-clock text-purple-600 mr-2"></i>
+            Días solicitados
+          </label>
+          <input type="number" id="dias" name="dias" readonly
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+        </div>
+        
+        <div>
+          <label class="block text-gray-700 font-semibold">Total a pagar</label>
+          <input type="text" id="total_pagar" readonly class="border p-2 rounded w-full bg-green-100 font-bold text-green-700">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2"> 
+            Documento - DUI
+          </label>
+          <input type="file" name="fotos_dui" accept="image/*" multiple
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+          <small class="text-gray-500">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Documento - Licencia
+          </label>
+          <input type="file" name="fotos_licencia" accept="image/*" multiple
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+          <small class="text-gray-500">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">
+            Observaciones
+          </label>
+          <textarea name="observaciones" rows="3"
+                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"></textarea>
+          <small class="text-gray-500">Cuéntanos, ¿dónde quieres recibir tu vehículo o alguna duda que tengas?</small>
+        </div>
+        
+        <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 mt-6">
+          <i class="fas fa-check-circle"></i>
+          Confirmar Reserva
+        </button>
+      </form>
     </div>
   </div>
 
   <script>
-  function formatearTelefono(input) {
-    // Elimina todo lo que no sea número
-    let valor = input.value.replace(/\D/g, '');
-    
-    // Limita a 8 dígitos (sin contar el guion)
-    valor = valor.substring(0, 8);
-
-    // Agrega el guion después de los primeros 4 dígitos
-    if (valor.length > 4) {
-      input.value = valor.substring(0, 4) + '-' + valor.substring(4);
-    } else {
-      input.value = valor;
+    // Función para cambiar imagen principal
+    function cambiarImagen(miniatura, rutaImagen) {
+      // Cambiar la imagen principal
+      document.getElementById('imagenPrincipal').src = rutaImagen;
+      
+      // Quitar clase activa de todas las miniaturas
+      document.querySelectorAll('.miniatura').forEach(img => {
+        img.classList.remove('activa');
+      });
+      
+      // Agregar clase activa a la miniatura seleccionada
+      miniatura.classList.add('activa');
     }
-  }
-  </script>
 
+    // Formatear teléfono
+    function formatearTelefono(input) {
+      let valor = input.value.replace(/\D/g, '');
+      valor = valor.substring(0, 8);
+      if (valor.length > 4) {
+        input.value = valor.substring(0, 4) + '-' + valor.substring(4);
+      } else {
+        input.value = valor;
+      }
+    }
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              <i class="fas fa-envelope text-red-600 mr-2"></i>
-              Correo electrónico
-            </label>
-            <input type="email" name="email_cliente" required
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              <i class="fas fa-calendar-day text-green-600 mr-2"></i>
-              Fecha de inicio
-            </label>
-            <input type="text" id="modal_fecha_inicio_visible" readonly
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              <i class="fas fa-calendar-day text-red-600 mr-2"></i>
-              Fecha de finalización
-            </label>
-            <input type="text" id="modal_fecha_fin_visible" readonly
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-semibold">
-          </div>
-          
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-              <i class="fas fa-clock text-purple-600 mr-2"></i>
-              Días solicitados
-            </label>
-            <input type="number" id="dias" name="dias" readonly
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-          </div>
-           <div>
-            <label class="block text-gray-700 font-semibold">Total a pagar</label>
-            <input type="text" id="total_pagar" readonly class="border p-2 rounded w-full bg-green-100 font-bold text-green-700">
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2"> 
-
-              Documento - Dui
-            </label>
-            <input type="file" name="fotos_dui" accept="image/*" multiple
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-                  <small class="text-muted">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-
-              Documento - Licencia
-            </label>
-            <input type="file" name="fotos_licencia" accept="image/*" multiple
-                  class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-                  <small class="text-muted">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">
-
-              Observaciones
-            </label>
-            <textarea name="observaciones" id=""    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"></textarea>
-            <small class="text-muted">Cuentanos, donde quieres recibir tu vehiculo ó alguna duda que tengas</small>
-          </div>
-          
-          
-          <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2 mt-6">
-            <i class="fas fa-check-circle"></i>
-            Confirmar Reserva
-          </button>
-        </form>
-      </div>
-    </div>
-
-  <script>
     // Modal
     function abrirModal() {
-  const fechaInicio = document.getElementById('fecha_inicio').value;
-  const fechaFin = document.getElementById('fecha_fin').value;
+      const fechaInicio = document.getElementById('fecha_inicio').value;
+      const fechaFin = document.getElementById('fecha_fin').value;
 
-  if (!fechaInicio || !fechaFin) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Fechas incompletas',
-      text: 'Por favor selecciona una fecha de inicio y una fecha de finalización antes de continuar.',
-      confirmButtonColor: '#7c3aed',
-    });
-    return;
-  }
+      if (!fechaInicio || !fechaFin) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Fechas incompletas',
+          text: 'Por favor selecciona una fecha de inicio y una fecha de finalización antes de continuar.',
+          confirmButtonColor: '#7c3aed',
+        });
+        return;
+      }
 
- 
+      document.getElementById('modal_fecha_inicio').value = fechaInicio;
+      document.getElementById('modal_fecha_fin').value = fechaFin;
+      document.getElementById('modal_fecha_inicio_visible').value = fechaInicio;
+      document.getElementById('modal_fecha_fin_visible').value = fechaFin;
 
-  // Rellenar los campos ocultos y visibles
-  document.getElementById('modal_fecha_inicio').value = fechaInicio;
-  document.getElementById('modal_fecha_fin').value = fechaFin;
-  document.getElementById('modal_fecha_inicio_visible').value = fechaInicio;
-  document.getElementById('modal_fecha_fin_visible').value = fechaFin;
+      const inicio = new Date(fechaInicio);
+      const fin = new Date(fechaFin);
+      const diffTime = fin - inicio;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
-  // Calcular los días automáticamente
-  const inicio = new Date(fechaInicio);
-  const fin = new Date(fechaFin);
-
-  // Diferencia en milisegundos y luego convertir a días
-  const diffTime = fin - inicio;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir el día inicial
-
-  // Rellenar el campo de días
-  document.querySelector('input[name="dias"]').value = diffDays;
-
-  calcularDiasYTotal();
-
-  // Mostrar el modal
-  document.getElementById("modalCliente").style.display = "flex";
-
-  
-}
+      document.querySelector('input[name="dias"]').value = diffDays;
+      calcularDiasYTotal();
+      document.getElementById("modalCliente").style.display = "flex";
+    }
 
     function cerrarModal() {
       document.getElementById("modalCliente").style.display = "none";
     }
 
-
     document.getElementById('formCliente').addEventListener('submit', function (event) {
-  event.preventDefault(); // Detener envío para confirmar primero
-
-  Swal.fire({
-    title: '¿Confirmar reserva?',
-    text: 'Verifica que toda la información sea correcta antes de continuar.',
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonColor: '#22c55e',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Sí, registrar reserva',
-    cancelButtonText: 'Cancelar'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.submit(); // Enviar el formulario al PHP
-    }
-  });
-});
+      event.preventDefault();
+      Swal.fire({
+        title: '¿Confirmar reserva?',
+        text: 'Verifica que toda la información sea correcta antes de continuar.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#22c55e',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, registrar reserva',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.submit();
+        }
+      });
+    });
 
     window.onclick = function(event) {
       const modal = document.getElementById("modalCliente");
@@ -552,132 +536,61 @@ while ($fila = $reserva->fetch_assoc()) {
       }
     }
 
-    // Carrusel
-    let slideActual = 0;
-    const totalSlides = <?= count($fotos_adicionales) ?>;
-
-    function inicializarCarrusel() {
-      const contenedorIndicadores = document.getElementById('indicadores');
-      if (contenedorIndicadores) {
-        for (let i = 0; i < totalSlides; i++) {
-          const indicador = document.createElement('button');
-          indicador.className = 'w-3 h-3 rounded-full transition-all ' + (i === 0 ? 'bg-purple-600 w-8' : 'bg-gray-300');
-          indicador.onclick = () => irASlide(i);
-          contenedorIndicadores.appendChild(indicador);
-        }
-      }
-    }
-
-    function cambiarSlide(direccion) {
-      slideActual += direccion;
-      
-      if (slideActual < 0) {
-        slideActual = totalSlides - 1;
-      } else if (slideActual >= totalSlides) {
-        slideActual = 0;
-      }
-      
-      actualizarCarrusel();
-    }
-
-    function irASlide(index) {
-      slideActual = index;
-      actualizarCarrusel();
-    }
-
-    function actualizarCarrusel() {
-      const wrapper = document.getElementById('carruselWrapper');
-      if (wrapper) {
-        wrapper.style.transform = `translateX(-${slideActual * 100}%)`;
-      }
-      
-      const indicadores = document.getElementById('indicadores').children;
-      for (let i = 0; i < indicadores.length; i++) {
-        indicadores[i].className = 'w-3 h-3 rounded-full transition-all ' + 
-          (i === slideActual ? 'bg-purple-600 w-8' : 'bg-gray-300');
-      }
-    }
-
-    // Touch support
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    function handleSwipe() {
-      if (touchEndX < touchStartX - 50) cambiarSlide(1);
-      if (touchEndX > touchStartX + 50) cambiarSlide(-1);
-    }
-
-    const carruselContainer = document.querySelector('.carrusel-wrapper');
-    if (carruselContainer) {
-      carruselContainer.addEventListener('touchstart', e => {
-        touchStartX = e.changedTouches[0].screenX;
-      });
-      carruselContainer.addEventListener('touchend', e => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-      });
-    }
-
-   document.addEventListener('DOMContentLoaded', function() {
-  let calendarEl = document.getElementById('calendar');
-  let calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    locale: 'es',
-    selectable: true,
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: ''
-    },
-    events: [
-      <?php foreach($reservas as $r): ?>
-        {
-          start: "<?= $r['fecha_inicio_solicitada'] ?>",
-          end: "<?= date('Y-m-d', strtotime($r['fecha_fin_solicitada'] . ' +1 day')) ?>", 
-          display: 'background',
-          color: '#ff0303ff'
+    // Calendario
+    document.addEventListener('DOMContentLoaded', function() {
+      let calendarEl = document.getElementById('calendar');
+      let calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'es',
+        selectable: true,
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: ''
         },
-      <?php endforeach; ?>
-    ],
-    select: function(info) {
-      document.getElementById('fecha_inicio').value = info.startStr;
-      let endDate = new Date(info.end);
-      endDate.setDate(endDate.getDate() - 1);
-      document.getElementById('fecha_fin').value = endDate.toISOString().split('T')[0];
+        events: [
+          <?php foreach($reservas as $r): ?>
+            {
+              start: "<?= $r['fecha_inicio_solicitada'] ?>",
+              end: "<?= date('Y-m-d', strtotime($r['fecha_fin_solicitada'] . ' +1 day')) ?>", 
+              display: 'background',
+              color: '#ff0303ff'
+            },
+          <?php endforeach; ?>
+        ],
+        select: function(info) {
+          document.getElementById('fecha_inicio').value = info.startStr;
+          let endDate = new Date(info.end);
+          endDate.setDate(endDate.getDate() - 1);
+          document.getElementById('fecha_fin').value = endDate.toISOString().split('T')[0];
+        }
+      });
+      calendar.render();
+    });
+
+    // Calcular días y total
+    function calcularDiasYTotal() {
+      const fechaInicio = new Date(document.getElementById('modal_fecha_inicio_visible').value);
+      const fechaFin = new Date(document.getElementById('modal_fecha_fin_visible').value);
+      const precioDia = parseFloat(document.getElementById('precio_por_dia').value);
+
+      if (!isNaN(fechaInicio) && !isNaN(fechaFin) && fechaFin >= fechaInicio) {
+        const diffTime = Math.abs(fechaFin - fechaInicio);
+        const dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        document.getElementById('dias').value = dias;
+
+        const total = dias * precioDia;
+        document.getElementById('total_pagar').value = `$ ${total.toFixed(2)}`;
+        document.getElementById('total_pagar_hidden').value = total.toFixed(2);
+      } else {
+        document.getElementById('dias').value = '';
+        document.getElementById('total_pagar').value = '';
+        document.getElementById('total_pagar_hidden').value = '';
+      }
     }
-  });
-  calendar.render();
-});
+
+    document.getElementById('modal_fecha_inicio_visible').addEventListener('change', calcularDiasYTotal);
+    document.getElementById('modal_fecha_fin_visible').addEventListener('change', calcularDiasYTotal);
   </script>
-
-
-
-<script>
-function calcularDiasYTotal() {
-  const fechaInicio = new Date(document.getElementById('modal_fecha_inicio_visible').value);
-  const fechaFin = new Date(document.getElementById('modal_fecha_fin_visible').value);
-  const precioDia = parseFloat(document.getElementById('precio_por_dia').value);
-
-  if (!isNaN(fechaInicio) && !isNaN(fechaFin) && fechaFin >= fechaInicio) {
-    const diffTime = Math.abs(fechaFin - fechaInicio);
-    const dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
-    document.getElementById('dias').value = dias;
-
-    const total = dias * precioDia;
-    document.getElementById('total_pagar').value = `$ ${total.toFixed(2)}`;
-    document.getElementById('total_pagar_hidden').value = total.toFixed(2);
-  } else {
-    document.getElementById('dias').value = '';
-    document.getElementById('total_pagar').value = '';
-    document.getElementById('total_pagar_hidden').value = '';
-  }
-}
-
-document.getElementById('modal_fecha_inicio_visible').addEventListener('change', calcularDiasYTotal);
-document.getElementById('modal_fecha_fin_visible').addEventListener('change', calcularDiasYTotal);
-</script>
-
 </body>
 </html>
-
-

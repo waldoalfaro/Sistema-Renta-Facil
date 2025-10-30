@@ -141,146 +141,154 @@ $tipo = $_SESSION['tipo'];
 
 <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-30"></div>
 
-<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-   <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-950">
-      <a href="/Sistema-Renta-Facil/dashboard.php" class="flex items-center ps-2.5 mb-5">
-         <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Renta Facil</span>
-      </a>
-      <li>
-            <a href="/Sistema-Renta-Facil/dashboard.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               
-               <span class="flex-1 ms-3 whitespace-nowrap">DASHBOARD</span>
-            </a>
-         </li>
-      <ul class="space-y-2 font-medium">
-         <?php if ($tipo == 'Administrador'): ?>
-         <li>
-            <a href="/Sistema-Renta-Facil/Usuarios/Usuarios.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <i class="fa-solid fa-users"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Usuarios</span>
-             </a>
-         </li>
-          <?php endif; ?>
-         <li>
-            <a href="/Sistema-Renta-Facil/Vehiculos/Vehiculos.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <i class="fa-solid fa-car-side"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Vehiculos</span>
-            </a>
-         </li>
-          <li>
-            <a href="/Sistema-Renta-Facil/Reservas/Reservas.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-              <i class="fa-solid fa-book-open"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Reservaciones</span>
-            </a>
-         </li>
-         <li>
-            <a href="/Sistema-Renta-Facil/Contratos/contratos.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-              <i class="fa-solid fa-file-signature"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Contratos</span>
-            </a>
-         </li>
-       <li class="relative">
-         <!-- Botón principal -->
-         <button id="btn-categorias" type="button"
-               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-               aria-expanded="false" aria-controls="submenu-categorias">
-               <!-- icono -->
-              <i class="fa-solid fa-layer-group"></i>
+<aside id="logo-sidebar"
+   class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+   aria-label="Sidebar">
 
-               <span class="flex-1 ms-3 text-left whitespace-nowrap">Categorias</span>
+   <div class="h-full flex flex-col justify-between px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-950">
+      <!-- Sección superior -->
+      <div>
+         <a href="/Sistema-Renta-Facil/dashboard.php" class="flex items-center ps-2.5 mb-5">
+            <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Renta Facil</span>
+         </a>
 
-               <!-- Flecha (se rotará) -->
-               <svg id="arrow-categorias" class="w-3 h-3 transition-transform" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-               </svg>
-         </button>
-
-         <!-- Submenú (oculto por defecto) -->
-         <ul id="submenu-categorias" class="hidden py-2 space-y-1 pl-6">
+         <ul class="space-y-2 font-medium">
             <li>
-               <a href="/Sistema-Renta-Facil/Categorias/Categoria_Vehiculo/categorias_vehiculos.php"
-                  class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                  Categorías de Vehículos
+               <a href="/Sistema-Renta-Facil/dashboard.php"
+                  class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <span class="flex-1 ms-3 whitespace-nowrap">DASHBOARD</span>
                </a>
             </li>
+
+            <?php if ($tipo == 'Administrador'): ?>
             <li>
-               <a href="/Sistema-Renta-Facil/Categorias/categoria_Danos/Danos.php"
-                  class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                  Categorías de Daños
+               <a href="/Sistema-Renta-Facil/Usuarios/Usuarios.php"
+                  class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <i class="fa-solid fa-users"></i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Usuarios</span>
                </a>
+            </li>
+            <?php endif; ?>
+
+            <li>
+               <a href="/Sistema-Renta-Facil/Vehiculos/Vehiculos.php"
+                  class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <i class="fa-solid fa-car-side"></i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Vehículos</span>
+               </a>
+            </li>
+
+            <li>
+               <a href="/Sistema-Renta-Facil/Reservas/Reservas.php"
+                  class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <i class="fa-solid fa-book-open"></i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Reservaciones</span>
+               </a>
+            </li>
+
+            <li>
+               <a href="/Sistema-Renta-Facil/Contratos/contratos.php"
+                  class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <i class="fa-solid fa-file-signature"></i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Contratos</span>
+               </a>
+            </li>
+
+            <!-- Submenú Categorías -->
+            <li class="relative">
+               <button id="btn-categorias" type="button"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  aria-expanded="false" aria-controls="submenu-categorias">
+                  <i class="fa-solid fa-layer-group"></i>
+                  <span class="flex-1 ms-3 text-left whitespace-nowrap">Categorías</span>
+                  <svg id="arrow-categorias" class="w-3 h-3 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 10 6">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 4 4 4-4" />
+                  </svg>
+               </button>
+               <ul id="submenu-categorias" class="hidden py-2 space-y-1 pl-6">
+                  <li>
+                     <a href="/Sistema-Renta-Facil/Categorias/Categoria_Vehiculo/categorias_vehiculos.php"
+                        class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        Categorías de Vehículos
+                     </a>
+                  </li>
+                  <li>
+                     <a href="/Sistema-Renta-Facil/Categorias/categoria_Danos/Danos.php"
+                        class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        Categorías de Daños
+                     </a>
+                  </li>
+               </ul>
+            </li>
+
+            <li>
+               <a href="/Sistema-Renta-Facil/Mantenimientos/mantenimiento.php"
+                  class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <i class="fa-solid fa-screwdriver-wrench"></i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Mantenimientos</span>
+               </a>
+            </li>
+             
+            <!-- Submenú Historial -->
+            <li class="relative">
+               <button id="btn-Historial" type="button"
+                  class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  aria-expanded="false" aria-controls="submenu-Historial">
+                  <i class="fa-solid fa-layer-group"></i>
+                  <span class="flex-1 ms-3 text-left whitespace-nowrap">Historial</span>
+                  <svg id="arrow-Historial" class="w-3 h-3 transition-transform" xmlns="http://www.w3.org/2000/svg"
+                     fill="none" viewBox="0 0 10 6">
+                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 4 4 4-4" />
+                  </svg>
+               </button>
+               <ul id="submenu-Historial" class="hidden py-2 space-y-1 pl-6">
+                  <li>
+                     <a href="/Sistema-Renta-Facil/Historial/Cambio_Aceite/historialaceite.php"
+                        class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        Cambios de aceite
+                     </a>
+                  </li>
+               </ul>
+               <li>
+               <a href="/Sistema-Renta-Facil/Promociones/promociones.php"
+                  class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                  <i class="fa-solid fa-laptop-code"></i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Administrar pagina web</span>
+               </a>
+            </li>
+
             </li>
          </ul>
-       </li>
-       <li>
-            <a href="/Sistema-Renta-Facil/Mantenimientos/mantenimiento.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <i class="fa-solid fa-screwdriver-wrench"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Mantenimientos</span>
-            </a>
-         </li>
+      </div>
 
-      <li class="relative">
-         <!-- Botón principal -->
-         <button id="btn-Historial" type="button"
-               class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-               aria-expanded="false" aria-controls="submenu-Historial">
-               <!-- icono -->
-              <i class="fa-solid fa-layer-group"></i>
+      <!-- 🔻 Sección inferior (fijada al fondo) -->
+      <div class="border-t border-gray-300 dark:border-gray-700 pt-3 space-y-1">
+         <a href="/Sistema-Renta-Facil/ayuda/Ayuda.php"
+            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span class="flex-1 ms-3 whitespace-nowrap">Ayudas</span>
+         </a>
 
-               <span class="flex-1 ms-3 text-left whitespace-nowrap">Historial</span>
+         <a href="/Sistema-Renta-Facil/Creditos/creditos.php"
+            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <i class="fa-solid fa-star"></i>
+            <span class="flex-1 ms-3 whitespace-nowrap">Créditos</span>
+         </a>
 
-               <!-- Flecha (se rotará) -->
-               <svg id="arrow-Historial" class="w-3 h-3 transition-transform" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-               </svg>
-         </button>
+         <a href="#" id="logout-btn"
+            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span class="flex-1 ms-3 whitespace-nowrap">Salir</span>
+         </a>
+      </div>
 
-         <!-- Submenú (oculto por defecto) -->
-         <ul id="submenu-Historial" class="hidden py-2 space-y-1 pl-6">
-            <li>
-               <a href="/Sistema-Renta-Facil/Historial/Cambio_Aceite/historialaceite.php"
-                  class="block p-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                  Cambios de aceite
-               </a>
-            </li>
-            
-         </ul>
-       </li>
-
-
-       
-        
-        
-
-         <li>
-            <a href="/Sistema-Renta-Facil/ayuda/Ayuda.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-              <i class="fa-solid fa-circle-exclamation"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Ayudas</span>
-            </a>
-         </li>
-
-         <li>
-            <a href="/Sistema-Renta-Facil/Creditos/creditos.php" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-              <i class="fa-solid fa-star"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Creditos</span>
-            </a>
-         </li>
-         <li>
-            <a href="#" id="logout-btn" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-               <i class="fa-solid fa-arrow-right-from-bracket"></i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Salir</span>
-            </a>
-         </li>
-
-         <li>
-
-          
-            
-         </li>
-      </ul>
+      <form id="logout-form" action="/Sistema-Renta-Facil/salir.php" method="POST" style="display: none;"></form>
    </div>
-   <form id="logout-form" action="/Sistema-Renta-Facil/salir.php" method="POST" style="display: none;"></form>
-
 </aside>
+
 <script src="/Sistema-Renta-Facil/scrip.js"></script>
 <script>
   (function(){

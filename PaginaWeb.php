@@ -3,7 +3,17 @@ include 'conexion.php';
 
 
 $sql = "SELECT * FROM vehiculos";
-$resultado = $conn->query($sql)
+$resultado = $conn->query($sql);
+
+
+$sqlpromociones = "SELECT * FROM promociones";
+$resultadopromociones = $conn->query($sqlpromociones);  
+
+$logoData = $conn->query("SELECT ruta_imagen FROM configuracion_web WHERE tipo='logo'")->fetch_assoc();
+$logo = $logoData ? $logoData['ruta_imagen'] : 'Logo.png';
+
+$portadaData = $conn->query("SELECT ruta_imagen FROM configuracion_web WHERE tipo='portada'")->fetch_assoc();
+$portada = $portadaData ? $portadaData['ruta_imagen'] : 'portada.jpg';
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +37,8 @@ $resultado = $conn->query($sql)
     <nav class="navbar">
       <div class="logo" style="display: flex; align-items: center;">
         <!-- Solo el logo en imagen -->
-        <img src="Logo-Renta-Facil.jpg" alt="Logo de Renta Fácil" style="width: 120px; height: auto;">
+          <img src="<?php echo $logo; ?>" alt="Logo" style="width: 120px; height: auto;">
+
       </div>
 
       <button id="menu-btn" class="block md:hidden text-white focus:outline-none">
@@ -57,12 +68,11 @@ $resultado = $conn->query($sql)
 
   
   <!-- Sección de inicio -->
-  <section id="inicio" class="hero">
+  <section id="inicio" class="hero" style="background-image: url('<?php echo $portada; ?>');"></section>
     <div class="hero-content">
-      <h1></h1>
       
       
-    </div>
+    </div> 
   </section> 
 
 
@@ -184,141 +194,52 @@ $resultado = $conn->query($sql)
       </p>
     </div>
 
-    <?php
-    // Conexión y consulta para obtener promociones activas
-    // $query = "SELECT * FROM promociones WHERE activo = 1 AND fecha_fin >= CURDATE() ORDER BY fecha_inicio DESC";
-    // $resultado_promo = $conn->query($query);
-    
-    // Si tienes promociones en la base de datos:
-    if (isset($resultado_promo) && $resultado_promo->num_rows > 0):
-    ?>
-    
-    
-    
-    <?php else: ?>
-    
-    <!-- Si no hay promociones activas o no tienes base de datos aún -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+
+
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+  <?php while ($row = $resultadopromociones->fetch_assoc()): ?>
+    <div class="relative bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform duration-300">
       
-      <!-- Ejemplo de Promoción 1 -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 border border-gray-700 hover:scale-105 transform">
-        <div class="relative h-64 overflow-hidden bg-gradient-to-br from-yellow-500 to-orange-600">
-          <!-- Aquí va tu arte de promoción -->
-          <div class="flex items-center justify-center h-full text-white p-6 text-center">
-            <div>
-              <i class="fas fa-car text-6xl mb-4"></i>
-              <h3 class="text-3xl font-black mb-2">¡SÚPER OFERTA!</h3>
-              <p class="text-xl">Renta por 7 días</p>
-            </div>
-          </div>
-          <div class="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full font-black text-xl shadow-lg transform rotate-12">
-            -25%
-          </div>
+      <?php if (!empty($row['imagen'])): ?>
+        <div class="overflow-hidden">
+          <img src="uploads/configuracion/<?= htmlspecialchars($row['imagen']) ?>" 
+               alt="Promoción"
+               class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105">
         </div>
-        <div class="p-6">
-          <h3 class="text-2xl font-bold text-white mb-3">
-            Descuento Semanal
-          </h3>
-          <p class="text-gray-300 mb-4">
-            Renta cualquier vehículo por 7 días y obtén 25% de descuento. ¡Ideal para tus viajes largos!
-          </p>
-          <div class="flex items-center text-sm text-gray-400 mb-4">
-            <i class="fas fa-calendar-alt text-yellow-500 mr-2"></i>
-            Válido todo el mes
-          </div>
-          <div class="bg-gray-700 px-4 py-2 rounded-lg mb-4 flex items-center justify-between">
-            <span class="text-yellow-500 font-bold tracking-wider">SEMANAL25</span>
-            <button onclick="copyPromoCode('SEMANAL25')" class="text-white hover:text-yellow-500 transition">
-              <i class="fas fa-copy"></i>
-            </button>
-          </div>
-          <a href="Reservas/reservaciones.php" class="block w-full bg-yellow-500 text-black text-center px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-all duration-300 shadow-lg">
-            <i class="fas fa-tag mr-2"></i>
-            Aplicar Promoción
+      <?php else: ?>
+        <div class="flex items-center justify-center bg-gray-100 text-gray-400 py-10">
+          <i class="fas fa-image text-5xl"></i>
+        </div>
+      <?php endif; ?>
+
+      <div class="p-4 bg-gray-800">
+        <h3 class="text-white font-semibold text-lg mb-3 text-center">
+          <?= htmlspecialchars($row['descripcion']) ?>
+        </h3>
+        <div class="flex justify-center">
+          <a href="#" 
+             class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all duration-200">
+            Más Información
+            <i class="fa-brands fa-whatsapp ml-2"></i>
           </a>
         </div>
       </div>
-      
-      <!-- Ejemplo de Promoción 2 -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 border border-gray-700 hover:scale-105 transform">
-        <div class="relative h-64 overflow-hidden bg-gradient-to-br from-blue-600 to-purple-600">
-          <div class="flex items-center justify-center h-full text-white p-6 text-center">
-            <div>
-              <i class="fas fa-gift text-6xl mb-4"></i>
-              <h3 class="text-3xl font-black mb-2">CLIENTE NUEVO</h3>
-              <p class="text-xl">Primera Renta</p>
-            </div>
-          </div>
-          <div class="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full font-black text-xl shadow-lg transform rotate-12">
-            -15%
-          </div>
-        </div>
-        <div class="p-6">
-          <h3 class="text-2xl font-bold text-white mb-3">
-            Bienvenida Especial
-          </h3>
-          <p class="text-gray-300 mb-4">
-            ¿Primera vez con nosotros? Disfruta de 15% de descuento en tu primera renta. ¡Te esperamos!
-          </p>
-          <div class="flex items-center text-sm text-gray-400 mb-4">
-            <i class="fas fa-calendar-alt text-yellow-500 mr-2"></i>
-            Válido todo el mes
-          </div>
-          <div class="bg-gray-700 px-4 py-2 rounded-lg mb-4 flex items-center justify-between">
-            <span class="text-yellow-500 font-bold tracking-wider">BIENVENIDO15</span>
-            <button onclick="copyPromoCode('BIENVENIDO15')" class="text-white hover:text-yellow-500 transition">
-              <i class="fas fa-copy"></i>
-            </button>
-          </div>
-          <a href="Reservas/reservaciones.php" class="block w-full bg-yellow-500 text-black text-center px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-all duration-300 shadow-lg">
-            <i class="fas fa-tag mr-2"></i>
-            Aplicar Promoción
-          </a>
-        </div>
-      </div>
-      
-      <!-- Ejemplo de Promoción 3 -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-2xl hover:shadow-yellow-500/30 transition-all duration-300 border border-gray-700 hover:scale-105 transform">
-        <div class="relative h-64 overflow-hidden bg-gradient-to-br from-green-600 to-teal-600">
-          <div class="flex items-center justify-center h-full text-white p-6 text-center">
-            <div>
-              <i class="fas fa-users text-6xl mb-4"></i>
-              <h3 class="text-3xl font-black mb-2">REFERIDOS</h3>
-              <p class="text-xl">Comparte y Gana</p>
-            </div>
-          </div>
-          <div class="absolute top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-full font-black text-xl shadow-lg transform rotate-12">
-            -20%
-          </div>
-        </div>
-        <div class="p-6">
-          <h3 class="text-2xl font-bold text-white mb-3">
-            Programa de Referidos
-          </h3>
-          <p class="text-gray-300 mb-4">
-            Refiere a un amigo y ambos obtienen 20% de descuento. ¡Mientras más compartes, más ahorras!
-          </p>
-          <div class="flex items-center text-sm text-gray-400 mb-4">
-            <i class="fas fa-calendar-alt text-yellow-500 mr-2"></i>
-            Promoción permanente
-          </div>
-          <div class="bg-gray-700 px-4 py-2 rounded-lg mb-4 flex items-center justify-between">
-            <span class="text-yellow-500 font-bold tracking-wider">REFERIDO20</span>
-            <button onclick="copyPromoCode('REFERIDO20')" class="text-white hover:text-yellow-500 transition">
-              <i class="fas fa-copy"></i>
-            </button>
-          </div>
-          <a href="Reservas/reservaciones.php" class="block w-full bg-yellow-500 text-black text-center px-6 py-3 rounded-lg font-bold hover:bg-yellow-400 transition-all duration-300 shadow-lg">
-            <i class="fas fa-tag mr-2"></i>
-            Aplicar Promoción
-          </a>
-        </div>
-      </div>
-      
     </div>
+  <?php endwhile; ?>
+</div>
+
+
+
+
+
+
+  
+      
+      
     
-    <?php endif; ?>
-    
+   
     <!-- Mensaje Final -->
     <div class="flex items-center justify-center mt-16">
       <div class="text-center bg-gray-900 px-8 py-4 rounded-full border border-yellow-500/30">
@@ -473,11 +394,10 @@ $resultado = $conn->query($sql)
     </div>
   </footer>
 
-</body>
 
-</html>
 
-<script>
+
+  <script>
   const menuBtn = document.getElementById('menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
@@ -503,4 +423,19 @@ if (params.get('reserva') === 'ok') {
     confirmButtonColor: '#ef4444'
   });
 }
+
+
 </script>
+
+<script>
+if (window.history.replaceState) {
+  const url = new URL(window.location);
+  url.search = ''; 
+  window.history.replaceState({}, document.title, url);
+}
+</script>
+
+</body>
+
+</html>
+

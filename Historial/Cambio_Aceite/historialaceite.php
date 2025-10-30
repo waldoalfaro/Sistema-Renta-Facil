@@ -3,8 +3,22 @@
 include '../../conexion.php';
 include '../../seguridad.php';
 
-$sqlhistorial = "SELECT h.*, v.modelo, v.marca, v.placa FROM historial_cambios_aceite h INNER JOIN vehiculos v ON h.id_vehiculo = v.id_vehiculo ";
+$registros_por_pagina = 2; 
+$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina_actual < 1) $pagina_actual = 1;
+
+$inicio = ($pagina_actual - 1) * $registros_por_pagina;
+
+
+
+$sqlhistorial = "SELECT h.*, v.modelo, v.marca, v.placa FROM historial_cambios_aceite h INNER JOIN vehiculos v ON h.id_vehiculo = v.id_vehiculo  LIMIT $inicio, $registros_por_pagina";
 $resultadohistorial = $conn->query($sqlhistorial);
+
+// 🔹 Contar total de registros para saber cuántas páginas hay
+$total_resultado = $conn->query("SELECT COUNT(*) AS total FROM historial_cambios_aceite");
+$total_fila = $total_resultado->fetch_assoc();
+$total_registros = $total_fila['total'];
+$total_paginas = ceil($total_registros / $registros_por_pagina);
 ?>
 
 <!DOCTYPE html>
@@ -135,7 +149,27 @@ $resultadohistorial = $conn->query($sqlhistorial);
             </div>
     </div>
     </div>
-    
+<div class="flex justify-center items-center mt-4 space-x-3">
+
+ 
+  <a href="<?= ($pagina_actual > 1) ? '?pagina=' . ($pagina_actual - 1) : '#' ?>" 
+     class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 
+     <?= ($pagina_actual > 1) 
+          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
+          : 'bg-gray-100 text-gray-400 cursor-not-allowed' ?>">
+    <i class="fas fa-arrow-left"></i> Anterior
+  </a>
+
+  
+  <a href="<?= ($pagina_actual < $total_paginas) ? '?pagina=' . ($pagina_actual + 1) : '#' ?>" 
+     class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 
+     <?= ($pagina_actual < $total_paginas) 
+          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
+          : 'bg-gray-100 text-gray-400 cursor-not-allowed' ?>">
+    Siguiente <i class="fas fa-arrow-right"></i>
+  </a>
+</div>
+
 </div>
 </body>
 </html>

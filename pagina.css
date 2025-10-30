@@ -1005,11 +1005,11 @@ html {
 
 /*foto de incio*/
 .hero {
-  background-image: url('PortadaWeb.jpg');  /* Cambia la ruta según tu imagen */
+  margin-top: 100px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 90vh; /* Altura de toda la pantalla */
+  height: 82vh; /* Altura de toda la pantalla */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1150,4 +1150,16 @@ html {
     text-align: center;
     max-width: 90%;
   }
+  .hero {
+    margin-top: 100px;
+    background-size: 270%; /* muestra más parte de la imagen (más completa) */
+    background-position: center top; /* centra la parte superior */
+    height: 70vh; /* reduce la altura de la sección */
+  }
+
+  .hero-content {
+    transform: scale(0.9); /* opcional: reduce ligeramente el texto o contenido */
+  }
+
+
 }

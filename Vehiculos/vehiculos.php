@@ -791,6 +791,40 @@ function mostrarLista() {
     });
 }
     </script>
+
+
+<?php if (isset($_GET['error']) && $_GET['error'] === 'relacion'): ?>
+<script>
+Swal.fire({
+  icon: 'error',
+  title: 'No se puede eliminar',
+  text: 'El vehículo tiene categorías, mantenimientos o reservaciones asignadas.',
+  confirmButtonColor: '#d33',
+  confirmButtonText: 'Entendido'
+});
+</script>
+<?php endif; ?>
+
+<?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == 1): ?>
+<script>
+Swal.fire({
+  icon: 'success',
+  title: 'Vehículo eliminado',
+  text: 'El vehículo fue eliminado correctamente.',
+  timer: 1500,
+  showConfirmButton: false
+});
+</script>
+
+<?php endif; ?>
+
+<script>
+if (window.history.replaceState) {
+  const url = new URL(window.location);
+  url.search = ''; 
+  window.history.replaceState({}, document.title, url);
+}
+</script>
 </body>
 </html>
 

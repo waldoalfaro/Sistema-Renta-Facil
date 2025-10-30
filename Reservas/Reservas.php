@@ -3,24 +3,36 @@
 include '../conexion.php';
 include '../seguridad.php';
 
+
+$registro_por_pagina = 5;
+$pagina_actual = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+if ($pagina_actual < 1) $pagina_actual = 1;
+
+$inicio = ($pagina_actual - 1) * $registro_por_pagina;
+
 $sql = " SELECT u.id_reservacion, u.solicitante_nombre, u.solicitante_dui, solicitante_telefono, u.solicitante_correo, u.fecha_inicio_solicitada, u.fecha_fin_solicitada, u.dias_solicitados, u.documentosDui, u.licencia, u.observaciones, u.estado, CONCAT(t.marca, ' ', t.modelo) AS nombre_vehiculo
          From reservaciones u
          JOIN vehiculos t ON u.id_vehiculo = t.id_vehiculo
-         ORDER BY U.id_reservacion DESC"
-         ;
-         
+         ORDER BY U.id_reservacion DESC LIMIT $inicio, $registro_por_pagina";
 $resultado = $conn->query($sql);
 
-?>
+$total_resultado = $conn->query("SELECT COUNT(*) AS total FROM reservaciones");
+$total_fila = $total_resultado->fetch_assoc();
+$total_registros = $total_fila['total'];
+$total_paginas = ceil($total_registros / $registro_por_pagina);
+
+?> 
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Reservaciones</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -62,18 +74,18 @@ $resultado = $conn->query($sql);
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
 
-       <div>
+       <div class="mb-6 fade-in">
          <button type="button" onclick="abrirModal()" 
-            class="w-full bg-gradient-to-r from-gray-600 to-gray-600 ...">
+            class="inline-flex items-center px-6 py-3 bg-gradient-to-r rounded-lg shadow-lg bg-gradient-to-r from-gray-600 to-gray-600 ...">
             <i class="fas fa-check-circle"></i>
             Registrar una reserva
         </button>
+      </div>
 
 
 
-        <!-- Modal Registrar Reserva -->
 <!-- Modal Registrar Reserva (con scroll interno) -->
 <div id="modalCliente" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto">
   <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 relative my-10 overflow-y-auto max-h-[90vh]">
@@ -85,7 +97,7 @@ $resultado = $conn->query($sql);
       <i class="fas fa-user-edit text-purple-600"></i> Nueva Reservación
     </h2>
 
-    <form id="formCliente" method="POST" action="guardar_reserva.php" class="space-y-4" enctype="multipart/form-data">
+    <form id="formCliente" method="POST" action="guardar_reserva_panel.php" class="space-y-4" enctype="multipart/form-data">
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           <i class="fas fa-car text-blue-600 mr-2"></i> Vehículo
@@ -160,6 +172,14 @@ $resultado = $conn->query($sql);
           <i class="fas fa-clock text-purple-600 mr-2"></i> Días solicitados
         </label>
         <input type="number" name="dias" required min="1"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">
+          <i class="fas fa-clock text-purple-600 mr-2"></i> Total a pagar
+        </label>
+        <input type="number" name="total_pagar" required min="1"
               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
       </div>
 
@@ -334,12 +354,38 @@ $resultado = $conn->query($sql);
                 </table>
             </div>
         </div>
+        <div class="flex justify-center items-center mt-4 space-x-3">
+
+ 
+  <a href="<?= ($pagina_actual > 1) ? '?pagina=' . ($pagina_actual - 1) : '#' ?>" 
+     class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 
+     <?= ($pagina_actual > 1) 
+          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
+          : 'bg-gray-100 text-gray-400 cursor-not-allowed' ?>">
+    <i class="fas fa-arrow-left"></i> Anterior
+  </a>
+
+  
+  <a href="<?= ($pagina_actual < $total_paginas) ? '?pagina=' . ($pagina_actual + 1) : '#' ?>" 
+     class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 
+     <?= ($pagina_actual < $total_paginas) 
+          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
+          : 'bg-gray-100 text-gray-400 cursor-not-allowed' ?>">
+    Siguiente <i class="fas fa-arrow-right"></i>
+  </a>
+</div>
+
 
         <!-- Footer info -->
         <div class="mt-6 text-center text-gray-600 text-sm">
             <p><i class="fas fa-info-circle mr-2"></i>Última actualización: <?= date('d/m/Y H:i:s') ?></p>
         </div>
+        </div>
+
+
+ 
     </div>
+    
 </div>
 <!-- Modal Correo -->
 <div id="modalCorreo" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -392,7 +438,64 @@ $resultado = $conn->query($sql);
       </div>
     </div>
   </div>
-</div>
+
+
+<script>
+const params = new URLSearchParams(window.location.search);
+if (params.get('reserva') === 'ok') {
+  Swal.fire({
+    icon: 'success',
+    title: '¡Reserva registrada correctamente!',
+    text: 'Tu reserva ha sido guardada con éxito. Nos pondremos en contacto contigo pronto.',
+    confirmButtonColor: '#22c55e'
+  });
+} else if (params.get('reserva') === 'error') {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error al registrar la reserva',
+    text: 'Ocurrió un problema al guardar la reserva. Intenta nuevamente más tarde.',
+    confirmButtonColor: '#ef4444'
+  });
+}
+</script>
+
+<script>
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+if (params.get('reserva') === 'ok') {
+  Swal.fire({
+    icon: 'success',
+    title: '¡Reserva registrada correctamente!',
+    text: 'Tu reserva ha sido guardada con éxito. Nos pondremos en contacto contigo pronto.',
+    confirmButtonColor: '#22c55e'
+  });
+} else if (params.get('reserva') === 'error') {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error al registrar la reserva',
+    text: 'Ocurrió un problema al guardar la reserva. Intenta nuevamente más tarde.',
+    confirmButtonColor: '#ef4444'
+  });
+}
+
+
+</script>
+
+<script>
+if (window.history.replaceState) {
+  const url = new URL(window.location);
+  url.search = ''; 
+  window.history.replaceState({}, document.title, url);
+}
+</script>
 
 <script>
   function abrirModalCorreo(element) {

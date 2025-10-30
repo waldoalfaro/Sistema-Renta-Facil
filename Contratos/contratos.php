@@ -1,11 +1,24 @@
 <?php
 include '../conexion.php';
 
+
+$registros_por_pagina = 1; // cantidad por página
+$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina_actual < 1) $pagina_actual = 1;
+
+$inicio = ($pagina_actual - 1) * $registros_por_pagina;
+
+
 $sql = "SELECT c.*, v.marca, v.modelo, v.placa 
         FROM contratos c
         INNER JOIN vehiculos v ON c.id_vehiculo = v.id_vehiculo
-        ORDER BY c.fecha_creacion DESC";
+        ORDER BY c.fecha_creacion DESC LIMIT $inicio, $registros_por_pagina";
 $result = $conn->query($sql);
+
+$total_resultado = $conn->query("SELECT COUNT(*) AS total FROM contratos");
+$total_fila = $total_resultado->fetch_assoc();
+$total_registros = $total_fila['total'];
+$total_paginas = ceil($total_registros / $registros_por_pagina);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -126,6 +139,26 @@ $result = $conn->query($sql);
                 </table>
             </div>
         </div>
+        <div class="flex justify-center items-center mt-4 space-x-3">
+
+ 
+  <a href="<?= ($pagina_actual > 1) ? '?pagina=' . ($pagina_actual - 1) : '#' ?>" 
+     class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 
+     <?= ($pagina_actual > 1) 
+          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
+          : 'bg-gray-100 text-gray-400 cursor-not-allowed' ?>">
+    <i class="fas fa-arrow-left"></i> Anterior
+  </a>
+
+  
+  <a href="<?= ($pagina_actual < $total_paginas) ? '?pagina=' . ($pagina_actual + 1) : '#' ?>" 
+     class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 
+     <?= ($pagina_actual < $total_paginas) 
+          ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
+          : 'bg-gray-100 text-gray-400 cursor-not-allowed' ?>">
+    Siguiente <i class="fas fa-arrow-right"></i>
+  </a>
+</div>
 
         <!-- Footer info -->
         <div class="mt-6 text-center text-gray-600 text-sm">
