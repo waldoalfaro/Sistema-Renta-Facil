@@ -1,9 +1,6 @@
 <?php
 include '../conexion.php';
 
-
-
-
 $idcategoria = $_POST['id_categoria'];
 $marca       = $_POST['marca'];
 $modelo      = $_POST['modelo'];
@@ -22,42 +19,44 @@ $vin         = $_POST['vin'];
 $ubicaciones = $_POST['ubicacion_dano'] ?? [];
 $tipos       = $_POST['tipo_dano'] ?? [];
 
-
 $revisar = $conn->query("SELECT id_vehiculo FROM vehiculos WHERE placa = '$placa'");
 if ($revisar->num_rows > 0) {
-    echo "⚠️ Error: ya existe un vehículo con la placa $placa";
+    header("Location: vehiculos.php?duplicado=1&placa=" . urlencode($placa));
     exit;
 }
 
+// 🔹 Crear carpeta si no existe
+$carpeta = "../FotosSubidas/";
+if (!is_dir($carpeta)) {
+    mkdir($carpeta, 0777, true);
+}
 
-$fotosGuardadas = [];
+// ---------------------- FOTO PRINCIPAL ----------------------
 $fotoPrincipalNombre = null;
+if (isset($_FILES['foto_principal']) && $_FILES['foto_principal']['error'] === UPLOAD_ERR_OK) {
+    $nombrePrincipal = uniqid() . "_" . basename($_FILES['foto_principal']['name']);
+    $rutaPrincipal = $carpeta . $nombrePrincipal;
+    if (move_uploaded_file($_FILES['foto_principal']['tmp_name'], $rutaPrincipal)) {
+        $fotoPrincipalNombre = $nombrePrincipal;
+    }
+}
 
-if (!empty($_FILES['fotos']['name'][0])) {
-    for ($i = 0; $i < count($_FILES['fotos']['name']); $i++) {
-        if ($_FILES['fotos']['error'][$i] === UPLOAD_ERR_OK) {
-            $nombreOriginal = $_FILES['fotos']['name'][$i];
-            $fotoNombre = uniqid() . "_" . basename($nombreOriginal);
-            $rutaTemp   = $_FILES['fotos']['tmp_name'][$i];
-            $destino    = "../FotosSubidas/" . $fotoNombre;
-
-            if (!is_dir("../FotosSubidas/")) {
-                mkdir("../FotosSubidas/", 0777, true);
-            }
-
+// ---------------------- GALERÍA ----------------------
+$fotosGaleria = [];
+if (!empty($_FILES['galeria']['name'][0])) {
+    for ($i = 0; $i < count($_FILES['galeria']['name']); $i++) {
+        if ($_FILES['galeria']['error'][$i] === UPLOAD_ERR_OK) {
+            $nombreFoto = uniqid() . "_" . basename($_FILES['galeria']['name'][$i]);
+            $rutaTemp = $_FILES['galeria']['tmp_name'][$i];
+            $destino = $carpeta . $nombreFoto;
             if (move_uploaded_file($rutaTemp, $destino)) {
-                $fotosGuardadas[] = $fotoNombre;
-
-                
-                if ($i === 0) {
-                    $fotoPrincipalNombre = $fotoNombre;
-                }
+                $fotosGaleria[] = $nombreFoto;
             }
         }
     }
 }
 
-// Insertar vehículo con foto principal
+// ---------------------- INSERTAR VEHÍCULO ----------------------
 $sql_insert = "INSERT INTO vehiculos 
 (id_categoria, marca, modelo, color, placa, anio, asientos, aire_acondicionado, foto, estado, precio_dia, combustible, gps, seguro, vin)
 VALUES 
@@ -66,12 +65,12 @@ VALUES
 if ($conn->query($sql_insert) === TRUE) {
     $idVehiculo = $conn->insert_id;
 
-    // Guardar todas las imágenes en vehiculos_fotos
-    foreach ($fotosGuardadas as $foto) {
+    // 🔹 Guardar fotos adicionales en vehiculos_fotos
+    foreach ($fotosGaleria as $foto) {
         $conn->query("INSERT INTO vehiculos_fotos (id_vehiculo, foto) VALUES ('$idVehiculo', '$foto')");
     }
 
-    // Guardar daños si existen
+    // 🔹 Guardar daños si existen
     if (!empty($ubicaciones) && !empty($tipos)) {
         $count = min(count($ubicaciones), count($tipos));
         for ($i = 0; $i < $count; $i++) {
@@ -82,10 +81,7 @@ if ($conn->query($sql_insert) === TRUE) {
         }
     }
 
-    header("Location: vehiculos.php");
-    exit;
-
-} else {
-    echo "Error: " . $sql_insert . "<br>" . $conn->error;
+   header("Location: vehiculos.php?registrado=1");
+exit;
 }
 ?>

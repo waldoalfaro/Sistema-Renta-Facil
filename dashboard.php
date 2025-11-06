@@ -155,6 +155,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <img src="<?php echo $logoActual; ?>" alt="Logo actual" class="w-40 mx-auto mb-4 border rounded-lg shadow">
       <input type="hidden" name="tipo" value="logo">
       <input type="file" name="imagen" accept="image/*" class="block w-full text-sm text-gray-700 mb-4">
+      <small class="block mt-2 text-gray-500 text-sm">
+    📏 <strong>Dimensiones recomendadas:</strong>2,000  x 2,000 <br>
+    🖼️ <strong>Formatos permitidos:</strong> JPG, PNG <br>
+  </small>
       <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">
         Cambiar Logo
       </button>
@@ -166,6 +170,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <img src="<?php echo $portadaActual; ?>" alt="Portada actual" class="w-full h-40 object-cover mb-4 border rounded-lg shadow">
       <input type="hidden" name="tipo" value="portada">
       <input type="file" name="imagen" accept="image/*" class="block w-full text-sm text-gray-700 mb-4">
+      <small class="block mt-2 text-gray-500 text-sm">
+    📏 <strong>Dimensiones recomendadas:</strong> 3,546 x 1,313 px <br>
+    🖼️ <strong>Formatos permitidos:</strong> JPG, PNG <br>
+  </small>
       <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow">
         Cambiar Imagen
       </button>

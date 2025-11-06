@@ -125,13 +125,26 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
     <form id="formCliente" method="POST" action="guardar_promocion.php" class="space-y-4" enctype="multipart/form-data">
       
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">
-           Seleccione Imagen
-        </label>
-        <input type="file" name="imagen" required
-              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
-      </div>
+     <div>
+  <label class="block text-sm font-semibold text-gray-700 mb-2">
+    <i class="fas fa-image text-blue-500 mr-1"></i> Seleccione Imagen
+  </label>
+
+  <input 
+    type="file" 
+    name="imagen" 
+    accept="image/*"
+    required
+    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
+
+  <!-- 🔹 Nota informativa -->
+  <small class="block mt-2 text-gray-500 text-sm">
+    📏 <strong>Dimensiones recomendadas:</strong> 1080 x 1100 px <br>
+    🖼️ <strong>Formatos permitidos:</strong> JPG, PNG <br>
+    💾 <strong>Tamaño máximo:</strong> 2 MB
+  </small>
+</div>
+
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">

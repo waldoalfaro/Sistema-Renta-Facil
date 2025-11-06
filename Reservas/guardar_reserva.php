@@ -6,7 +6,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_vehiculo     = $_POST['id_vehiculo'];
     $nombre_cliente  = $_POST['nombre_cliente'];
     $dui             = $_POST['dui'];
-    $telefono        = $_POST['telefono_cliente'];
+    $codigo_pais = $_POST['codigo_pais'];
+    $telefono = $codigo_pais . ' ' . $_POST['telefono_cliente'];
     $email           = $_POST['email_cliente'];
     $fecha_inicio    = $_POST['fecha_inicio'];
     $fecha_fin       = $_POST['fecha_fin'];
@@ -89,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     $stmt->bind_param(
-        "ississsiisss",
+        "issssssissss", 
         $id_vehiculo,
         $nombre_cliente,
         $dui,

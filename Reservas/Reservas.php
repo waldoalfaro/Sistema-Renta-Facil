@@ -129,18 +129,37 @@ $total_paginas = ceil($total_registros / $registro_por_pagina);
               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
       </div>
 
+      
       <div>
-        <label class="block text-sm font-semibold text-gray-700 mb-2">
-          <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
-        </label>
-        <div class="flex items-center">
-          <span class="text-gray-600 font-medium mr-2">+503</span>
-          <input type="tel" name="telefono_cliente" id="telefono_cliente" maxlength="9" required
-                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500"
-                placeholder="1234-5678"
-                oninput="formatearTelefono(this)">
-        </div>
-      </div>
+  <label class="block text-sm font-semibold text-gray-700 mb-2">
+    <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
+  </label>
+
+  <div class="flex items-center gap-2">
+    <select id="codigo_pais" name="codigo_pais"
+            class="border-2 border-gray-300 rounded-lg px-2 py-3 focus:outline-none focus:border-purple-500 text-gray-700">
+      <option value="+503" selected>🇸🇻 +503 (El Salvador)</option>
+      <option value="+502">🇬🇹 +502 (Guatemala)</option>
+      <option value="+504">🇭🇳 +504 (Honduras)</option>
+      <option value="+505">🇳🇮 +505 (Nicaragua)</option>
+      <option value="+506">🇨🇷 +506 (Costa Rica)</option>
+      <option value="+507">🇵🇦 +507 (Panamá)</option>
+      <option value="+52">🇲🇽 +52 (México)</option>
+      <option value="+1">🇺🇸 +1 (EE.UU.)</option>
+      <option value="otro">🌍 Otro país</option>
+    </select>
+
+    <input 
+      type="tel"
+      name="telefono_cliente"
+      id="telefono_cliente"
+      maxlength="15"
+      required
+      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+      placeholder="0000-0000"
+      oninput="formatearTelefono(this)">
+  </div>
+</div>
 
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -297,7 +316,7 @@ $total_paginas = ceil($total_registros / $registro_por_pagina);
                                     <div class="text-sm text-gray-600"><?= $row['solicitante_correo'] ?></div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-600">+503 <?= $row['solicitante_telefono'] ?></div>
+                                    <div class="text-sm text-gray-600"><?= $row['solicitante_telefono'] ?></div>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900"><?= date('d/m/Y', strtotime($row['fecha_inicio_solicitada'])) ?></div>
@@ -327,14 +346,7 @@ $total_paginas = ceil($total_registros / $registro_por_pagina);
                                         <a href="rechar_reserva.php?id=<?= $row['id_reservacion'] ?>" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" title="Rechazar">
                                             <i class="fa-solid fa-xmark"></i>
                                         </a>
-                                        <a href="#"
-                                            class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white transition-all duration-200 hover:scale-110 shadow-sm" 
-                                            title="Enviar Email"
-                                            data-id="<?= $row['id_reservacion'] ?>"
-                                            data-correo="<?= htmlspecialchars($row['solicitante_correo']) ?>"
-                                            onclick="abrirModalCorreo(this)">
-                                            <i class="fas fa-envelope text-sm"></i>
-                                        </a>
+                                       
                                         <a href="../Contratos/realizar_contrato.php?id_reservacion=<?= $row['id_reservacion'] ?>"
                                           class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 hover:scale-110 shadow-sm"
                                           title="Realizar contrato">
@@ -418,26 +430,49 @@ $total_paginas = ceil($total_registros / $registro_por_pagina);
 </div>
 
 <!-- Modal Ver Fotos -->
-<div id="modalFotos" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-  <div class="bg-white w-full max-w-3xl rounded-2xl shadow-xl p-6 relative">
+<div id="modalFotos" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+  <div class="bg-white w-full max-w-7xl rounded-2xl shadow-2xl p-6 relative">
+    
+    <!-- Botón cerrar -->
     <button onclick="cerrarModalFotos()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">
-      <i class="fas fa-times text-xl"></i>
+      <i class="fas fa-times text-2xl"></i>
     </button>
-    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-      <i class="fas fa-images text-purple-500"></i> Fotos del Cliente
+    
+    <!-- Título -->
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+      <i class="fas fa-images text-purple-600"></i> Fotos del Cliente
     </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Galería -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- DUI -->
       <div class="text-center">
-        <h3 class="font-semibold text-gray-700 mb-2">DUI</h3>
-        <img id="imgDUI" src="" alt="Foto DUI" class="w-full h-64 object-cover rounded-lg shadow-md border">
+        <h3 class="font-semibold text-gray-700 mb-3">DUI</h3>
+        <div class="flex justify-center items-center bg-gray-50 border border-gray-300 rounded-xl shadow-lg overflow-hidden">
+          <img id="imgDUI"
+               src=""
+               alt="Foto DUI"
+               class="w-[2500px] h-[300px] object-cover transition-transform duration-300 hover:scale-105">
+        </div>
+        <small class="text-gray-500 block mt-2">📐 Tamaño recomendado: 2500 × 200 px</small>
       </div>
+
+      <!-- Licencia -->
       <div class="text-center">
-        <h3 class="font-semibold text-gray-700 mb-2">Licencia</h3>
-        <img id="imgLicencia" src="" alt="Foto Licencia" class="w-full h-64 object-cover rounded-lg shadow-md border">
+        <h3 class="font-semibold text-gray-700 mb-3">Licencia</h3>
+        <div class="flex justify-center items-center bg-gray-50 border border-gray-300 rounded-xl shadow-lg overflow-hidden">
+          <img id="imgLicencia"
+               src=""
+               alt="Foto Licencia"
+               class="w-[2500px] h-[300px] object-cover transition-transform duration-300 hover:scale-105">
+        </div>
+        <small class="text-gray-500 block mt-2">📐 Tamaño recomendado: 2500 × 200 px</small>
       </div>
     </div>
   </div>
+</div>
+
 
 
 <script>
@@ -487,6 +522,71 @@ if (params.get('reserva') === 'ok') {
 }
 
 
+</script>
+
+<script>
+const telefonoInput = document.getElementById('telefono_cliente');
+const codigoSelect = document.getElementById('codigo_pais');
+
+codigoSelect.addEventListener('change', function() {
+  telefonoInput.value = ''; // limpiar campo
+  const codigo = this.value;
+
+  if (codigo === 'otro') {
+    telefonoInput.placeholder = 'Ingrese su número con código (+XX...)';
+    telefonoInput.maxLength = 20;
+    telefonoInput.removeAttribute('oninput'); // desactivar formato
+    telefonoInput.classList.add('bg-yellow-50');
+    return;
+  } else {
+    telefonoInput.classList.remove('bg-yellow-50');
+    telefonoInput.setAttribute('oninput', 'formatearTelefono(this)');
+  }
+
+  // Configurar formato por país
+  switch (codigo) {
+    case '+503': case '+504': case '+502': case '+505': case '+506': case '+507':
+      telefonoInput.placeholder = '0000-0000';
+      telefonoInput.maxLength = 9;
+      break;
+    case '+52':
+      telefonoInput.placeholder = '000-000-0000';
+      telefonoInput.maxLength = 12;
+      break;
+    case '+1':
+      telefonoInput.placeholder = '(000) 000-0000';
+      telefonoInput.maxLength = 14;
+      break;
+    default:
+      telefonoInput.placeholder = 'Número de teléfono';
+  } 
+});
+
+function formatearTelefono(input) {
+  let valor = input.value.replace(/\D/g, '');
+  const codigo = codigoSelect.value;
+
+  // Formatos por país
+  if (['+503', '+504', '+502', '+505', '+506', '+507'].includes(codigo)) {
+    if (valor.length > 4)
+      input.value = valor.substring(0, 4) + '-' + valor.substring(4, 8);
+    else input.value = valor;
+  } else if (codigo === '+52') {
+    if (valor.length > 3 && valor.length <= 6)
+      input.value = valor.substring(0, 3) + '-' + valor.substring(3);
+    else if (valor.length > 6)
+      input.value = valor.substring(0, 3) + '-' + valor.substring(3, 6) + '-' + valor.substring(6, 10);
+    else input.value = valor;
+  } else if (codigo === '+1') {
+    if (valor.length > 3 && valor.length <= 6)
+      input.value = '(' + valor.substring(0, 3) + ') ' + valor.substring(3);
+    else if (valor.length > 6)
+      input.value = '(' + valor.substring(0, 3) + ') ' + valor.substring(3, 6) + '-' + valor.substring(6, 10);
+    else input.value = valor;
+  } else {
+    input.value = valor;
+  }
+}
 </script>
 
 <script>

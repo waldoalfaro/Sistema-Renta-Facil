@@ -471,15 +471,26 @@ window.onload = function() {
                                 <h5>Selecciones:</h5>
                                 <ul id="lista_selecciones" class="list-group"></ul>
                             </div>
-                            <div class="col-12">
+                           <div class="col-md-6">
                                 <label class="form-label fw-bold">
-                                    <i class="fas fa-camera text-primary"></i> Foto del Vehículo
+                                    <i class="fas fa-camera text-primary"></i> Foto Principal del Vehículo
                                 </label>
+                                <input type="file" class="form-control" name="foto_principal" accept="image/*" required>
+                                <small class="block mt-2 text-gray-500 text-sm">
+                                    📏 <strong>Dimensiones recomendadas:</strong>1,080  x 1,100 <br>
+                                    🖼️ <strong>Formatos permitidos:</strong> JPG, PNG <br>
+                                </small>
+                            </div>
 
-
-                                <input type="file" class="form-control" name="fotos[]" accept="image/*" multiple>
-                                <small class="text-muted">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
-
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-images text-success"></i> Galería del Vehículo
+                                </label>
+                                <input type="file" class="form-control" name="galeria[]" accept="image/*" multiple>
+                                <small class="block mt-2 text-gray-500 text-sm">
+                                    📏 <strong>Dimensiones recomendadas:</strong>1,080  x 1,100 <br>
+                                    🖼️ <strong>Formatos permitidos:</strong> JPG, PNG <br>
+                                </small>
                             </div>
                         </div>
 
@@ -825,6 +836,39 @@ if (window.history.replaceState) {
   window.history.replaceState({}, document.title, url);
 }
 </script>
+
+
+<?php if (isset($_GET['registrado']) && $_GET['registrado'] == 1): ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+Swal.fire({
+  icon: 'success',
+  title: '¡Vehículo registrado!',
+  text: 'El vehículo se guardó correctamente.',
+  showConfirmButton: false,
+  timer: 1800
+});
+setTimeout(() => {
+  window.location.href = 'vehiculos.php';
+}, 1800);
+</script>
+<?php endif; ?>
+
+
+<?php if (isset($_GET['duplicado']) && $_GET['duplicado'] == 1): ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+Swal.fire({
+    icon: 'warning',
+    title: 'Vehículo duplicado',
+    text: '⚠️ Ya existe un vehículo con la placa <?= htmlspecialchars($_GET["placa"]) ?>.',
+    confirmButtonColor: '#3085d6',
+    confirmButtonText: 'Entendido'
+}).then(() => {
+    window.history.replaceState(null, '', window.location.pathname);
+});
+</script>
+<?php endif; ?>
 </body>
 </html>
 

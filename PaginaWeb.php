@@ -90,71 +90,94 @@ $portada = $portadaData ? $portadaData['ruta_imagen'] : 'portada.jpg';
       ?>
       
       <!-- Tarjeta de Vehículo -->
-      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-yellow-500/30 transition-all duration-300 border border-gray-700 hover:border-yellow-500/50 transform hover:-translate-y-1">
-        
-        <!-- Imagen del Vehículo -->
-        <div class="relative h-48 overflow-hidden">
-          <?php if (!empty($row['foto'])): ?>
-            <img src="FotosSubidas/<?= htmlspecialchars($row['foto']) ?>"
-                 alt="<?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>"
-                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
-          <?php else: ?>
-            <div class="flex items-center justify-center h-full bg-gray-700 text-gray-400">
-              <i class="fas fa-car text-5xl"></i>
-            </div>
-          <?php endif; ?>
-          
-          <!-- Badge de disponibilidad -->
-          <div class="absolute top-3 right-3">
-            <span class="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-              DISPONIBLE
-            </span>
-          </div>
-        </div>
-        
-        <!-- Contenido de la Tarjeta -->
-        <div class="p-5">
-          <!-- Título y Año -->
-          <div class="mb-4">
-            <h3 class="text-xl font-bold text-white mb-2 line-clamp-1">
-              <?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>
-            </h3>
-            
-            <div class="inline-flex items-center bg-gray-700/50 px-3 py-1 rounded-lg">
-              <i class="fas fa-calendar-alt text-yellow-500 text-sm mr-2"></i>
-              <span class="text-white text-sm font-medium">
-                <?= htmlspecialchars($row['anio']) ?>
-              </span>
-            </div>
-          </div>
-          
-          <!-- Descripción compacta -->
-          <p class="text-gray-400 text-sm mb-4 line-clamp-2">
-            Vehículo en excelente estado, perfecto para tu próxima aventura.
-          </p>
-          
-          <!-- Precio y Botón -->
-          <div class="flex items-center justify-between pt-4 border-t border-gray-700">
-            <div>
-              <p class="text-gray-500 text-xs mb-0.5">Desde</p>
-              <div class="flex items-baseline gap-1">
-                <span class="text-2xl font-bold text-yellow-500">
-                  $<?= number_format($row['precio_dia'], 2) ?>
-                </span>
-                <span class="text-gray-400 text-sm">/día</span>
-              </div>
-            </div>
-            
-            <a href="Reservas/reservaciones.php?id=<?= $row['id_vehiculo'] ?>"
-               class="bg-yellow-500 text-black px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-400 transition-all duration-300 shadow-md hover:shadow-yellow-500/50 transform hover:scale-105 inline-flex items-center gap-2">
-              <i class="fas fa-calendar-check text-sm"></i>
-              Reservar
-            </a>
-          </div>
-        </div>
-        
+      <style>
+  /* 🔹 Mantener proporción 1080x1100 sin deformar */
+  .imagen-vehiculo {
+    width: 100%;
+    aspect-ratio: 1080 / 1100; /* Mantiene la proporción real del arte */
+    object-fit: contain; /* No recorta la imagen */
+    background-color: #111827; /* Fondo oscuro de relleno */
+    transition: transform 0.4s ease;
+  }
+
+  .imagen-vehiculo:hover {
+    transform: scale(1.05);
+  }
+
+  /* 🔹 Ajuste responsivo */
+  @media (max-width: 640px) {
+    .imagen-vehiculo {
+      aspect-ratio: 1080 / 1100;
+      max-height: 400px;
+    }
+  }
+</style>
+
+<div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-yellow-500/30 transition-all duration-300 border border-gray-700 hover:border-yellow-500/50 transform hover:-translate-y-1">
+
+  <!-- 🖼️ Imagen del Vehículo -->
+  <div class="relative overflow-hidden bg-gray-900">
+    <?php if (!empty($row['foto'])): ?>
+      <img src="FotosSubidas/<?= htmlspecialchars($row['foto']) ?>"
+           alt="<?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>"
+           class="imagen-vehiculo mx-auto">
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+    <?php else: ?>
+      <div class="flex items-center justify-center imagen-vehiculo text-gray-400">
+        <i class="fas fa-car text-5xl"></i>
       </div>
+    <?php endif; ?>
+
+    <!-- Badge de disponibilidad -->
+    <div class="absolute top-3 right-3">
+      <span class="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+        DISPONIBLE
+      </span>
+    </div>
+  </div>
+
+  <!-- 🧾 Contenido de la Tarjeta -->
+  <div class="p-5">
+    <!-- Título y Año -->
+    <div class="mb-4">
+      <h3 class="text-xl font-bold text-white mb-2 line-clamp-1">
+        <?= htmlspecialchars($row['marca'] . ' ' . $row['modelo']) ?>
+      </h3>
+      <div class="inline-flex items-center bg-gray-700/50 px-3 py-1 rounded-lg">
+        <i class="fas fa-calendar-alt text-yellow-500 text-sm mr-2"></i>
+        <span class="text-white text-sm font-medium">
+          <?= htmlspecialchars($row['anio']) ?>
+        </span>
+      </div>
+    </div>
+
+    <!-- Descripción compacta -->
+    <p class="text-gray-400 text-sm mb-4 line-clamp-2">
+      Vehículo en excelente estado, perfecto para tu próxima aventura.
+    </p>
+
+    <!-- Precio y Botón -->
+    <div class="flex items-center justify-between pt-4 border-t border-gray-700">
+      <div>
+        <p class="text-gray-500 text-xs mb-0.5">Desde</p>
+        <div class="flex items-baseline gap-1">
+          <span class="text-2xl font-bold text-yellow-500">
+            $<?= number_format($row['precio_dia'], 2) ?>
+          </span>
+          <span class="text-gray-400 text-sm">/día</span>
+        </div>
+      </div>
+
+      <a href="Reservas/reservaciones.php?id=<?= $row['id_vehiculo'] ?>"
+         class="bg-yellow-500 text-black px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-yellow-400 transition-all duration-300 shadow-md hover:shadow-yellow-500/50 transform hover:scale-105 inline-flex items-center gap-2">
+        <i class="fas fa-calendar-check text-sm"></i>
+        Reservar
+      </a>
+    </div>
+  </div>
+
+</div>
+
       
       <?php 
       $counter++;
@@ -198,6 +221,21 @@ $portada = $portadaData ? $portadaData['ruta_imagen'] : 'portada.jpg';
 
 
 
+<style>
+/* 🔹 Mantener proporción 1080x1100 (ligeramente más alta que cuadrada) */
+.promo-imagen {
+  width: 100%;
+  aspect-ratio: 1080 / 1100; /* mantiene la proporción exacta */
+  object-fit: contain;       /* muestra toda la imagen sin recortarla */
+  background-color: #f9f9f9; /* fondo neutro detrás de la imagen */
+  transition: transform 0.4s ease;
+}
+
+.promo-imagen:hover {
+  transform: scale(1.05);
+}
+</style>
+
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
   <?php while ($row = $resultadopromociones->fetch_assoc()): ?>
     <div class="relative bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform duration-300">
@@ -206,7 +244,7 @@ $portada = $portadaData ? $portadaData['ruta_imagen'] : 'portada.jpg';
         <div class="overflow-hidden">
           <img src="uploads/configuracion/<?= htmlspecialchars($row['imagen']) ?>" 
                alt="Promoción"
-               class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105">
+               class="promo-imagen">
         </div>
       <?php else: ?>
         <div class="flex items-center justify-center bg-gray-100 text-gray-400 py-10">
@@ -229,6 +267,7 @@ $portada = $portadaData ? $portadaData['ruta_imagen'] : 'portada.jpg';
     </div>
   <?php endwhile; ?>
 </div>
+
 
 
 

@@ -159,6 +159,7 @@ while ($fila = $reserva->fetch_assoc()) {
       color: #ef4444;
     }
   </style>
+  
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
   <div class="container mx-auto px-4 py-8 max-w-7xl">
@@ -177,100 +178,141 @@ while ($fila = $reserva->fetch_assoc()) {
     </div>
 
     <!-- Tarjeta de información del vehículo -->
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 fade-in">
-      <div class="grid md:grid-cols-2 gap-6 p-6">
-        <!-- Galería de imágenes mejorada -->
-        <div class="space-y-4">
-          <!-- Imagen principal -->
-          <div class="relative group overflow-hidden rounded-xl shadow-lg">
-            <?php 
-            $foto_principal = !empty($vehiculo['foto']) ? $vehiculo['foto'] : null;
-            ?>
-            <img id="imagenPrincipal" 
-                 src="../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>" 
-                 alt="<?= htmlspecialchars($vehiculo['marca'] . ' ' . $vehiculo['modelo']) ?>"
-                 class="imagen-principal">
-            
-            <!-- Indicador de zoom -->
-            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-              <i class="fas fa-search-plus text-purple-600"></i>
+    <style>
+  /* 🔹 Contenedor principal con proporción 1080x1100 */
+  .imagen-principal {
+    width: 100%;
+    aspect-ratio: 1080 / 1100; /* Mantiene proporción vertical */
+    object-fit: contain; /* Muestra toda la imagen sin recortarla */
+    border-radius: 1rem;
+    background-color: #f9fafb; /* Fondo suave si hay espacios */
+    transition: all 0.3s ease;
+  }
+
+  /* 🔹 Miniaturas más ordenadas */
+  .miniatura {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+  }
+
+  .miniatura:hover {
+    transform: scale(1.05);
+    border-color: #7c3aed;
+  }
+
+  .miniatura.activa {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+  }
+
+  /* 🔹 Responsive: para pantallas pequeñas */
+  @media (max-width: 640px) {
+    .imagen-principal {
+      aspect-ratio: 1080 / 1100;
+      height: auto;
+      max-height: 450px;
+    }
+    .miniatura {
+      width: 70px;
+      height: 70px;
+    }
+  }
+</style>
+
+<div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 fade-in">
+  <div class="grid md:grid-cols-2 gap-6 p-6">
+    <!-- 🖼️ Galería de imágenes -->
+    <div class="space-y-4">
+      <div class="relative group overflow-hidden rounded-xl shadow-lg bg-gray-100">
+        <?php 
+        $foto_principal = !empty($vehiculo['foto']) ? $vehiculo['foto'] : null;
+        ?>
+        <img id="imagenPrincipal" 
+             src="../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>" 
+             alt="<?= htmlspecialchars($vehiculo['marca'] . ' ' . $vehiculo['modelo']) ?>"
+             class="imagen-principal">
+        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+          <i class="fas fa-search-plus text-purple-600"></i>
+        </div>
+      </div>
+
+      <!-- Miniaturas -->
+      <?php if (!empty($fotos_adicionales) || !empty($foto_principal)): ?>
+      <div class="flex gap-2 overflow-x-auto pb-2">
+        <?php if (!empty($foto_principal)): ?>
+        <img src="../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>" 
+             alt="Principal" 
+             class="miniatura activa"
+             onclick="cambiarImagen(this, '../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>')">
+        <?php endif; ?>
+
+        <?php foreach($fotos_adicionales as $foto): ?>
+        <img src="../FotosSubidas/<?= htmlspecialchars($foto) ?>" 
+             alt="Foto adicional" 
+             class="miniatura"
+             onclick="cambiarImagen(this, '../FotosSubidas/<?= htmlspecialchars($foto) ?>')">
+        <?php endforeach; ?>
+      </div>
+      <?php endif; ?>
+
+      <div class="text-center text-sm text-gray-600">
+        <i class="fas fa-images text-purple-600 mr-2"></i>
+        <?= count($fotos_adicionales) + 1 ?> fotos disponibles
+      </div>
+    </div>
+
+    <!-- 🚗 Detalles del vehículo -->
+    <div class="flex flex-col justify-center">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">
+        <?= htmlspecialchars($vehiculo['marca'] . " " . $vehiculo['modelo']) ?>
+      </h2>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl">
+          <div class="flex items-center gap-3">
+            <div class="bg-blue-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
+              <i class="fas fa-calendar-alt"></i>
             </div>
-          </div>
-          
-          <!-- Miniaturas -->
-          <?php if (!empty($fotos_adicionales) || !empty($foto_principal)): ?>
-          <div class="flex gap-2 overflow-x-auto pb-2">
-            <!-- Miniatura de la foto principal -->
-            <?php if (!empty($foto_principal)): ?>
-            <img src="../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>" 
-                 alt="Principal" 
-                 class="miniatura activa"
-                 onclick="cambiarImagen(this, '../FotosSubidas/<?= htmlspecialchars($foto_principal) ?>')">
-            <?php endif; ?>
-            
-            <!-- Miniaturas de fotos adicionales -->
-            <?php foreach($fotos_adicionales as $foto): ?>
-            <img src="../FotosSubidas/<?= htmlspecialchars($foto) ?>" 
-                 alt="Foto adicional" 
-                 class="miniatura"
-                 onclick="cambiarImagen(this, '../FotosSubidas/<?= htmlspecialchars($foto) ?>')">
-            <?php endforeach; ?>
-          </div>
-          <?php endif; ?>
-          
-          <!-- Contador de fotos -->
-          <div class="text-center text-sm text-gray-600">
-            <i class="fas fa-images text-purple-600 mr-2"></i>
-            <?= count($fotos_adicionales) + 1 ?> fotos disponibles
+            <div>
+              <p class="text-xs text-gray-600 font-semibold">Año</p>
+              <p class="text-xl font-bold text-gray-800"><?= htmlspecialchars($vehiculo['anio']) ?></p>
+            </div>
           </div>
         </div>
 
-        <!-- Detalles del vehículo -->
-        <div class="flex flex-col justify-center">
-          <h2 class="text-3xl font-bold text-gray-800 mb-6">
-            <?= htmlspecialchars($vehiculo['marca'] . " " . $vehiculo['modelo']) ?>
-          </h2>
-          
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl">
-              <div class="flex items-center gap-3">
-                <div class="bg-blue-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  <i class="fas fa-calendar-alt"></i>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-600 font-semibold">Año</p>
-                  <p class="text-xl font-bold text-gray-800"><?= htmlspecialchars($vehiculo['anio']) ?></p>
-                </div>
-              </div>
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl">
+          <div class="flex items-center gap-3">
+            <div class="bg-green-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
+              <i class="fas fa-dollar-sign"></i>
             </div>
-
-            <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl">
-              <div class="flex items-center gap-3">
-                <div class="bg-green-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-600 font-semibold">Precio por día</p>
-                  <p class="text-xl font-bold text-gray-800">$<?= number_format($vehiculo['precio_dia'], 2) ?></p>
-                </div>
-              </div>
+            <div>
+              <p class="text-xs text-gray-600 font-semibold">Precio por día</p>
+              <p class="text-xl font-bold text-gray-800">$<?= number_format($vehiculo['precio_dia'], 2) ?></p>
             </div>
+          </div>
+        </div>
 
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl">
-              <div class="flex items-center gap-3">
-                <div class="bg-purple-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
-                  <i class="fas fa-users"></i>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-600 font-semibold">Capacidad</p>
-                  <p class="text-xl font-bold text-gray-800"><?= number_format($vehiculo['asientos']) ?> asientos</p>
-                </div>
-              </div>
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl">
+          <div class="flex items-center gap-3">
+            <div class="bg-purple-500 text-white w-12 h-12 rounded-lg flex items-center justify-center">
+              <i class="fas fa-users"></i>
+            </div>
+            <div>
+              <p class="text-xs text-gray-600 font-semibold">Capacidad</p>
+              <p class="text-xl font-bold text-gray-800"><?= number_format($vehiculo['asientos']) ?> asientos</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
 
     <!-- Calendario y formulario -->
     <div class="grid md:grid-cols-2 gap-8">
@@ -356,24 +398,37 @@ while ($fila = $reserva->fetch_assoc()) {
                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
         </div>
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">
-            <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
-          </label>
-          
-          <div class="flex items-center">
-            <span class="text-gray-600 font-medium mr-2">+503</span>
-            <input 
-              type="tel" 
-              name="telefono_cliente" 
-              id="telefono_cliente" 
-              maxlength="9"
-              required
-              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
-              placeholder="1234-5678"
-              oninput="formatearTelefono(this)">
-          </div>
-        </div>
+       <div>
+  <label class="block text-sm font-semibold text-gray-700 mb-2">
+    <i class="fas fa-phone text-orange-600 mr-2"></i> Teléfono
+  </label>
+
+  <div class="flex items-center gap-2">
+    <select id="codigo_pais" name="codigo_pais"
+            class="border-2 border-gray-300 rounded-lg px-2 py-3 focus:outline-none focus:border-purple-500 text-gray-700">
+      <option value="+503" selected>🇸🇻 +503 (El Salvador)</option>
+      <option value="+502">🇬🇹 +502 (Guatemala)</option>
+      <option value="+504">🇭🇳 +504 (Honduras)</option>
+      <option value="+505">🇳🇮 +505 (Nicaragua)</option>
+      <option value="+506">🇨🇷 +506 (Costa Rica)</option>
+      <option value="+507">🇵🇦 +507 (Panamá)</option>
+      <option value="+52">🇲🇽 +52 (México)</option>
+      <option value="+1">🇺🇸 +1 (EE.UU.)</option>
+      <option value="otro">🌍 Otro país</option>
+    </select>
+
+    <input 
+      type="tel"
+      name="telefono_cliente"
+      id="telefono_cliente"
+      maxlength="15"
+      required
+      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
+      placeholder="0000-0000"
+      oninput="formatearTelefono(this)">
+  </div>
+</div>
+
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -422,7 +477,7 @@ while ($fila = $reserva->fetch_assoc()) {
           </label>
           <input type="file" name="fotos_dui" accept="image/*" multiple
                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-          <small class="text-gray-500">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+          <small class="text-gray-500">Dimensiones: 2,500 x 300 | Formatos aceptados: JPG, PNG (Max. 5MB)</small>
         </div>
         
         <div>
@@ -431,7 +486,7 @@ while ($fila = $reserva->fetch_assoc()) {
           </label>
           <input type="file" name="fotos_licencia" accept="image/*" multiple
                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 transition-colors">
-          <small class="text-gray-500">Formatos aceptados: JPG, PNG, GIF (Max. 5MB)</small>
+          <small class="text-gray-500">Dimensiones: 2,500 x 300 | Formatos aceptados: JPG, PNG (Max. 5MB)</small>
         </div>
 
         <div>
@@ -451,6 +506,75 @@ while ($fila = $reserva->fetch_assoc()) {
     </div>
   </div>
 
+ 
+
+<script>
+const telefonoInput = document.getElementById('telefono_cliente');
+const codigoSelect = document.getElementById('codigo_pais');
+
+codigoSelect.addEventListener('change', function() {
+  telefonoInput.value = ''; // limpiar campo
+  const codigo = this.value;
+
+  if (codigo === 'otro') {
+    telefonoInput.placeholder = 'Ingrese su número con código (+XX...)';
+    telefonoInput.maxLength = 20;
+    telefonoInput.removeAttribute('oninput'); // desactivar formato
+    telefonoInput.classList.add('bg-yellow-50');
+    return;
+  } else {
+    telefonoInput.classList.remove('bg-yellow-50');
+    telefonoInput.setAttribute('oninput', 'formatearTelefono(this)');
+  }
+
+  // Configurar formato por país
+  switch (codigo) {
+    case '+503': case '+504': case '+502': case '+505': case '+506': case '+507':
+      telefonoInput.placeholder = '0000-0000';
+      telefonoInput.maxLength = 9;
+      break;
+    case '+52':
+      telefonoInput.placeholder = '000-000-0000';
+      telefonoInput.maxLength = 12;
+      break;
+    case '+1':
+      telefonoInput.placeholder = '(000) 000-0000';
+      telefonoInput.maxLength = 14;
+      break;
+    default:
+      telefonoInput.placeholder = 'Número de teléfono';
+  } 
+});
+
+function formatearTelefono(input) {
+  let valor = input.value.replace(/\D/g, '');
+  const codigo = codigoSelect.value;
+
+  // Formatos por país
+  if (['+503', '+504', '+502', '+505', '+506', '+507'].includes(codigo)) {
+    if (valor.length > 4)
+      input.value = valor.substring(0, 4) + '-' + valor.substring(4, 8);
+    else input.value = valor;
+  } else if (codigo === '+52') {
+    if (valor.length > 3 && valor.length <= 6)
+      input.value = valor.substring(0, 3) + '-' + valor.substring(3);
+    else if (valor.length > 6)
+      input.value = valor.substring(0, 3) + '-' + valor.substring(3, 6) + '-' + valor.substring(6, 10);
+    else input.value = valor;
+  } else if (codigo === '+1') {
+    if (valor.length > 3 && valor.length <= 6)
+      input.value = '(' + valor.substring(0, 3) + ') ' + valor.substring(3);
+    else if (valor.length > 6)
+      input.value = '(' + valor.substring(0, 3) + ') ' + valor.substring(3, 6) + '-' + valor.substring(6, 10);
+    else input.value = valor;
+  } else {
+    input.value = valor;
+  }
+}
+</script>
+
+
+
   <script>
     // Función para cambiar imagen principal
     function cambiarImagen(miniatura, rutaImagen) {
@@ -467,15 +591,7 @@ while ($fila = $reserva->fetch_assoc()) {
     }
 
     // Formatear teléfono
-    function formatearTelefono(input) {
-      let valor = input.value.replace(/\D/g, '');
-      valor = valor.substring(0, 8);
-      if (valor.length > 4) {
-        input.value = valor.substring(0, 4) + '-' + valor.substring(4);
-      } else {
-        input.value = valor;
-      }
-    }
+   
 
     // Modal
     function abrirModal() {
